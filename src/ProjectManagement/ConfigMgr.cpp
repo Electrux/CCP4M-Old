@@ -19,7 +19,7 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 
 	for( auto lib : data.deps ) {
 		concatlibs += lib;
-		concatlibs += ',';
+		concatlibs += ", ";
 	}
 
 	if( !concatlibs.empty() )
@@ -68,6 +68,10 @@ std::string ConfigMgr::GetLibraryFlags( std::string lib )
 {
 	if( lib == "sfml" ) {
 		return "-lsfml-graphics, -lsfml-window, -lsfml-system";
+	}
+
+	if( lib == "pthread" ) {
+		return "-lpthread";
 	}
 
 	return "";
