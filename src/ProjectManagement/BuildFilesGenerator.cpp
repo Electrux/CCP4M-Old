@@ -46,7 +46,7 @@ int GenerateBuildFiles()
 		std::string compilestr =
 			"clang++ -c" + flags + "-std=" + standard
 			+ " -o build/buildfiles/" + othersource
-			+ ".o src/" + othersource + libs;
+			+ ".o src/" + othersource;
 
 		bool res = IsLatestBuild( othersource );
 
