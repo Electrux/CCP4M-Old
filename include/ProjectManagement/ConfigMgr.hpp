@@ -22,7 +22,11 @@ public:
 
 	std::string GetDataString( std::string section, std::string key );
 
+	std::string GetIncludeFlags( std::string lib );
+
 	std::string GetLibraryFlags( std::string lib );
+
+	std::string GetLibraryVersion( std::string lib );
 };
 
 #endif // CONFIGMGR_HPP

@@ -8,15 +8,15 @@ struct Package
 {
 	std::string name;
 	std::string url;
-	std::string filelinux;
-	std::string filemac;
+	std::string file;
 	std::string version;
 	std::string description;
 
 	std::vector< std::string > deplist;
 
-	std::string incflag;
-	std::string libflag;
+	std::string incdir;
+	std::string libdir;
+	std::string libflags;
 };
 
 #endif // PACKAGEDATA_HPP

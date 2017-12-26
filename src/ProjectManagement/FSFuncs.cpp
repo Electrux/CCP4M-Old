@@ -77,7 +77,7 @@ int CreateDir( const std::string & dir )
 void CreateFileWithContents( const std::string & filename,
 			     const std::string & contents )
 {
-	std::cout << "Creating file: " << filename << "\n";
+	std::cout << BLUE << "Creating file: " << MAGENTA << filename << RESET << std::endl;
 
 	std::fstream file;
 

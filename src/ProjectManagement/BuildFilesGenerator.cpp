@@ -18,17 +18,14 @@
 
 int GenerateBuildFiles()
 {
-	std::string mainsrc, flags, libs;
+	std::string mainsrc, incdirs, flags, libs;
 	std::vector< std::string > othersrc;
 
 	ProjectData data;
 	ConfigMgr config;
 
-	if( GetBuildData( config, data, mainsrc, flags, libs, othersrc ) != 0 )
+	if( GetBuildData( config, data, mainsrc, incdirs, flags, libs, othersrc ) != 0 )
 		return 1;
-
-	if( libs == " " )
-		libs = "";
 
 	if( CreateBuildDirectories( othersrc ) != 0 )
 		return 1;
@@ -41,10 +38,11 @@ int GenerateBuildFiles()
 		std::cout << std::endl;
 
 	std::vector< CCData > commands;
+
 	for( auto othersource : othersrc ) {
 
 		std::string compilestr =
-			"clang++ -c" + flags + "-std=" + standard
+			"clang++ -c " + incdirs + flags + "-std=" + standard
 			+ " -o build/buildfiles/" + othersource
 			+ ".o src/" + othersource;
 
@@ -69,11 +67,11 @@ int GenerateBuildFiles()
 		}
 		else {
 			std::string compilestr =
-				"clang++ -g" + flags + "-std=" + standard + " -o build/"
-				+ data.name + libs;
+				"clang++ -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
+				+ data.name;
 
 			for( auto othersource : othersrc )		
-				compilestr += " build/buildfiles/" + othersource + ".o ";
+				compilestr += " build/buildfiles/" + othersource + ".o";
 
 			compilestr += " src/" + mainsrc;
 
@@ -144,8 +142,9 @@ std::string GetDirectoryFromSource( std::string src )
 }
 
 int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
-		  std::string & flags, std::string & libs,
-		  std::vector< std::string > & othersrc )
+		std::string & incdirs,
+		std::string & flags, std::string & libs,
+		std::vector< std::string > & othersrc )
 {
 	if( config.RetrieveConfig( "." ) != 0 ) {
 		std::cerr << "Error: No project ini file detected in current directory!" << std::endl;
@@ -165,21 +164,36 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 	std::vector< std::string > flagvec = DelimStringToVector( _flags );
 	std::vector< std::string > libvec = DelimStringToVector( _libs );
 
-	flags = " ";
+	flags = "";
 	for( auto fl : flagvec ) {
 		flags += fl;
 		flags += " ";
 	}
 
-	libs = " ";
+	incdirs = "";
 	for( auto lb : libvec ) {
 
-		auto libflagvecstr = config.GetDataString( "Deps", lb );
+		auto incflagvecstr = config.GetDataString( lb, "IncFlags" );
+
+		std::replace( incflagvecstr.begin(), incflagvecstr.end(), ',', ' ' );
+
+		if( !incflagvecstr.empty() ) {
+			incdirs += incflagvecstr;
+			incdirs += " ";
+		}
+	}
+
+	libs = "";
+	for( auto lb : libvec ) {
+
+		auto libflagvecstr = config.GetDataString( lb, "LibFlags" );
 
 		std::replace( libflagvecstr.begin(), libflagvecstr.end(), ',', ' ' );
 
-		libs += libflagvecstr;
-		libs += " ";
+		if( !libflagvecstr.empty() ) {
+			libs += libflagvecstr;
+			libs += " ";
+		}
 	}
 
 	std::vector< std::string > __othersrc = DelimStringToVector( _othersrc );
@@ -225,6 +239,10 @@ int GetWildCardSources( std::vector< std::string > & __othersrc,
 
 			if( GetFilesInDir( loc, othersrc ) != 0 )
 				return 1;
+		}
+
+		if( * ( it->end() - 1 ) != '/' ) {
+			othersrc.push_back( * it );
 		}
 	}
 

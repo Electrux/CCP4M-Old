@@ -1,5 +1,7 @@
+#include <iostream>
 #include <string>
 
+#include "../../include/ColorDefs.hpp"
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/ProjectManagement/FSFuncs.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -8,17 +10,17 @@
 
 int GenerateProjectFiles( ProjectData & data )
 {
-	std::cout << "Project:\n\tName: " << data.name
-		  << "\n\tDirectory: " << data.dir
-		  << "\n\tDependencies: ";
+	std::cout << YELLOW << "Project:\n\t" << CYAN << "Name: " << GREEN << data.name
+		  << "\n\t" << CYAN << "Directory: " << GREEN << data.dir
+		  << "\n\t" << CYAN << "Dependencies: ";
 
 	if( !data.deps.empty() ) {
 		for( auto dep : data.deps )
-			std::cout << dep << ", ";
-		std::cout << "\b \n\n";
+			std::cout << GREEN << dep << ", ";
+		std::cout << "\b\b \n" << RESET << std::endl;
 	}
 	else {
-		std::cout << "NONE\n\n";
+		std::cout << GREEN << "NONE\n" << RESET << std::endl;
 	}
 
 	std::string proj_dir, proj_src, proj_inc, proj_build;
@@ -29,6 +31,8 @@ int GenerateProjectFiles( ProjectData & data )
 	CreateDir( proj_src );
 	CreateDir( proj_inc );
 	CreateDir( proj_build );
+
+	std::cout << std::endl;
 
 	CreateFileWithContents( proj_src + "/main.cpp", DEFAULTMAIN );
 

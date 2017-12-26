@@ -43,32 +43,34 @@ int PackageManager::InstallPackage( std::string package )
 
 	std::cout << YELLOW << "Checking package exists ... " << RESET;
 	if( !PackageExists( package, pkg ) ) {
-		std::cout << RED << CROSS << std::endl;
+		std::cout << RED << CROSS << RESET << std::endl;
 		return 1;
 	}
-	std::cout << GREEN << TICK << std::endl;
+	std::cout << GREEN << TICK << RESET << std::endl;
 
 	std::cout << YELLOW << "Checking already installed ... " << RESET;
 	bool res = IsInstalled( package );
-	std::cout << GREEN << TICK << std::endl;
+	std::cout << GREEN << TICK << RESET << std::endl;
 	if( res ) {
+		std::cout << BOLD_YELLOW << "Package already installed! "
+			<< BOLD_GREEN << TICK << RESET << std::endl;
 		return 0;
 	}
 
 	std::cout << YELLOW << "Fetching package ... " << RESET;
 	std::cout.flush();
 	if( !FetchPackage( pkg ) ) {
-		std::cout << RED << CROSS << std::endl;
+		std::cout << " " << RED << CROSS << RESET << std::endl;
 		return 1;
 	}
-	std::cout << " " << GREEN << TICK << std::endl;
+	std::cout << " " << GREEN << TICK << RESET << std::endl;
 
-	std::cout << YELLOW << "Installing ... " << RESET;
+	std::cout << YELLOW << "Starting installation ... " << GREEN << TICK << RESET << std::endl;
 	if( !InstallArchive( pkg ) ) {
-		std::cout << RED << CROSS << std::endl;
+		std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
 		return 1;
 	}
-	std::cout << GREEN << TICK << std::endl;
+	std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
 
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::app );

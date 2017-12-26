@@ -24,23 +24,20 @@ bool FetchPackage( const Package & pkg )
 	
 	std::FILE * file;
 
-#ifdef __linux__
-	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.filelinux ).c_str() );
-	file = std::fopen( ( PACKAGE_TMP + pkg.filelinux ).c_str(), "w" );
-#elif __APPLE__
-	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.filemac ).c_str() );
-	file = std::fopen( ( PACKAGE_TMP + pkg.filemac ).c_str(), "w" );
-#endif
+	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
+	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
+
 	curl_easy_setopt( hnd, CURLOPT_WRITEDATA, file );
 	curl_easy_setopt( hnd, CURLOPT_WRITEFUNCTION, curl_write_func );
+	curl_easy_setopt( hnd, CURLOPT_NOPROGRESS, 0 );
+	curl_easy_setopt( hnd, CURLOPT_PROGRESSFUNCTION, progress_func );
+
 	curl_easy_setopt( hnd, CURLOPT_FAILONERROR, 1L );
 	curl_easy_setopt( hnd, CURLOPT_USERAGENT, "curl/7.54.0" );
 	curl_easy_setopt( hnd, CURLOPT_MAXREDIRS, 50L );
 	curl_easy_setopt( hnd, CURLOPT_HTTP_VERSION, ( long )CURL_HTTP_VERSION_2TLS );
 	curl_easy_setopt( hnd, CURLOPT_TCP_KEEPALIVE, 1L );
 	curl_easy_setopt( hnd, CURLOPT_SERVER_RESPONSE_TIMEOUT, 10L );
-	curl_easy_setopt( hnd, CURLOPT_NOPROGRESS, 0 );
-	curl_easy_setopt( hnd, CURLOPT_PROGRESSFUNCTION, progress_func );
 
 	ret = curl_easy_perform( hnd );
 
@@ -72,27 +69,19 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 
 	double percentdown = ( cdl / totdl ) * 100;
 
-	static int ctr = 0;
-	static double prevpercent = 0;
+	static int prevpercentsize = 0;
 
-	if( percentdown - prevpercent > 0.07 ) {
+	std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
 
-		if( 100.00 - percentdown <= 0.4 )
-			percentdown = 100.00;
-		std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
-
-		if( ctr != 0 ) {
-			for( int i = 0; i < ( int )percent.size(); ++i ) {
-				std::cout << "\b \b";
-				std::cout.flush();
-			}
-		}
-		std::cout << CYAN << percent << RESET;
+	for( int i = 0; i < prevpercentsize; ++i ) {
+		std::cout << "\b \b";
 		std::cout.flush();
 	}
 
-	prevpercent = percentdown;
-	ctr++;
+	std::cout << CYAN << percent << RESET;
+	std::cout.flush();
+
+	prevpercentsize = ( int )percent.size();
 
 	return 0;
 }

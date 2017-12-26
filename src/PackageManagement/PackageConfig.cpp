@@ -31,15 +31,21 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
 	parser.GetDataString( "Core", "URL", pkg.url );
-	parser.GetDataString( "Core", "FileLinux", pkg.filelinux );
-	parser.GetDataString( "Core", "FileMac", pkg.filemac );
+#ifdef __linux__
+	parser.GetDataString( "Core", "LinuxFile", pkg.file );
+	parser.GetDataString( "Core", "LinuxIncludeDir", pkg.incdir );
+	parser.GetDataString( "Core", "LinuxLibDir", pkg.libdir );
+#elif __APPLE__
+	parser.GetDataString( "Core", "MacFile", pkg.file );
+	parser.GetDataString( "Core", "MacIncludeDir", pkg.incdir );
+	parser.GetDataString( "Core", "MacLibDir", pkg.libdir );
+#endif
 	parser.GetDataString( "Core", "Version", pkg.version );
 
 	parser.GetDataString( "Core", "Deps", deps );
 	pkg.deplist = DelimStringToVector( deps );
 
-	parser.GetDataString( "Core", "IncludeFlag", pkg.incflag );
-	parser.GetDataString( "Core", "LibraryFlag", pkg.libflag );
+	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
 	return true;
 }

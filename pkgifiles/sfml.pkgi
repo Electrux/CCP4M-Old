@@ -1,0 +1,18 @@
+[Core]
+
+Name = sfml
+Description = lol
+URL = http://mirror3.sfml-dev.org/files/
+
+LinuxFile = SFML-2.4.2-linux-gcc-64-bit.tar.gz
+LinuxIncludeDir = /usr/include
+LinuxLibDir = /usr/lib
+
+MacFile = SFML-2.4.2-osx-clang.tar.gz
+MacIncludeDir = /usr/local/include
+MacLibDir = /usr/local/lib
+
+Version = 2.4.2
+Deps = 
+
+LibraryFlags = -lsfml-graphics, -lsfml-window, -lsfml-system, -lsfml-network
