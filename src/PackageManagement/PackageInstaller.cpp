@@ -16,8 +16,6 @@ bool InstallArchive( const Package & pkg )
 	if( !ExtractArchive( pkg ) )
 		return false;
 
-	std::string archivedir = PACKAGE_TMP + pkg.name;
-
 	std::string copyinc, copylib, copyfw;
 
 	GetCopyCommands( pkg, copyinc, copylib, copyfw );
@@ -38,21 +36,23 @@ bool InstallArchive( const Package & pkg )
 
 #ifdef __APPLE__
 	if( std::system( copyfw.c_str() ) != 0 ) {
-		std::cout << RED << "Error in copying includes!"
+		std::cout << RED << "Error in copying frameworks!"
 			<< "Check especially if you have necessary permissions!"
 			<< RESET << std::endl;
 		return false;
 	}
 #endif
+
+	std::cout << BOLD_GREEN << "Successfully installed the library!" << RESET << std::endl;
 	return true;
 }
 
 void GetCopyCommands( const Package & pkg, std::string & include, std::string & lib, std::string & framework )
 {
-	std::string archivedir = PACKAGE_TMP + pkg.name;
-	std::string incdir = archivedir + "/include/";
-	std::string libdir = archivedir + "/lib/";
-	std::string fwdir = archivedir + "/framework/";
+	std::string archivedir = GetArchiveDir( pkg );
+	std::string incdir = archivedir + "/include/*";
+	std::string libdir = archivedir + "/lib/*";
+	std::string fwdir = archivedir + "/Frameworks/*";
 
 	include = "";
 	lib = "";
@@ -60,16 +60,16 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::string & 
 
 #ifdef __linux__
 	if( DirExists( incdir ) )
-		include = "cp -r " + archivedir + "/include/*" + " /usr/include/";
+		include = "cp -r " + incdir + " /usr/include/";
 	if( DirExists( libdir ) )
-		lib = "cp -r " + archivedir + "/lib/*" + " /usr/lib/";
+		lib = "cp -r " + libdir + " /usr/lib/";
 #elif __APPLE__
 	if( DirExists( incdir ) )
-		include = "cp -r " + archivedir + "/include/*" + " /usr/local/include/";
+		include = "cp -r " + incdir + " /usr/local/include/";
 	if( DirExists( libdir ) )
-		lib = "cp -r " + archivedir + "/lib/*" + " /usr/local/lib/";
+		lib = "cp -r " + libdir + " /usr/local/lib/";
 	if( DirExists( fwdir ) )
-		framework = "cp -r " + archivedir + "/framework/*" + " /Library/Frameworks/";
+		framework = "cp -r " + fwdir + " /Library/Frameworks/";
 #endif
 }
 
@@ -87,9 +87,15 @@ bool ExtractArchive( const Package & pkg )
 {
 	std::cout << YELLOW << "Extracting downloaded archive..." << RESET << std::endl;
 
-	std::string archive = PACKAGE_TMP + pkg.file;
+	std::string file;
+#ifdef __linux__
+	file = pkg.filelinux;
+#elif __APPLE__
+	file = pkg.filemac;
+#endif
+	std::string archive = PACKAGE_TMP + file;
 
-	std::string taroptions = GetTarOptions( pkg.file );
+	std::string taroptions = GetTarOptions( file );
 	if( taroptions.empty() ) {
 		std::cout << RED << "Error: Unknown archive format! Exiting!"
 			<< RESET << std::endl;
@@ -99,9 +105,9 @@ bool ExtractArchive( const Package & pkg )
 	if( !CreateArchiveDir( pkg ) )
 		return false;
 
-	std::string archivedir = PACKAGE_TMP + pkg.name;
+	std::string archivedir = GetArchiveDir( pkg );
 
-	std::string cmd = "tar " + taroptions + " " + archive + " -C " + archivedir;
+	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
 
 	if( std::system( cmd.c_str() ) != 0 ) {
 		std::cout << RED << "Error: Unable to extract archive! Exiting!"
@@ -124,13 +130,13 @@ bool ExtractArchive( const Package & pkg )
 std::string GetTarOptions( const std::string & filename )
 {
 	if( filename.find( ".tar.gz" ) != std::string::npos )
-		return "-xzvf";
+		return "-xzf";
 
 	if( filename.find( ".tar.bz2" ) != std::string::npos )
-		return "-xjvf";
+		return "-xjf";
 
 	if( filename.find( ".tar" ) != std::string::npos )
-		return "-xvf";
+		return "-xf";
 
 	return "";
 }
@@ -139,10 +145,12 @@ bool CreateArchiveDir( const Package & pkg )
 {
 	struct stat info;
 
-	if( stat( ( PACKAGE_TMP + pkg.name ).c_str(), & info ) == 0 )
+	std::string archivedir = GetArchiveDir( pkg );
+
+	if( stat( archivedir.c_str(), & info ) == 0 )
 		return true;
 	
-	int ret = mkdir( ( PACKAGE_TMP + pkg.name ).c_str(), 0755 );
+	int ret = mkdir( archivedir.c_str(), 0755 );
 
 	if( ret != 0 ) {
 		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
@@ -151,4 +159,25 @@ bool CreateArchiveDir( const Package & pkg )
 	}
 
 	return true;
+}
+
+std::string GetArchiveDir( const Package & pkg )
+{
+	size_t loc;
+
+	std::string file;
+
+#ifdef __linux__
+	file = pkg.filelinux;
+#elif __APPLE__
+	file = pkg.filemac;
+#endif
+	loc = file.find( ".tar" );
+
+	std::string archivedir = PACKAGE_TMP;
+
+	for( size_t i = 0; i < loc; ++i )
+		archivedir += file[ i ];
+
+	return archivedir;
 }

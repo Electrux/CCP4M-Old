@@ -8,7 +8,8 @@ struct Package
 {
 	std::string name;
 	std::string url;
-	std::string file;
+	std::string filelinux;
+	std::string filemac;
 	std::string version;
 	std::string description;
 

@@ -31,7 +31,8 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
 	parser.GetDataString( "Core", "URL", pkg.url );
-	parser.GetDataString( "Core", "File", pkg.file );
+	parser.GetDataString( "Core", "FileLinux", pkg.filelinux );
+	parser.GetDataString( "Core", "FileMac", pkg.filemac );
 	parser.GetDataString( "Core", "Version", pkg.version );
 
 	parser.GetDataString( "Core", "Deps", deps );
@@ -54,7 +55,9 @@ bool PackageConfig::HandlePkgDirs()
 			return false;
 	}
 
-	if( stat( PACKAGE_TMP.c_str(), & info ) != 0 ) {
+	struct stat info2;
+
+	if( stat( PACKAGE_TMP.c_str(), & info2 ) != 0 ) {
 		int res = mkdir( PACKAGE_TMP.c_str(), 0755 );
 
 		if( res != 0 )

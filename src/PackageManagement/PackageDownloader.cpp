@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
+#include <cstdio>
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/Paths.hpp"
@@ -18,16 +19,32 @@ bool FetchPackage( const Package & pkg )
 	CURL * hnd;
 
 	hnd = curl_easy_init();
+	if( !hnd )
+		return false;
+	
+	std::FILE * file;
 
-	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
+#ifdef __linux__
+	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.filelinux ).c_str() );
+	file = std::fopen( ( PACKAGE_TMP + pkg.filelinux ).c_str(), "w" );
+#elif __APPLE__
+	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.filemac ).c_str() );
+	file = std::fopen( ( PACKAGE_TMP + pkg.filemac ).c_str(), "w" );
+#endif
+	curl_easy_setopt( hnd, CURLOPT_WRITEDATA, file );
+	curl_easy_setopt( hnd, CURLOPT_WRITEFUNCTION, curl_write_func );
 	curl_easy_setopt( hnd, CURLOPT_FAILONERROR, 1L );
+	curl_easy_setopt( hnd, CURLOPT_USERAGENT, "curl/7.54.0" );
 	curl_easy_setopt( hnd, CURLOPT_MAXREDIRS, 50L );
 	curl_easy_setopt( hnd, CURLOPT_HTTP_VERSION, ( long )CURL_HTTP_VERSION_2TLS );
 	curl_easy_setopt( hnd, CURLOPT_TCP_KEEPALIVE, 1L );
-	curl_easy_setopt( hnd, CURLOPT_FILE, ( PACKAGE_TMP + pkg.file ).c_str() );
 	curl_easy_setopt( hnd, CURLOPT_SERVER_RESPONSE_TIMEOUT, 10L );
+	curl_easy_setopt( hnd, CURLOPT_NOPROGRESS, 0 );
+	curl_easy_setopt( hnd, CURLOPT_PROGRESSFUNCTION, progress_func );
 
 	ret = curl_easy_perform( hnd );
+
+	std::fclose( file );
 
 	curl_easy_cleanup( hnd );
 
@@ -40,4 +57,42 @@ bool FetchPackage( const Package & pkg )
 	}
 
 	return !( bool )( int )ret;
+}
+
+static size_t curl_write_func( void *ptr, size_t size, size_t nmemb, void *stream )
+{
+	size_t written = fwrite( ptr, size, nmemb, ( FILE * )stream );
+	return written;
+}
+
+int progress_func( void* ptr, double totdl, double cdl, double totup, double cup )
+{
+	if( totdl <= 0.0 )
+		return 0;
+
+	double percentdown = ( cdl / totdl ) * 100;
+
+	static int ctr = 0;
+	static double prevpercent = 0;
+
+	if( percentdown - prevpercent > 0.07 ) {
+
+		if( 100.00 - percentdown <= 0.4 )
+			percentdown = 100.00;
+		std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
+
+		if( ctr != 0 ) {
+			for( int i = 0; i < ( int )percent.size(); ++i ) {
+				std::cout << "\b \b";
+				std::cout.flush();
+			}
+		}
+		std::cout << CYAN << percent << RESET;
+		std::cout.flush();
+	}
+
+	prevpercent = percentdown;
+	ctr++;
+
+	return 0;
 }

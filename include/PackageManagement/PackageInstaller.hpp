@@ -17,4 +17,6 @@ std::string GetTarOptions( const std::string & filename );
 
 bool CreateArchiveDir( const Package & pkg );
 
+std::string GetArchiveDir( const Package & pkg );
+
 #endif // PACKAGEINSTALLER_HPP

@@ -6,6 +6,7 @@
 #include <dirent.h>
 
 #include "../include/ColorDefs.hpp"
+#include "../include/UTFChars.hpp"
 #include "../include/Paths.hpp"
 #include "../include/PackageManagement/PackageData.hpp"
 #include "../include/PackageManagement/PackageConfig.hpp"
@@ -40,18 +41,42 @@ int PackageManager::InstallPackage( std::string package )
 {
 	Package pkg;
 
-	if( !PackageExists( package, pkg ) )
+	std::cout << YELLOW << "Checking package exists ... " << RESET;
+	if( !PackageExists( package, pkg ) ) {
+		std::cout << RED << CROSS << std::endl;
 		return 1;
+	}
+	std::cout << GREEN << TICK << std::endl;
 
-	if( IsInstalled( package ) )
+	std::cout << YELLOW << "Checking already installed ... " << RESET;
+	bool res = IsInstalled( package );
+	std::cout << GREEN << TICK << std::endl;
+	if( res ) {
 		return 0;
+	}
 
-	if( !FetchPackage( pkg ) )
+	std::cout << YELLOW << "Fetching package ... " << RESET;
+	std::cout.flush();
+	if( !FetchPackage( pkg ) ) {
+		std::cout << RED << CROSS << std::endl;
 		return 1;
+	}
+	std::cout << " " << GREEN << TICK << std::endl;
 
-	if( !InstallArchive( pkg ) )
+	std::cout << YELLOW << "Installing ... " << RESET;
+	if( !InstallArchive( pkg ) ) {
+		std::cout << RED << CROSS << std::endl;
 		return 1;
-	
+	}
+	std::cout << GREEN << TICK << std::endl;
+
+	std::fstream file;
+	file.open( INSTALLED_PKGS, std::ios::app );
+
+	file << package << std::endl;
+
+	file.close();
+
 	return 0;
 }
 

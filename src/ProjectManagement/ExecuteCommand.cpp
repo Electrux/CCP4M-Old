@@ -69,10 +69,10 @@ int ExecuteAllCommands( std::vector< CCData > & commands, int count )
 					break;
 				}
 			}
-
-			if( cancel )
-				break;
 		}
+
+		if( cancel )
+			break;
 	}
 
 	for( auto & res : results )
