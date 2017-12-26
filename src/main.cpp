@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../include/CommonFuncs.hpp"
 #include "../include/ProjectManager.hpp"
+#include "../include/PackageManager.hpp"
 
 void ShowMainHelp( std::vector< std::string > & args );
 
@@ -17,7 +18,8 @@ int main( int argc, char ** argv )
 		return HandleProject( args );
 	}
 	else if( args[ 1 ] == "pkg" ) {
-//		return ManagePackage( args );
+		PackageManager pkgmgr( args );
+		return pkgmgr.HandleCommand();
 	}
 	else if( args[ 1 ] == "help" ) {
 		ShowMainHelp( args );

@@ -12,12 +12,12 @@
 
 #include "../../include/ProjectManagement/FSFuncs.hpp"
 
-void SetFolderPaths( std::string &directory,
-		     const std::string &projectname,
-		     std::string &projfolder,
-		     std::string &srcfolder,
-		     std::string &includefolder,
-		     std::string &buildfolder )
+void SetFolderPaths( std::string & directory,
+		     const std::string & projectname,
+		     std::string & projfolder,
+		     std::string & srcfolder,
+		     std::string & includefolder,
+		     std::string & buildfolder )
 {
 	// Incase the dirname given by user does not contain '/' at the end...
 	directory = ( *(directory.end() - 1) == '/' ) ? directory : directory + "/";
@@ -31,7 +31,7 @@ void SetFolderPaths( std::string &directory,
 }
 
 // Can create directory in directory B)
-int CreateDir( const std::string &dir )
+int CreateDir( const std::string & dir )
 {
 	struct stat info;
 
@@ -74,8 +74,8 @@ int CreateDir( const std::string &dir )
 	return retval;
 }
 
-void CreateFileWithContents( const std::string &filename,
-			     const std::string &contents )
+void CreateFileWithContents( const std::string & filename,
+			     const std::string & contents )
 {
 	std::cout << "Creating file: " << filename << "\n";
 

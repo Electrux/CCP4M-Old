@@ -12,4 +12,6 @@ std::string GetStringBetweenQuotes( std::string & str );
 
 std::string GetStringTillLastSlash( std::string & str );
 
+void StringToLower( std::string & str );
+
 #endif //COMMONFUNCS_HPP

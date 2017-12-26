@@ -35,9 +35,8 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 	parser.SetDataString( "Core", "OtherSrc", "" );
 
 	parser.CreateSection( "Deps" );
-	for( auto lib : data.deps ) {
+	for( auto lib : data.deps )
 		parser.SetDataString( "Deps", lib, GetLibraryFlags( lib ) );
-	}
 
 	std::cout << "Creating file: " << project_dir + "/ccp4m.ini\n";
 	parser.SaveToFile( project_dir + "/ccp4m.ini" );

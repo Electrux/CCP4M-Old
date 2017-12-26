@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cctype>
 
 std::vector< std::string > ToVector( int argc, char ** argv )
 {
@@ -74,4 +75,10 @@ std::string GetStringTillLastSlash( std::string & str )
 		std::reverse( temp.begin(), temp.end() );
 
 	return temp;
+}
+
+void StringToLower( std::string & str )
+{
+	std::transform( str.begin(), str.end(), str.begin(),
+			[]( char c ) { return std::tolower( c ); } );
 }

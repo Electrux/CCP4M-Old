@@ -41,6 +41,8 @@ int ExecuteAllCommands( std::vector< CCData > & commands, int count )
 
 	int ctr = 0;
 
+	bool cancel = false;
+
 	size_t cores = std::thread::hardware_concurrency() / 2;
 
 	for( int i = 0; i < ( int )commands.size(); ++i ) {
@@ -62,14 +64,24 @@ int ExecuteAllCommands( std::vector< CCData > & commands, int count )
 
 				ctr++;
 
-				if( retval != 0 )
+				if( retval != 0 ) {
+					cancel = true;
 					break;
+				}
 			}
+
+			if( cancel )
+				break;
 		}
 	}
 
 	for( auto & res : results )
 		res.get();
+
+	if( cancel ) {
+		std::cout << RED << "Error: Building failed. Cancelled building."
+			<< RESET << std::endl;
+	}
 
 	return retval;
 }
