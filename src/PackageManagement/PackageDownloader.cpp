@@ -59,6 +59,8 @@ bool FetchPackage( const Package & pkg )
 
 	MoveOutputCursorBack( prevpercentsize );
 
+	prevpercentsize = 0;
+
 	return !( bool )( int )ret;
 }
 

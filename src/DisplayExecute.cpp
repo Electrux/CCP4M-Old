@@ -35,5 +35,7 @@ int DispExecute( std::string cmd )
 
 	MoveOutputCursorBack( prevdisp );
 
+	prevdisp = 0;
+
 	return pclose( pipe );
 }
