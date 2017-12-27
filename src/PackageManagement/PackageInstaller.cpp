@@ -23,6 +23,10 @@ bool InstallArchive( const Package & pkg )
 
 	bool useframework = !copyfw.empty();
 
+#ifndef __APPLE__
+	useframework = false;
+#endif
+
 	if( !CheckNecessaryPermissions( pkg, useframework ) ) {
 		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
 			<< RESET << std::endl;
@@ -78,12 +82,12 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 {
 	int ret = 0;
 
-	ret |= std::system( ( "touch " + pkg.incdir + "/pkgtest" ).c_str() );
-	ret |= std::system( ( "touch " + pkg.libdir + "/pkgtest" ).c_str() );
-#ifdef __APPLE__
+	if( std::system( ( "touch " + pkg.incdir + "/pkgtest" ).c_str() ) != 0 )
+		return false;
+	if( std::system( ( "touch " + pkg.libdir + "/pkgtest" ).c_str() ) != 0 )
+		return false;
 	if( framework_exists )
-		ret |= std::system( "touch /Library/Frameworks/pkgtest" );
-#endif
+		ret = std::system( "touch /Library/Frameworks/pkgtest" );
 	return !( bool )ret;
 }
 

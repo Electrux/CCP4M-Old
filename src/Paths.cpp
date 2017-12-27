@@ -1,11 +1,31 @@
 #include <string>
 #include <cstdlib>
+#include <unistd.h>
 
 #include "../include/Paths.hpp"
 
-std::string PACKAGE_DIR = GetEnvVar( "HOME" ) + "/.ccp4mpkgs/";
+std::string PACKAGE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
 std::string INSTALLED_PKGS = PACKAGE_DIR + "installed_pkgs.dat";
 std::string PACKAGE_TMP = PACKAGE_DIR + "tmp/";
+
+std::string GetHomeDir()
+{
+	std::string homedir;
+
+	if( getuid() == 0) {
+#ifdef __linux__
+		homedir += "/home/";
+#elif __APPLE__
+		homedir += "/Users/";
+#endif
+		homedir += GetEnvVar( "SUDO_USER" );
+	}
+	else {
+		homedir = GetEnvVar( "HOME" );
+	}
+
+	return homedir;
+}
 
 std::string GetEnvVar( std::string key )
 {
