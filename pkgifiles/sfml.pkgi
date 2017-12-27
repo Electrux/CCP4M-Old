@@ -1,7 +1,7 @@
 [Core]
 
 Name = sfml
-Description = lol
+Description = "SFML multi purpose multimedia Library"
 Lang = cpp
 
 URL = http://mirror3.sfml-dev.org/files/
