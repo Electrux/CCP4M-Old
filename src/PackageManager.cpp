@@ -101,8 +101,22 @@ int PackageManager::InstallPackage( std::string package )
 			std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
 			return 1;
 		}
-		std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
 	}
+
+	std::cout << YELLOW << "Removing temporary archive directories ... " << RESET;
+
+	std::string rmcmd = "rm -rf " + GetArchiveDir( pkg );
+
+	if( std::system( rmcmd.c_str() ) != 0 ) {
+		std::cout << RED << CROSS << RESET << std::endl;
+		std::cout << RED << "Error: Unable to remove temporary archive... Continuing..."
+			<< RESET << std::endl;
+	}
+	else {
+		std::cout << GREEN << TICK << std::endl;
+	}
+
+	std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
 
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::app );

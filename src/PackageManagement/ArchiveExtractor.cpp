@@ -39,16 +39,6 @@ bool ExtractArchive( const Package & pkg )
 
 	std::cout << GREEN << TICK << std::endl;
 
-	std::cout << YELLOW << "Removing temporary archive... " << RESET;
-
-	cmd = "rm -rf " + archive;
-
-	if( std::system( cmd.c_str() ) != 0 ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error: Unable to remove temporary archive... Continuing..."
-			<< RESET << std::endl;
-	}
-
 	return true;
 }
 
