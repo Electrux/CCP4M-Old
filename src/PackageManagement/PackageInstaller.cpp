@@ -69,7 +69,7 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::string & 
 	if( DirExists( incdir ) )
 		include = "cp -r " + incdir + "/* " + pkg.incdir;
 	if( DirExists( libdir ) )
-		lib = "cp -r " + libdir + "/* " + pkg.libdir;
+		lib = "cp -r " + libdir + "/*.*l* " + pkg.libdir;
 #ifdef __APPLE__
 	if( DirExists( fwdir ) )
 		framework = "cp -r " + fwdir + "/* /Library/Frameworks/";

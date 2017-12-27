@@ -1,17 +1,21 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <array>
 #include <memory>
 #include <cstdio>
 #include <algorithm>
 
+#include "../include/Paths.hpp"
 #include "../include/DisplayFuncs.hpp"
 
 #include "../include/DisplayExecute.hpp"
 
-int DispExecute( std::string cmd )
+int DispExecute( std::string cmd, std::string & err )
 {
 	std::array< char, 1024 > opline;
+
+	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
 	FILE * pipe = popen( cmd.c_str(), "r" );
 
@@ -38,6 +42,19 @@ int DispExecute( std::string cmd )
 	MoveOutputCursorBack( prevdisp );
 
 	prevdisp = 0;
+
+	err = "";
+
+	std::fstream errfile;
+	errfile.open( TMP_FILE, std::ios::in );
+	if( errfile ) {
+		std::string line;
+		while( std::getline( errfile, line ) )
+			err += line;
+	}
+	errfile.close();
+
+	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
 }

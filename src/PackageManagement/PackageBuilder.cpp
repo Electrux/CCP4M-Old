@@ -52,12 +52,16 @@ bool BuildDirectory( const Package & pkg )
 	std::cout.flush();
 
 	int res;
+	std::string errors;
 
-	res = DispExecute( create );
+	res = DispExecute( create, errors );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << YELLOW << "Unable to create makefile! " << RED << CROSS << RESET << std::endl;
+		if( !errors.empty() ) {
+			std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+		}
 		ChangeWorkingDir( cwd );
 		return false;
 	}
@@ -68,11 +72,14 @@ bool BuildDirectory( const Package & pkg )
 	std::cout << YELLOW << "Using make ... " << RESET;
 	std::cout.flush();
 
-	res = DispExecute( make + " 2>&1 | grep -v \"/bin\"" );
+	res = DispExecute( make, errors );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << YELLOW << "Unable to make the package! " << RED << CROSS << RESET << std::endl;
+		if( !errors.empty() ) {
+			std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+		}
 		ChangeWorkingDir( cwd );
 		return false;
 	}
@@ -84,11 +91,14 @@ bool BuildDirectory( const Package & pkg )
 		std::cout << YELLOW << "Installing using make install ... " << RESET;
 		std::cout.flush();
 
-		res = DispExecute( install );
+		res = DispExecute( install, errors );
 
 		if( res != 0 ) {
 			std::cout << RED << CROSS << std::endl;
 			std::cout << YELLOW << "Unable to install using make install! " << RED << CROSS << RESET << std::endl;
+			if( !errors.empty() ) {
+				std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+			}
 			ChangeWorkingDir( cwd );
 			return false;
 		}
