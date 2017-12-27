@@ -22,11 +22,15 @@ public:
 
 	std::string GetDataString( std::string section, std::string key );
 
+	std::string GetLibraryLang( std::string lib );
+
 	std::string GetIncludeFlags( std::string lib );
 
 	std::string GetLibraryFlags( std::string lib );
 
 	std::string GetLibraryVersion( std::string lib );
+
+	bool IsCompatible( std::string projlang, std::string liblang );
 };
 
 #endif // CONFIGMGR_HPP

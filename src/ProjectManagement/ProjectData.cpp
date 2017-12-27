@@ -14,6 +14,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 	bool founddir = false;
 	bool founddeps = false;
 	bool foundname = false;
+	bool foundlang = false;
 
 	for( auto arg = args.begin() + 3; arg != args.end(); ++arg ) {
 
@@ -46,6 +47,11 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 					break;
 				}
 			}
+			else if( arg->find( "lang" ) != std::string::npos && !foundlang ) {
+				++arg;
+				data.lang = *arg;
+				foundlang = true;
+			}
 			else {
 				std::cout << "Error: Invalid flag or repetition occurred."
 					  << " Please use:\n"
@@ -76,6 +82,9 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 
 	if( !founddir )
 		data.dir = ".";
+
+	if( !foundlang )
+		data.lang = "cpp";
 
 	if( invalidformat ) {
 

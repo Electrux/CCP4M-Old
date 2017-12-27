@@ -2,6 +2,8 @@
 
 Name = sfml
 Description = lol
+Lang = cpp
+
 URL = http://mirror3.sfml-dev.org/files/
 
 LinuxFile = SFML-2.4.2-linux-gcc-64-bit.tar.gz

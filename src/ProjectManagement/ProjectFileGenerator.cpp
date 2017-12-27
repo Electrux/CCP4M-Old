@@ -34,7 +34,10 @@ int GenerateProjectFiles( ProjectData & data )
 
 	std::cout << std::endl;
 
-	CreateFileWithContents( proj_src + "/main.cpp", DEFAULTMAIN );
+	if( data.lang == "c" )
+		CreateFileWithContents( proj_src + "/main.c", DEFAULTMAINC );
+	else
+		CreateFileWithContents( proj_src + "/main.cpp", DEFAULTMAINCPP );
 
 	ConfigMgr config;
 

@@ -7,12 +7,21 @@
 struct ProjectData
 {
 	std::string name;
+	std::string lang;
 	std::vector< std::string > deps;
 	std::string dir;
 };
 
-const std::string DEFAULTMAIN =
+const std::string DEFAULTMAINCPP =
 	"#include <iostream>\n"
+	"\n"
+	"int main()\n"
+	"{\n"
+	"\treturn 0;\n"
+	"}\n";
+
+const std::string DEFAULTMAINC =
+	"#include <stdio.h>\n"
 	"\n"
 	"int main()\n"
 	"{\n"

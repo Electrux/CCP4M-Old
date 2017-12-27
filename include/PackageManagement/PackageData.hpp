@@ -9,6 +9,7 @@ struct Package
 	std::string name;
 	std::string url;
 	std::string file;
+	std::string lang;
 	std::string version;
 	std::string description;
 

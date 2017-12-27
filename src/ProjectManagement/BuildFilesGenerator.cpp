@@ -30,6 +30,9 @@ int GenerateBuildFiles()
 	if( CreateBuildDirectories( othersrc ) != 0 )
 		return 1;
 
+	std::string clangstr = data.lang == "c" ? "clang" : "clang++";
+	std::string langstr = data.lang == "c" ? "C" : "CXX";
+
 	std::string standard = config.GetDataString( "Core", "Std" );
 
 	int filecount = othersrc.size() + ( int )!mainsrc.empty();
@@ -42,7 +45,7 @@ int GenerateBuildFiles()
 	for( auto othersource : othersrc ) {
 
 		std::string compilestr =
-			"clang++ -c " + incdirs + flags + "-std=" + standard
+			clangstr + " -c " + incdirs + flags + "-std=" + standard
 			+ " -o build/buildfiles/" + othersource
 			+ ".o src/" + othersource;
 
@@ -54,7 +57,7 @@ int GenerateBuildFiles()
 			commands.push_back( { othersource, compilestr } );
 	}
 
-	if( ExecuteAllCommands( commands, filecount ) != 0 )
+	if( ExecuteAllCommands( commands, langstr, filecount ) != 0 )
 		return 1;
 
 	if( !mainsrc.empty() ) {
@@ -67,7 +70,7 @@ int GenerateBuildFiles()
 		}
 		else {
 			std::string compilestr =
-				"clang++ -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
+				clangstr + " -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
 				+ data.name;
 
 			for( auto othersource : othersrc )		
@@ -76,7 +79,7 @@ int GenerateBuildFiles()
 			compilestr += " src/" + mainsrc;
 
 			std::cout << "\n[100%]\t"
-				  << BOLD_YELLOW << "Building and Linking CXX executable: "
+				  << BOLD_YELLOW << "Building and Linking " + langstr + " executable: "
 				  << BOLD_GREEN << "build/" << data.name << RESET << " ...";
 
 			int res = ExecuteCommand( compilestr );
@@ -154,6 +157,8 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 	data.name = config.GetDataString( "Core", "Name" );
 	data.deps = DelimStringToVector( config.GetDataString( "Core", "Libs" ) );
 	data.dir = ".";
+
+	data.lang = config.GetDataString( "Core", "Lang" );
 
 	mainsrc = config.GetDataString( "Core", "MainSrc" );
 	std::string _othersrc = config.GetDataString( "Core", "OtherSrc" );

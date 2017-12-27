@@ -8,8 +8,8 @@
 
 int ExecuteCommand( std::string command );
 
-void DisplayBuildResults( CCData & commands, int res, int percent );
+void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, int percent );
 
-int ExecuteAllCommands( std::vector< CCData > & commands, int count );
+int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & langstr, int count );
 
 #endif // EXECUTECOMMAND_HPP

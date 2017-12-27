@@ -18,10 +18,10 @@ int ExecuteCommand( std::string command )
 	return WEXITSTATUS( i );
 }
 
-void DisplayBuildResults( CCData & commands, int res, int percent )
+void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, int percent )
 {
 	std::cout << "[" << percent << "%]\t"
-		  << YELLOW << "Building CXX object: "
+		  << YELLOW << "Building " + langstr + " object: "
 		  << CYAN << "build/buildfiles/" << commands.othersource << ".o"
 		  << RESET << " ...";
 
@@ -31,7 +31,7 @@ void DisplayBuildResults( CCData & commands, int res, int percent )
 		std::cout << " " << RED << CROSS << RESET << "\n";
 }
 
-int ExecuteAllCommands( std::vector< CCData > & commands, int count )
+int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & langstr, int count )
 {
 	int retval = 0;
 
@@ -60,7 +60,7 @@ int ExecuteAllCommands( std::vector< CCData > & commands, int count )
 				retval |= it->get();
 				it = results.erase( results.begin() );
 
-				DisplayBuildResults( commands[ ctr ], retval, ( int )percent );
+				DisplayBuildResults( commands[ ctr ], langstr, retval, ( int )percent );
 
 				ctr++;
 

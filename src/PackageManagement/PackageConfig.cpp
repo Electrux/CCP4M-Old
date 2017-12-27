@@ -31,6 +31,7 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
 	parser.GetDataString( "Core", "URL", pkg.url );
+	parser.GetDataString( "Core", "Lang", pkg.lang );
 #ifdef __linux__
 	parser.GetDataString( "Core", "LinuxFile", pkg.file );
 	parser.GetDataString( "Core", "LinuxIncludeDir", pkg.incdir );

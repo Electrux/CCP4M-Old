@@ -23,6 +23,11 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 	std::string concatlibs;
 
 	for( auto lib : data.deps ) {
+		if( !IsCompatible( data.lang, GetLibraryLang( lib ) ) ) {
+			std::cout << RED << "Warning: Library: " << lib << " is written in C++, but the project is in C."
+				<< std::endl << "Skipping the library..." << RESET << std::endl;
+			continue;
+		}
 		concatlibs += lib;
 		concatlibs += ", ";
 	}
@@ -32,16 +37,22 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 		concatlibs.erase( concatlibs.end() - 1 );
 	}
 
+	std::string standard = data.lang == "cpp" ? "c++14" : "c11";
+
 	parser.CreateSection( "Core" );
 	parser.SetDataString( "Core", "Name", data.name );
+	parser.SetDataString( "Core", "Lang", data.lang );
 	parser.SetDataString( "Core", "Version", "0.1" );
 	parser.SetDataString( "Core", "Libs", concatlibs );
 	parser.SetDataString( "Core", "OtherFlags", "" );
-	parser.SetDataString( "Core", "Std", "c++14" );
-	parser.SetDataString( "Core", "MainSrc", "main.cpp" );
+	parser.SetDataString( "Core", "Std", standard );
+	parser.SetDataString( "Core", "MainSrc", "main." + data.lang );
 	parser.SetDataString( "Core", "OtherSrc", "" );
 
 	for( auto lib : data.deps ) {
+		if( !IsCompatible( data.lang, GetLibraryLang( lib ) ) )
+			continue;
+
 		parser.CreateSection( lib );
 		parser.SetDataString( lib, "IncFlags", GetIncludeFlags( lib ) );
 		parser.SetDataString( lib, "LibFlags", GetLibraryFlags( lib ) );
@@ -71,6 +82,19 @@ std::string ConfigMgr::GetDataString( std::string section, std::string key )
 	parser.GetDataString( section, key, temp );
 
 	return temp;
+}
+
+std::string ConfigMgr::GetLibraryLang( std::string lib )
+{
+	Package pkg;
+
+	if( !PackageConfig::GetPackage( lib, pkg ) ) {
+		std::cout << "Package " << lib << " does not exist!" << std::endl
+			<< "You must check library compatibility yourselves." << std::endl;
+		return "";
+	}
+
+	return pkg.lang;
 }
 
 std::string ConfigMgr::GetIncludeFlags( std::string lib )
@@ -129,4 +153,13 @@ std::string ConfigMgr::GetLibraryVersion( std::string lib )
 	}
 
 	return pkg.version;
+}
+
+bool ConfigMgr::IsCompatible( std::string projlang, std::string liblang )
+{
+	if( projlang == "c" && liblang == "cpp" ) {
+		return false;
+	}
+
+	return true;
 }
