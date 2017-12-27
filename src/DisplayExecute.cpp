@@ -23,7 +23,7 @@ int DispExecute( std::string cmd )
 		if( fgets( opline.data(), 1024, pipe ) != NULL ) {
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline.data() );
-			if( * ( op.end() - 1 ) == '\n' ) {
+			while( * ( op.end() - 1 ) == '\n' ) {
 				op.erase( op.end() - 1 );
 			}
 			std::string str = "[ " + op + " ]";
