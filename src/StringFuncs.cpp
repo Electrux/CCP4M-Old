@@ -91,20 +91,15 @@ void TrimString( std::string & str )
 	while( * str.begin() == ' ' || * str.begin() == '\n' || * str.begin() == '\t' )
 		str.erase( str.begin() );
 
-	int spc_count = 0;
-
 	for( auto it = str.begin(); it != str.end(); ) {
-		if( * it == '\t' )
+		if( * it == '\t' ) {
 			*it = ' ';
-
-		if( * it == ' ' ) {
-			if( spc_count > 1 ) {
+			++it;
+		}
+		else if( * it == ' ' ) {
+			++it;
+			while( *it == ' ' ) {
 				it = str.erase( it );
-				spc_count--;
-			}
-			else {
-				spc_count++;
-				++it;
 			}
 		}
 		else if( * it == '\r' ) {
