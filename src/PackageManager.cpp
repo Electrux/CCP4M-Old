@@ -92,7 +92,6 @@ int PackageManager::InstallPackage( std::string package )
 			std::cout << YELLOW << "Build failed! " << RED << CROSS << RESET << std::endl;
 			return 1;
 		}
-		std::cout << GREEN << TICK << std::endl;
 	}
 
 	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {

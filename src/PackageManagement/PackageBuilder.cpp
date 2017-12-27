@@ -7,6 +7,7 @@
 #include "../../include/UTFChars.hpp"
 #include "../../include/StringFuncs.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayExecute.hpp"
 
 #include "../../include/PackageManagement/PackageBuilder.hpp"
 
@@ -52,7 +53,7 @@ bool BuildDirectory( const Package & pkg )
 
 	int res;
 
-	res = std::system( create.c_str() );
+	res = DispExecute( create );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
@@ -66,7 +67,7 @@ bool BuildDirectory( const Package & pkg )
 	std::cout << YELLOW << "Using make ... " << RESET;
 	std::cout.flush();
 
-	res = std::system( make.c_str() );
+	res = DispExecute( make );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
@@ -81,7 +82,7 @@ bool BuildDirectory( const Package & pkg )
 		std::cout << YELLOW << "Installing using make install ... " << RESET;
 		std::cout.flush();
 
-		res = std::system( make.c_str() );
+		res = DispExecute( install );
 
 		if( res != 0 ) {
 			std::cout << RED << CROSS << std::endl;
