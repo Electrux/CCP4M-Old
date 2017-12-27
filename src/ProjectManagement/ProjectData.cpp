@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-#include "../../include/CommonFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectData.hpp"
 

@@ -8,6 +8,7 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
+#include "../../include/FSFuncs.hpp"
 #include "../../include/PackageManagement/PackageData.hpp"
 
 #include "../../include/PackageManagement/PackageInstaller.hpp"
@@ -78,29 +79,6 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::string & 
 #endif
 }
 
-bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
-{
-	int ret = 0;
-
-	if( std::system( ( "touch " + pkg.incdir + "/pkgtest" ).c_str() ) != 0 )
-		return false;
-	if( std::system( ( "touch " + pkg.libdir + "/pkgtest" ).c_str() ) != 0 )
-		return false;
-	if( framework_exists )
-		ret = std::system( "touch /Library/Frameworks/pkgtest" );
-	return !( bool )ret;
-}
-
-bool DirExists( const std::string & dir )
-{
-	struct stat info;
-
-	if( stat( dir.c_str(), & info ) == 0 )
-		return true;
-
-	return false;
-}
-
 bool ExtractArchive( const Package & pkg )
 {
 	std::cout << YELLOW << "Extracting downloaded archive... " << RESET;
@@ -161,38 +139,4 @@ std::string GetTarOptions( const std::string & filename )
 		return "-xf";
 
 	return "";
-}
-
-bool CreateArchiveDir( const Package & pkg )
-{
-	struct stat info;
-
-	std::string archivedir = GetArchiveDir( pkg );
-
-	if( stat( archivedir.c_str(), & info ) == 0 )
-		return true;
-	
-	int ret = mkdir( archivedir.c_str(), 0755 );
-
-	if( ret != 0 ) {
-		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
-			<< RESET << std::endl;
-		return false;
-	}
-
-	return true;
-}
-
-std::string GetArchiveDir( const Package & pkg )
-{
-	size_t loc;
-
-	loc = pkg.file.find( ".tar" );
-
-	std::string archivedir = PACKAGE_TMP;
-
-	for( size_t i = 0; i < loc; ++i )
-		archivedir += pkg.file[ i ];
-
-	return archivedir;
 }

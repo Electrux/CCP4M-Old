@@ -8,6 +8,7 @@
 #include "../include/ColorDefs.hpp"
 #include "../include/UTFChars.hpp"
 #include "../include/Paths.hpp"
+
 #include "../include/PackageManagement/PackageData.hpp"
 #include "../include/PackageManagement/PackageConfig.hpp"
 #include "../include/PackageManagement/PackageDownloader.hpp"

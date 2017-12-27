@@ -4,12 +4,12 @@
 #include <algorithm>
 #include <sys/stat.h>
 
-#include "../../include/CommonFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
+#include "../../include/FSFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectData.hpp"
-#include "../../include/ProjectManagement/FSFuncs.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
 #include "../../include/ProjectManagement/ExecuteCommand.hpp"
 #include "../../include/ProjectManagement/CompileCommandData.hpp"

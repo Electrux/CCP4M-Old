@@ -1,9 +1,9 @@
-#include "../include/CommonFuncs.hpp"
-
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <cctype>
+
+#include "../include/StringFuncs.hpp"
 
 std::vector< std::string > ToVector( int argc, char ** argv )
 {

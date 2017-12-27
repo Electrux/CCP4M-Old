@@ -4,7 +4,7 @@
 #include <dirent.h>
 
 #include "../../include/Paths.hpp"
-#include "../../include/CommonFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 

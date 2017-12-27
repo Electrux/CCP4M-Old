@@ -7,10 +7,13 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "../../include/ColorDefs.hpp"
-#include "../../include/CommonFuncs.hpp"
+#include "../include/ColorDefs.hpp"
+#include "../include/StringFuncs.hpp"
+#include "../include/Paths.hpp"
 
-#include "../../include/ProjectManagement/FSFuncs.hpp"
+#include "../include/PackageManagement/PackageData.hpp"
+
+#include "../include/FSFuncs.hpp"
 
 void SetFolderPaths( std::string & directory,
 		     const std::string & projectname,
@@ -30,12 +33,20 @@ void SetFolderPaths( std::string & directory,
 	buildfolder     = projfolder + "/build";
 }
 
-// Can create directory in directory B)
-int CreateDir( const std::string & dir )
+bool DirExists( const std::string & dir )
 {
 	struct stat info;
 
 	if( stat( dir.c_str(), & info ) == 0 )
+		return true;
+
+	return false;
+}
+
+// Can create directory in directory B)
+int CreateDir( const std::string & dir )
+{
+	if( DirExists( dir ) )
 		return 0;
 
 	std::vector< std::string > dirs;
@@ -65,7 +76,7 @@ int CreateDir( const std::string & dir )
 
 		finaldir += dirs[ i ];
 
-		if( stat( finaldir.c_str(), & info ) != 0 )
+		if( !DirExists( finaldir ) )
 			retval |= mkdir( finaldir.c_str(), 0755 );
 
 		finaldir += "/";
@@ -176,4 +187,51 @@ int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recu
 	}
 
 	return 0;
+}
+
+bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
+{
+	int ret = 0;
+
+	if( std::system( ( "touch " + pkg.incdir + "/pkgtest" ).c_str() ) != 0 )
+		return false;
+	if( std::system( ( "touch " + pkg.libdir + "/pkgtest" ).c_str() ) != 0 )
+		return false;
+	if( framework_exists )
+		ret = std::system( "touch /Library/Frameworks/pkgtest" );
+	return !( bool )ret;
+}
+
+bool CreateArchiveDir( const Package & pkg )
+{
+	struct stat info;
+
+	std::string archivedir = GetArchiveDir( pkg );
+
+	if( stat( archivedir.c_str(), & info ) == 0 )
+		return true;
+	
+	int ret = mkdir( archivedir.c_str(), 0755 );
+
+	if( ret != 0 ) {
+		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
+			<< RESET << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+std::string GetArchiveDir( const Package & pkg )
+{
+	size_t loc;
+
+	loc = pkg.file.find( ".tar" );
+
+	std::string archivedir = PACKAGE_TMP;
+
+	for( size_t i = 0; i < loc; ++i )
+		archivedir += pkg.file[ i ];
+
+	return archivedir;
 }

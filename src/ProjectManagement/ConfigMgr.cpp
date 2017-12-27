@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../include/ColorDefs.hpp"
-#include "../../include/CommonFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 
