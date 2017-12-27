@@ -68,7 +68,7 @@ int PackageManager::InstallPackage( std::string package )
 		return 0;
 	}
 
-	std::cout << YELLOW << "Fetching " << CYAN << pkgtypelower << YELLOW << " package ... " << RESET;
+	std::cout << YELLOW << "Fetching " << pkgtypelower << " package ... " << RESET;
 	std::cout.flush();
 	if( !FetchPackage( pkg ) ) {
 		std::cout << " " << RED << CROSS << RESET << std::endl;
@@ -84,8 +84,8 @@ int PackageManager::InstallPackage( std::string package )
 	}
 
 	if( pkg.type == "Source" ) {
-		std::cout << YELLOW << "Building " << CYAN << "source"
-			<< YELLOW << " package ... " << GREEN << TICK << RESET << std::endl;
+		std::cout << YELLOW << "Building from source"
+			<< " package ... " << GREEN << TICK << RESET << std::endl;
 		std::cout.flush();
 		if( !BuildDirectory( pkg ) ) {
 			std::cout << YELLOW << "Build failed! " << RED << CROSS << RESET << std::endl;
@@ -94,8 +94,8 @@ int PackageManager::InstallPackage( std::string package )
 	}
 
 	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {
-		std::cout << YELLOW << "Starting " << CYAN << pkgtypelower
-			<< YELLOW << " package installation ... " << GREEN << TICK << RESET << std::endl;
+		std::cout << YELLOW << "Starting " << pkgtypelower
+			<< " package installation ... " << GREEN << TICK << RESET << std::endl;
 		if( !InstallDirectory( pkg ) ) {
 			std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
 			return 1;
