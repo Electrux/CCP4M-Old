@@ -4,6 +4,7 @@
 #include <cstdio>
 
 #include "../../include/ColorDefs.hpp"
+#include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/DisplayFuncs.hpp"
 
@@ -52,6 +53,7 @@ bool FetchPackage( const Package & pkg )
 	hnd = NULL;
 
 	if( ( int )ret != 0 ) {
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error: Failed to download package: " << YELLOW << pkg.name
 			<< RESET << "\n" << MAGENTA << "LibCurl Error: "
 			<< BLUE << curl_easy_strerror( ret ) << RESET << std::endl;
@@ -60,6 +62,8 @@ bool FetchPackage( const Package & pkg )
 	MoveOutputCursorBack( prevpercentsize );
 
 	prevpercentsize = 0;
+
+	std::cout << GREEN << TICK << std::endl;
 
 	return !( bool )( int )ret;
 }

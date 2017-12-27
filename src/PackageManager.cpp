@@ -71,10 +71,8 @@ int PackageManager::InstallPackage( std::string package )
 	std::cout << YELLOW << "Fetching " << pkgtypelower << " package ... " << RESET;
 	std::cout.flush();
 	if( !FetchPackage( pkg ) ) {
-		std::cout << " " << RED << CROSS << RESET << std::endl;
 		return 1;
 	}
-	std::cout << " " << GREEN << TICK << RESET << std::endl;
 
 	std::cout << YELLOW << "Extracting downloaded archive... " << RESET;
 	std::cout.flush();

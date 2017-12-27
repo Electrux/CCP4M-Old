@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <cstdio>
+#include <algorithm>
 
 #include "../include/DisplayFuncs.hpp"
 
@@ -26,6 +27,7 @@ int DispExecute( std::string cmd )
 			while( * ( op.end() - 1 ) == '\n' ) {
 				op.erase( op.end() - 1 );
 			}
+			std::replace( op.begin(), op.end(), '\n', '-' );
 			std::string str = "[ " + op + " ]";
 			std::cout << str;
 			std::cout.flush();
