@@ -28,9 +28,12 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		if( fgets( opline.data(), 1024, pipe ) != NULL && show_output ) {
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline.data() );
+
+			std::replace( op.begin(), op.end(), '\t', ' ' );
 			while( * ( op.end() - 1 ) == '\n' ) {
 				op.erase( op.end() - 1 );
 			}
+
 			std::string str = "[ " + op + " ]";
 			std::cout << str;
 			std::cout.flush();
