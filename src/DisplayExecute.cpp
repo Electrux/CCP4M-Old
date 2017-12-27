@@ -54,6 +54,8 @@ int DispExecute( std::string cmd, std::string & err )
 	}
 	errfile.close();
 
+	std::cout << "Errors: " << err << std::endl;
+
 	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
