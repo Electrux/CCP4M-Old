@@ -68,7 +68,7 @@ bool BuildDirectory( const Package & pkg )
 	std::cout << YELLOW << "Using make ... " << RESET;
 	std::cout.flush();
 
-	res = DispExecute( make );
+	res = DispExecute( make + " 2>&1 | grep -v \"/bin\"" );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
