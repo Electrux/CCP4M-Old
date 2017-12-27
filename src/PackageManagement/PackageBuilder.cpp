@@ -16,6 +16,8 @@ bool BuildDirectory( const Package & pkg )
 	std::vector< std::string > buildcmds =
 		DelimStringToVector( pkg.buildcmds );
 
+	std::cout << "Build CMDs: " << pkg.buildcmds << std::endl;
+
 	if( buildcmds.empty() ) {
 		std::cout << YELLOW << "Nothing to build! Exiting!" << RED << CROSS << std::endl;
 		return false;
