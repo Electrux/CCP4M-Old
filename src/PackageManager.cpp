@@ -8,10 +8,14 @@
 #include "../include/ColorDefs.hpp"
 #include "../include/UTFChars.hpp"
 #include "../include/Paths.hpp"
+#include "../include/StringFuncs.hpp"
+#include "../include/FSFuncs.hpp"
 
 #include "../include/PackageManagement/PackageData.hpp"
 #include "../include/PackageManagement/PackageConfig.hpp"
+#include "../include/PackageManagement/ArchiveExtractor.hpp"
 #include "../include/PackageManagement/PackageDownloader.hpp"
+#include "../include/PackageManagement/PackageBuilder.hpp"
 #include "../include/PackageManagement/PackageInstaller.hpp"
 
 #include "../include/PackageManager.hpp"
@@ -45,9 +49,15 @@ int PackageManager::InstallPackage( std::string package )
 	std::cout << YELLOW << "Checking package exists ... " << RESET;
 	if( !PackageExists( package, pkg ) ) {
 		std::cout << RED << CROSS << RESET << std::endl;
+		std::cout << "Error: Package does not exist!" << std::endl
+			<< "Perhaps try to update package list using:" << std::endl
+			<< "\n\t" << args[ 0 ] << " pkg update\n" << std::endl;
 		return 1;
 	}
 	std::cout << GREEN << TICK << RESET << std::endl;
+
+	std::string pkgtypelower = pkg.type;
+	StringToLower( pkgtypelower );
 
 	std::cout << YELLOW << "Checking already installed ... " << RESET;
 	bool res = IsInstalled( package );
@@ -58,7 +68,7 @@ int PackageManager::InstallPackage( std::string package )
 		return 0;
 	}
 
-	std::cout << YELLOW << "Fetching package ... " << RESET;
+	std::cout << YELLOW << "Fetching " << CYAN << pkgtypelower << YELLOW << " package ... " << RESET;
 	std::cout.flush();
 	if( !FetchPackage( pkg ) ) {
 		std::cout << " " << RED << CROSS << RESET << std::endl;
@@ -66,12 +76,34 @@ int PackageManager::InstallPackage( std::string package )
 	}
 	std::cout << " " << GREEN << TICK << RESET << std::endl;
 
-	std::cout << YELLOW << "Starting installation ... " << GREEN << TICK << RESET << std::endl;
-	if( !InstallArchive( pkg ) ) {
-		std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
+	std::cout << YELLOW << "Extracting downloaded archive... " << RESET;
+	std::cout.flush();
+	if( !ExtractArchive( pkg ) ) {
+		std::cout << YELLOW << "Unable to extract archive! " << RED << CROSS << std::endl;
 		return 1;
 	}
-	std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
+	std::cout << GREEN << TICK << std::endl;
+
+	if( pkg.type == "Source" ) {
+		std::cout << YELLOW << "Starting " << CYAN << "source"
+			<< YELLOW << " package build ... " << GREEN << TICK << RESET << std::endl;
+		std::cout.flush();
+		if( !BuildDirectory( pkg ) ) {
+			std::cout << YELLOW << "Build failed! " << RED << CROSS << RESET << std::endl;
+			return 1;
+		}
+		std::cout << GREEN << TICK << std::endl;
+	}
+
+	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {
+		std::cout << YELLOW << "Starting " << CYAN << pkgtypelower
+			<< YELLOW << " package installation ... " << GREEN << TICK << RESET << std::endl;
+		if( !InstallDirectory( pkg ) ) {
+			std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
+			return 1;
+		}
+		std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
+	}
 
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::app );
@@ -95,14 +127,7 @@ int PackageManager::InstallPackage( std::string package )
 
 bool PackageManager::PackageExists( std::string package, Package & pkg )
 {
-	if( !PackageConfig::GetPackage( package, pkg ) ) {
-		std::cerr << "Error: Package does not exist!" << std::endl
-			<< "Perhaps try to update package list using:" << std::endl
-			<< "\n\t" << args[ 0 ] << " pkg update\n" << std::endl;
-		return false;
-	}
-
-	return true;
+	return PackageConfig::GetPackage( package, pkg );
 }
 
 bool PackageManager::IsInstalled( std::string package )

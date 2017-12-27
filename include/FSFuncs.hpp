@@ -31,4 +31,8 @@ bool CreateArchiveDir( const Package & pkg );
 
 std::string GetArchiveDir( const Package & pkg );
 
+bool ChangeWorkingDir( std::string dir );
+
+std::string GetWorkingDir();
+
 #endif // FSFUNCS_HPP

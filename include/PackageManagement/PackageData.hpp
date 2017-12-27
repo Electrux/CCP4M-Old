@@ -7,17 +7,20 @@
 struct Package
 {
 	std::string name;
-	std::string url;
-	std::string file;
-	std::string lang;
-	std::string version;
 	std::string description;
-
+	std::string lang;
+	std::string type;
+	std::string version;
 	std::vector< std::string > deplist;
 
 	std::string incdir;
 	std::string libdir;
 	std::string libflags;
+
+	std::string url;
+	std::string file;
+
+	std::string buildcmds;
 };
 
 #endif // PACKAGEDATA_HPP

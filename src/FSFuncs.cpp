@@ -3,11 +3,13 @@
 #include <vector>
 #include <fstream>
 #include <cstring>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
 
 #include "../include/ColorDefs.hpp"
+#include "../include/UTFChars.hpp"
 #include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
 
@@ -234,4 +236,20 @@ std::string GetArchiveDir( const Package & pkg )
 		archivedir += pkg.file[ i ];
 
 	return archivedir;
+}
+
+bool ChangeWorkingDir( std::string dir )
+{
+	return chdir( dir.c_str() ) == 0;
+}
+
+std::string GetWorkingDir()
+{
+	char cwd[ 1024 ];
+
+	if( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
+		return cwd;
+	}
+
+	return "";
 }
