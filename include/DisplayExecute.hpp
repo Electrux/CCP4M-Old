@@ -3,6 +3,6 @@
 
 #include <string>
 
-int DispExecute( std::string cmd, std::string & err );
+int DispExecute( std::string cmd, std::string & err, bool show_output = true );
 
 #endif // ASYNCEXECUTE_HPP

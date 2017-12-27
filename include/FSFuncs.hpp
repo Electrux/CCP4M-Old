@@ -12,7 +12,7 @@ void SetFolderPaths( std::string & directory,
 		     std::string & includefolder,
 		     std::string & buildfolder );
 
-bool DirExists( const std::string & dir );
+bool LocExists( const std::string & location );
 
 int CreateDir( const std::string & dir );
 

@@ -11,7 +11,7 @@
 
 #include "../include/DisplayExecute.hpp"
 
-int DispExecute( std::string cmd, std::string & err )
+int DispExecute( std::string cmd, std::string & err, bool show_output )
 {
 	std::array< char, 1024 > opline;
 
@@ -25,13 +25,12 @@ int DispExecute( std::string cmd, std::string & err )
 		return false;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline.data(), 1024, pipe ) != NULL ) {
+		if( fgets( opline.data(), 1024, pipe ) != NULL && show_output ) {
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline.data() );
 			while( * ( op.end() - 1 ) == '\n' ) {
 				op.erase( op.end() - 1 );
 			}
-			std::replace( op.begin(), op.end(), '\n', '-' );
 			std::string str = "[ " + op + " ]";
 			std::cout << str;
 			std::cout.flush();
@@ -53,8 +52,6 @@ int DispExecute( std::string cmd, std::string & err )
 			err += line;
 	}
 	errfile.close();
-
-	std::cout << "Errors: " << err << std::endl;
 
 	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 

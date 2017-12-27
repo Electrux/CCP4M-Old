@@ -12,6 +12,7 @@
 #include "../include/UTFChars.hpp"
 #include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
+#include "../include/DisplayExecute.hpp"
 
 #include "../include/PackageManagement/PackageData.hpp"
 
@@ -35,11 +36,11 @@ void SetFolderPaths( std::string & directory,
 	buildfolder     = projfolder + "/build";
 }
 
-bool DirExists( const std::string & dir )
+bool LocExists( const std::string & location )
 {
 	struct stat info;
 
-	if( stat( dir.c_str(), & info ) == 0 )
+	if( stat( location.c_str(), & info ) == 0 )
 		return true;
 
 	return false;
@@ -48,7 +49,7 @@ bool DirExists( const std::string & dir )
 // Can create directory in directory B)
 int CreateDir( const std::string & dir )
 {
-	if( DirExists( dir ) )
+	if( LocExists( dir ) )
 		return 0;
 
 	std::vector< std::string > dirs;
@@ -78,7 +79,7 @@ int CreateDir( const std::string & dir )
 
 		finaldir += dirs[ i ];
 
-		if( !DirExists( finaldir ) )
+		if( !LocExists( finaldir ) )
 			retval |= mkdir( finaldir.c_str(), 0755 );
 
 		finaldir += "/";
@@ -195,12 +196,21 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 {
 	int ret = 0;
 
-	if( std::system( ( "touch " + pkg.incdir + "/pkgtest" ).c_str() ) != 0 )
+	std::string dispexectemp;
+
+	if( DispExecute( "touch " + pkg.incdir + "/pkgtest", dispexectemp, false ) != 0 )
 		return false;
-	if( std::system( ( "touch " + pkg.libdir + "/pkgtest" ).c_str() ) != 0 )
+	DispExecute( "rm -rf " + pkg.incdir + "/pkgtest", dispexectemp, false );
+
+	if( DispExecute( "touch " + pkg.libdir + "/pkgtest", dispexectemp, false ) != 0 )
 		return false;
-	if( framework_exists )
-		ret = std::system( "touch /Library/Frameworks/pkgtest" );
+	DispExecute( "rm -rf " + pkg.libdir + "/pkgtest", dispexectemp, false );
+
+	if( framework_exists ) {
+		if( DispExecute( "touch /Library/Frameworks/pkgtest", dispexectemp, false ) != 0 )
+			return false;
+		DispExecute( "rm -rf /Library/Frameworks/pkgtest", dispexectemp, false );
+	}
 	return !( bool )ret;
 }
 

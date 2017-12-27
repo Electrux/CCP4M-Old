@@ -6,7 +6,9 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
+#include "../../include/DisplayExecute.hpp"
 #include "../../include/DisplayFuncs.hpp"
+#include "../../include/FSFuncs.hpp"
 
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/PackageManagement/PackageConfig.hpp"
@@ -28,6 +30,16 @@ bool FetchPackage( const Package & pkg )
 		return false;
 	
 	std::FILE * file;
+
+	std::string archive = PACKAGE_TMP + pkg.file;
+
+	std::string dispexectemp;
+
+	if( LocExists( archive ) && DispExecute( "touch " + archive, dispexectemp, false ) != 0 ) {
+		std::cout << RED << CROSS << std::endl;
+		std::cout << RED << "Error: You do not have correct permissions!" << RESET << std::endl;
+		return false;
+	}
 
 	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
 	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
