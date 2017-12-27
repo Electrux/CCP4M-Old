@@ -5,6 +5,7 @@
 
 extern std::string PACKAGE_DIR;
 const std::string PACKAGE_EXT = ".pkgi";
+const std::string TMP_FILE = ".ccp4mtmp";
 
 extern std::string INSTALLED_PKGS;
 extern std::string PACKAGE_TMP;

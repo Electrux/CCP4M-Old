@@ -3,14 +3,20 @@
 #include <vector>
 #include <fstream>
 #include <cstring>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "../../include/ColorDefs.hpp"
-#include "../../include/CommonFuncs.hpp"
+#include "../include/ColorDefs.hpp"
+#include "../include/UTFChars.hpp"
+#include "../include/StringFuncs.hpp"
+#include "../include/Paths.hpp"
+#include "../include/DisplayExecute.hpp"
 
-#include "../../include/ProjectManagement/FSFuncs.hpp"
+#include "../include/PackageManagement/PackageData.hpp"
+
+#include "../include/FSFuncs.hpp"
 
 void SetFolderPaths( std::string & directory,
 		     const std::string & projectname,
@@ -30,12 +36,20 @@ void SetFolderPaths( std::string & directory,
 	buildfolder     = projfolder + "/build";
 }
 
-// Can create directory in directory B)
-int CreateDir( const std::string & dir )
+bool LocExists( const std::string & location )
 {
 	struct stat info;
 
-	if( stat( dir.c_str(), & info ) == 0 )
+	if( stat( location.c_str(), & info ) == 0 )
+		return true;
+
+	return false;
+}
+
+// Can create directory in directory B)
+int CreateDir( const std::string & dir )
+{
+	if( LocExists( dir ) )
 		return 0;
 
 	std::vector< std::string > dirs;
@@ -65,7 +79,7 @@ int CreateDir( const std::string & dir )
 
 		finaldir += dirs[ i ];
 
-		if( stat( finaldir.c_str(), & info ) != 0 )
+		if( !LocExists( finaldir ) )
 			retval |= mkdir( finaldir.c_str(), 0755 );
 
 		finaldir += "/";
@@ -176,4 +190,76 @@ int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recu
 	}
 
 	return 0;
+}
+
+bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
+{
+	int ret = 0;
+
+	std::string dispexectemp;
+
+	if( DispExecute( "touch " + pkg.incdir + "/pkgtest", dispexectemp, false ) != 0 )
+		return false;
+	DispExecute( "rm -rf " + pkg.incdir + "/pkgtest", dispexectemp, false );
+
+	if( DispExecute( "touch " + pkg.libdir + "/pkgtest", dispexectemp, false ) != 0 )
+		return false;
+	DispExecute( "rm -rf " + pkg.libdir + "/pkgtest", dispexectemp, false );
+
+	if( framework_exists ) {
+		if( DispExecute( "touch /Library/Frameworks/pkgtest", dispexectemp, false ) != 0 )
+			return false;
+		DispExecute( "rm -rf /Library/Frameworks/pkgtest", dispexectemp, false );
+	}
+	return !( bool )ret;
+}
+
+bool CreateArchiveDir( const Package & pkg )
+{
+	struct stat info;
+
+	std::string archivedir = GetArchiveDir( pkg );
+
+	if( stat( archivedir.c_str(), & info ) == 0 )
+		return true;
+	
+	int ret = mkdir( archivedir.c_str(), 0755 );
+
+	if( ret != 0 ) {
+		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
+			<< RESET << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+std::string GetArchiveDir( const Package & pkg )
+{
+	size_t loc;
+
+	loc = pkg.file.find( ".tar" );
+
+	std::string archivedir = PACKAGE_TMP;
+
+	for( size_t i = 0; i < loc; ++i )
+		archivedir += pkg.file[ i ];
+
+	return archivedir;
+}
+
+bool ChangeWorkingDir( std::string dir )
+{
+	return chdir( dir.c_str() ) == 0;
+}
+
+std::string GetWorkingDir()
+{
+	char cwd[ 1024 ];
+
+	if( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
+		return cwd;
+	}
+
+	return "";
 }

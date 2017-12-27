@@ -14,4 +14,6 @@ std::string GetStringTillLastSlash( std::string & str );
 
 void StringToLower( std::string & str );
 
+void TrimString( std::string & str );
+
 #endif //COMMONFUNCS_HPP

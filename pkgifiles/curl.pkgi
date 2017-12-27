@@ -1,0 +1,26 @@
+[Core]
+
+Name = curl
+Description = "Curl network executable and C library"
+Lang = c
+Type = Source
+
+Version = 7.57.0
+Deps = 
+
+LinuxIncludeDir = /usr/include
+LinuxLibDir = /usr/lib
+
+MacIncludeDir = /usr/local/include
+MacLibDir = /usr/local/lib
+
+LibraryFlags = -lcurl
+
+[Source]
+
+URL = https://curl.haxx.se/download/
+
+LinuxFile = curl-7.57.0.tar.gz
+MacFile = curl-7.57.0.tar.gz
+
+BuildCommands = ./configure,make,"make install"

@@ -4,11 +4,18 @@
 #include <cstdio>
 
 #include "../../include/ColorDefs.hpp"
+#include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
+#include "../../include/DisplayExecute.hpp"
+#include "../../include/DisplayFuncs.hpp"
+#include "../../include/FSFuncs.hpp"
+
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/PackageManagement/PackageConfig.hpp"
 
 #include "../../include/PackageManagement/PackageDownloader.hpp"
+
+static int prevpercentsize = 0;
 
 bool FetchPackage( const Package & pkg )
 {
@@ -23,6 +30,16 @@ bool FetchPackage( const Package & pkg )
 		return false;
 	
 	std::FILE * file;
+
+	std::string archive = PACKAGE_TMP + pkg.file;
+
+	std::string dispexectemp;
+
+	if( LocExists( archive ) && DispExecute( "touch " + archive, dispexectemp, false ) != 0 ) {
+		std::cout << RED << CROSS << std::endl;
+		std::cout << RED << "Error: You do not have correct permissions!" << RESET << std::endl;
+		return false;
+	}
 
 	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
 	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
@@ -48,10 +65,17 @@ bool FetchPackage( const Package & pkg )
 	hnd = NULL;
 
 	if( ( int )ret != 0 ) {
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error: Failed to download package: " << YELLOW << pkg.name
 			<< RESET << "\n" << MAGENTA << "LibCurl Error: "
 			<< BLUE << curl_easy_strerror( ret ) << RESET << std::endl;
 	}
+
+	MoveOutputCursorBack( prevpercentsize );
+
+	prevpercentsize = 0;
+
+	std::cout << GREEN << TICK << std::endl;
 
 	return !( bool )( int )ret;
 }
@@ -69,14 +93,9 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 
 	double percentdown = ( cdl / totdl ) * 100;
 
-	static int prevpercentsize = 0;
-
 	std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
 
-	for( int i = 0; i < prevpercentsize; ++i ) {
-		std::cout << "\b \b";
-		std::cout.flush();
-	}
+	MoveOutputCursorBack( prevpercentsize );
 
 	std::cout << CYAN << percent << RESET;
 	std::cout.flush();

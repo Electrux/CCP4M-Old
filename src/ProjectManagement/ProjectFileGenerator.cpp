@@ -2,8 +2,9 @@
 #include <string>
 
 #include "../../include/ColorDefs.hpp"
+#include "../../include/FSFuncs.hpp"
+
 #include "../../include/ProjectManagement/ProjectData.hpp"
-#include "../../include/ProjectManagement/FSFuncs.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
 
 #include "../../include/ProjectManagement/ProjectFileGenerator.hpp"

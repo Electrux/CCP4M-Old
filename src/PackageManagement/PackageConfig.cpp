@@ -4,7 +4,7 @@
 #include <dirent.h>
 
 #include "../../include/Paths.hpp"
-#include "../../include/CommonFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 
@@ -28,25 +28,30 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 
 	std::string deps;
 
+	std::string prefix;
+#ifdef __linux__
+	prefix = "Linux";
+#elif __APPLE__
+	prefix = "Mac";
+#endif
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
-	parser.GetDataString( "Core", "URL", pkg.url );
 	parser.GetDataString( "Core", "Lang", pkg.lang );
-#ifdef __linux__
-	parser.GetDataString( "Core", "LinuxFile", pkg.file );
-	parser.GetDataString( "Core", "LinuxIncludeDir", pkg.incdir );
-	parser.GetDataString( "Core", "LinuxLibDir", pkg.libdir );
-#elif __APPLE__
-	parser.GetDataString( "Core", "MacFile", pkg.file );
-	parser.GetDataString( "Core", "MacIncludeDir", pkg.incdir );
-	parser.GetDataString( "Core", "MacLibDir", pkg.libdir );
-#endif
+	parser.GetDataString( "Core", "Type", pkg.type );
 	parser.GetDataString( "Core", "Version", pkg.version );
-
 	parser.GetDataString( "Core", "Deps", deps );
 	pkg.deplist = DelimStringToVector( deps );
 
+	parser.GetDataString( "Core", prefix + "IncludeDir", pkg.incdir );
+	parser.GetDataString( "Core", prefix + "LibDir", pkg.libdir );
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
+
+	parser.GetDataString( pkg.type, "URL", pkg.url );
+	parser.GetDataString( pkg.type, prefix + "File", pkg.file );
+
+	if( pkg.type == "Source" ) {
+		parser.GetDataString( pkg.type, "BuildCommands", pkg.buildcmds );
+	}
 
 	return true;
 }

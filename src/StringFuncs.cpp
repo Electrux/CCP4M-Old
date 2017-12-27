@@ -1,9 +1,9 @@
-#include "../include/CommonFuncs.hpp"
-
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <cctype>
+
+#include "../include/StringFuncs.hpp"
 
 std::vector< std::string > ToVector( int argc, char ** argv )
 {
@@ -81,4 +81,32 @@ void StringToLower( std::string & str )
 {
 	std::transform( str.begin(), str.end(), str.begin(),
 			[]( char c ) { return std::tolower( c ); } );
+}
+
+void TrimString( std::string & str )
+{
+	while( * ( str.end() - 1 ) == ' ' || * ( str.end() - 1 ) == '\n' || * ( str.end() - 1 ) == '\t' )
+		str.erase( str.end() - 1 );
+
+	while( * str.begin() == ' ' || * str.begin() == '\n' || * str.begin() == '\t' )
+		str.erase( str.begin() );
+
+	for( auto it = str.begin(); it != str.end(); ) {
+		if( * it == '\t' ) {
+			*it = ' ';
+			++it;
+		}
+		else if( * it == ' ' ) {
+			++it;
+			while( *it == ' ' ) {
+				it = str.erase( it );
+			}
+		}
+		else if( * it == '\r' ) {
+			it = str.erase( it );
+		}
+		else {
+			++it;
+		}
+	}
 }

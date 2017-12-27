@@ -1,5 +1,6 @@
 #include <iostream>
-#include "../include/CommonFuncs.hpp"
+
+#include "../include/StringFuncs.hpp"
 #include "../include/ProjectManager.hpp"
 #include "../include/PackageManager.hpp"
 
