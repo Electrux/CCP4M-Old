@@ -6,9 +6,9 @@ Otherwise, an older version of it can be obtained from [Here](https://github.com
 
 When using the old version with CMake, the commands need to be ( from the build directory ):
 
+
 	$ cmake -D CMAKE_CXX_FLAGS="-lpthread" ..
 	$ make
-
 
 
 I use the BSD 3-Clause license and anyone who uses the code I make shall adhere to it. Thank You.
