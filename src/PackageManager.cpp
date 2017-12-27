@@ -102,7 +102,7 @@ int PackageManager::InstallPackage( std::string package )
 		}
 	}
 
-	std::cout << YELLOW << "Removing temporary archive directories ... " << RESET;
+	std::cout << YELLOW << "Finishing up ... " << RESET;
 
 	std::string rmcmd = "rm -rf " + GetArchiveDir( pkg );
 
