@@ -20,7 +20,11 @@ int DispExecute( std::string cmd )
 	while( !feof( pipe ) ) {
 		if( fgets( opline.data(), 1024, pipe ) != NULL ) {
 			MoveBack( prevdisp );
-			std::string str = "[ " + std::string( opline.data() ) + " ]";
+			std::string op = std::string( opline.data() );
+			if( * ( op.end() - 1 ) == '\n' ) {
+				op.erase( op.end() - 1 );
+			}
+			std::string str = "[ " + op + " ]";
 			std::cout << str;
 			std::cout.flush();
 			prevdisp = str.size();
