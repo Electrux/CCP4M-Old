@@ -17,7 +17,7 @@ int DispExecute( std::string cmd, std::string & err )
 
 	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
-	FILE * pipe = popen( cmd.c_str(), "r" );
+	FILE * pipe = popen( finalcmd.c_str(), "r" );
 
 	static int prevdisp = 0;
 
