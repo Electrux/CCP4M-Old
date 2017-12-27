@@ -74,7 +74,7 @@ int PackageManager::InstallPackage( std::string package )
 		return 1;
 	}
 
-	std::cout << YELLOW << "Extracting downloaded archive... " << RESET;
+	std::cout << YELLOW << "Extracting downloaded archive ... " << RESET;
 	std::cout.flush();
 	if( !ExtractArchive( pkg ) ) {
 		std::cout << YELLOW << "Unable to extract archive! " << RED << CROSS << std::endl;

@@ -6,6 +6,7 @@
 #include "../../include/Paths.hpp"
 
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayExecute.hpp"
 
 #include "../../include/PackageManagement/ArchiveExtractor.hpp"
 
@@ -27,6 +28,11 @@ bool ExtractArchive( const Package & pkg )
 	}
 
 	std::string archivedir = GetArchiveDir( pkg );
+
+	if( LocExists( archivedir ) ) {
+		std::string tmpdispexec;
+		DispExecute( "rm -rf " + archivedir, tmpdispexec, false );
+	}
 
 	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
 
