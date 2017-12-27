@@ -7,6 +7,8 @@
 
 #include "../../include/FSFuncs.hpp"
 
+#include "../../include/PackageManagement/ArchiveExtractor.hpp"
+
 bool ExtractArchive( const Package & pkg )
 {
 	std::string archive = PACKAGE_TMP + pkg.file;
