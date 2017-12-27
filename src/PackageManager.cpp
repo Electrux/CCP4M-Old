@@ -82,7 +82,6 @@ int PackageManager::InstallPackage( std::string package )
 		std::cout << YELLOW << "Unable to extract archive! " << RED << CROSS << std::endl;
 		return 1;
 	}
-	std::cout << GREEN << TICK << std::endl;
 
 	if( pkg.type == "Source" ) {
 		std::cout << YELLOW << "Building " << CYAN << "source"
