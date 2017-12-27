@@ -58,6 +58,7 @@ bool BuildDirectory( const Package & pkg )
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << YELLOW << "Unable to create makefile! " << RED << CROSS << RESET << std::endl;
+		ChangeWorkingDir( cwd );
 		return false;
 	}
 	else {
@@ -72,6 +73,7 @@ bool BuildDirectory( const Package & pkg )
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << YELLOW << "Unable to make the package! " << RED << CROSS << RESET << std::endl;
+		ChangeWorkingDir( cwd );
 		return false;
 	}
 	else {
@@ -87,12 +89,15 @@ bool BuildDirectory( const Package & pkg )
 		if( res != 0 ) {
 			std::cout << RED << CROSS << std::endl;
 			std::cout << YELLOW << "Unable to install using make install! " << RED << CROSS << RESET << std::endl;
+			ChangeWorkingDir( cwd );
 			return false;
 		}
 		else {
 			std::cout << GREEN << TICK << std::endl;
 		}
 	}
+
+	ChangeWorkingDir( cwd );
 
 	return true;
 }
