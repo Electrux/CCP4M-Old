@@ -85,8 +85,8 @@ int PackageManager::InstallPackage( std::string package )
 	std::cout << GREEN << TICK << std::endl;
 
 	if( pkg.type == "Source" ) {
-		std::cout << YELLOW << "Starting " << CYAN << "source"
-			<< YELLOW << " package build ... " << GREEN << TICK << RESET << std::endl;
+		std::cout << YELLOW << "Building " << CYAN << "source"
+			<< YELLOW << " package ... " << GREEN << TICK << RESET << std::endl;
 		std::cout.flush();
 		if( !BuildDirectory( pkg ) ) {
 			std::cout << YELLOW << "Build failed! " << RED << CROSS << RESET << std::endl;

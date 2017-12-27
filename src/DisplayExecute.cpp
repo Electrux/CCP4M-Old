@@ -4,6 +4,8 @@
 #include <memory>
 #include <cstdio>
 
+#include "../include/DisplayFuncs.hpp"
+
 #include "../include/DisplayExecute.hpp"
 
 int DispExecute( std::string cmd )
@@ -19,7 +21,7 @@ int DispExecute( std::string cmd )
 
 	while( !feof( pipe ) ) {
 		if( fgets( opline.data(), 1024, pipe ) != NULL ) {
-			MoveBack( prevdisp );
+			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline.data() );
 			if( * ( op.end() - 1 ) == '\n' ) {
 				op.erase( op.end() - 1 );
@@ -31,15 +33,7 @@ int DispExecute( std::string cmd )
 		}
 	}
 
-	MoveBack( prevdisp );
+	MoveOutputCursorBack( prevdisp );
 
 	return pclose( pipe );
-}
-
-void MoveBack( int len )
-{
-	for( int i = 0; i < len; ++i ) {
-		std::cout << "\b \b";
-	}
-	std::cout.flush();
 }

@@ -5,6 +5,4 @@
 
 int DispExecute( std::string cmd );
 
-void MoveBack( int len );
-
 #endif // ASYNCEXECUTE_HPP

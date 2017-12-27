@@ -5,10 +5,14 @@
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/Paths.hpp"
+#include "../../include/DisplayFuncs.hpp"
+
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/PackageManagement/PackageConfig.hpp"
 
 #include "../../include/PackageManagement/PackageDownloader.hpp"
+
+static int prevpercentsize = 0;
 
 bool FetchPackage( const Package & pkg )
 {
@@ -53,6 +57,8 @@ bool FetchPackage( const Package & pkg )
 			<< BLUE << curl_easy_strerror( ret ) << RESET << std::endl;
 	}
 
+	MoveOutputCursorBack( prevpercentsize );
+
 	return !( bool )( int )ret;
 }
 
@@ -69,14 +75,9 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 
 	double percentdown = ( cdl / totdl ) * 100;
 
-	static int prevpercentsize = 0;
-
 	std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
 
-	for( int i = 0; i < prevpercentsize; ++i ) {
-		std::cout << "\b \b";
-		std::cout.flush();
-	}
+	MoveOutputCursorBack( prevpercentsize );
 
 	std::cout << CYAN << percent << RESET;
 	std::cout.flush();
