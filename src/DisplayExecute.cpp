@@ -4,9 +4,9 @@
 #include <array>
 #include <memory>
 #include <cstdio>
-#include <algorithm>
 
 #include "../include/Paths.hpp"
+#include "../include/StringFuncs.hpp"
 #include "../include/DisplayFuncs.hpp"
 
 #include "../include/DisplayExecute.hpp"
@@ -29,10 +29,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline.data() );
 
-			std::replace( op.begin(), op.end(), '\t', ' ' );
-			while( * ( op.end() - 1 ) == '\n' ) {
-				op.erase( op.end() - 1 );
-			}
+			TrimString( op );
 
 			std::string str = "[ " + op + " ]";
 			std::cout << str;

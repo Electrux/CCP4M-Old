@@ -82,3 +82,36 @@ void StringToLower( std::string & str )
 	std::transform( str.begin(), str.end(), str.begin(),
 			[]( char c ) { return std::tolower( c ); } );
 }
+
+void TrimString( std::string & str )
+{
+	while( * ( str.end() - 1 ) == ' ' || * ( str.end() - 1 ) == '\n' || * ( str.end() - 1 ) == '\t' )
+		str.erase( str.end() - 1 );
+
+	while( * str.begin() == ' ' || * str.begin() == '\n' || * str.begin() == '\t' )
+		str.erase( str.begin() );
+
+	int spc_count = 0;
+
+	for( auto it = str.begin(); it != str.end(); ) {
+		if( * it == '\t' )
+			*it = ' ';
+
+		if( * it == ' ' ) {
+			if( spc_count > 1 ) {
+				it = str.erase( it );
+				spc_count--;
+			}
+			else {
+				spc_count++;
+				++it;
+			}
+		}
+		else if( * it == '\r' ) {
+			it = str.erase( it );
+		}
+		else {
+			++it;
+		}
+	}
+}
