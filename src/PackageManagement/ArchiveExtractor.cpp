@@ -22,16 +22,16 @@ bool ExtractArchive( const Package & pkg )
 		return false;
 	}
 
-	if( !CreateArchiveDir( pkg ) ) {
-		std::cout << RED << CROSS << std::endl;
-		return false;
-	}
-
 	std::string archivedir = GetArchiveDir( pkg );
 
 	if( LocExists( archivedir ) ) {
 		std::string tmpdispexec;
 		DispExecute( "rm -rf " + archivedir, tmpdispexec, false );
+	}
+
+	if( !CreateArchiveDir( pkg ) ) {
+		std::cout << RED << CROSS << std::endl;
+		return false;
 	}
 
 	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
