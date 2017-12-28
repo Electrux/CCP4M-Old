@@ -198,6 +198,9 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::
 	if( !LocExists( dir ) )
 		return 0;
 
+
+	std::cout << "Here for " << dir << " part 1" << std::endl;
+
 	std:remove( wildcards.begin(), wildcards.end(), ' ' );
 
 	std::vector< std::string > wildcard_vec = DelimStringToVector( wildcards );
