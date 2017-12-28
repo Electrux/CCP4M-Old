@@ -206,8 +206,6 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::
 
 	TrimWildCards( wildcard_vec );
 
-	std::cout << "Here for " << dir << std::endl;
-
 	return GetWildCardFilesInDir( dir, temp, wildcard_vec, recursive );
 }
 
@@ -217,12 +215,12 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 	if( !LocExists( dir ) )
 		return 0;
 	
-	std::cout << "\t" << dir << std::endl;
+	std::cout << "\t" << tempdir << std::endl;
 
 	DIR* dirp = opendir( dir.c_str() );
 	struct dirent * p;
 
-	if( !tempdir.empty() )
+	if( tempdir == "" )
 		tempdir += "/";
 
 	int count = 0;
