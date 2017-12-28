@@ -48,7 +48,7 @@ bool LocExists( const std::string & location )
 }
 
 // Can create directory in directory B)
-int CreateDir( const std::string & dir )
+int CreateDir( const std::string & dir, bool verbose )
 {
 	if( dir.empty() || LocExists( dir ) )
 		return 0;
@@ -71,7 +71,8 @@ int CreateDir( const std::string & dir )
 	if( !temp.empty() )
 		dirs.push_back( temp );
 
-	std::cout << BLUE << "Creating Directory: " << MAGENTA << dir << RESET << "\n";
+	if( verbose )
+		std::cout << BLUE << "Creating Directory: " << MAGENTA << dir << RESET << "\n";
 
 	int retval = 0;
 	std::string finaldir;
@@ -215,14 +216,14 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 	return !( bool )ret;
 }
 
-bool CreateArchiveDir( const Package & pkg )
+bool CreateArchiveDir( const Package & pkg, bool verbose )
 {
 	std::string archivedir = GetArchiveDir( pkg );
 
 	if( LocExists( archivedir ) )
 		return true;
 	
-	int ret = CreateDir( archivedir );
+	int ret = CreateDir( archivedir, verbose );
 
 	if( ret != 0 ) {
 		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"

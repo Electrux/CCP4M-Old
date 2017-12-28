@@ -15,7 +15,7 @@ void SetFolderPaths( std::string & directory,
 
 bool LocExists( const std::string & location );
 
-int CreateDir( const std::string & dir );
+int CreateDir( const std::string & dir, bool verbose = true );
 
 void CreateFileWithContents( const std::string & filename,
 			     const std::string & contents = std::string() );
@@ -28,7 +28,7 @@ int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recu
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 
-bool CreateArchiveDir( const Package & pkg );
+bool CreateArchiveDir( const Package & pkg, bool verbose = false );
 
 std::string GetArchiveDir( const Package & pkg );
 
