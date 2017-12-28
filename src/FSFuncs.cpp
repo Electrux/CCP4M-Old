@@ -208,7 +208,7 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::
 }
 
 int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
-			std::vector< std::string > wildcard_vec, std::string tempdir, bool recursive )
+			std::vector< std::string > wildcard_vec, bool recursive, std::string tempdir )
 {
 	if( !LocExists( dir ) )
 		return 0;
