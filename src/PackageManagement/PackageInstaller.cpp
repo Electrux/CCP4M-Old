@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <fstream>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -42,14 +43,7 @@ bool InstallDirectory( const Package & pkg )
 		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		if( !RemoveAllCopiedFiles( copiedfiles ) ) {
-			std::cout << RED << CROSS << RESET << std::endl;
-			std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
-		}
-		else {
-			std::cout << GREEN << TICK << RESET << std::endl;
-			std::cout << YELLOW << "Reverting successful! Exiting!" << RESET << std::endl;
-		}
+		RevertInstallation( copiedfiles );
 		return false;
 	}
 
@@ -64,14 +58,7 @@ bool InstallDirectory( const Package & pkg )
 	if( failctr >= copylibs.size() ) {
 		std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		if( !RemoveAllCopiedFiles( copiedfiles ) ) {
-			std::cout << RED << CROSS << RESET << std::endl;
-			std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
-		}
-		else {
-			std::cout << GREEN << TICK << RESET << std::endl;
-			std::cout << YELLOW << "Reverting successful! Exiting!" << RESET << std::endl;
-		}
+		RevertInstallation( copiedfiles );
 		return false;
 	}
 
@@ -80,20 +67,25 @@ bool InstallDirectory( const Package & pkg )
 		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		if( !RemoveAllCopiedFiles( copiedfiles ) ) {
-			std::cout << RED << CROSS << RESET << std::endl;
-			std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
-		}
-		else {
-			std::cout << GREEN << TICK << RESET << std::endl;
-			std::cout << YELLOW << "Reverting successful! Exiting!" << RESET << std::endl;
-		}
+		RevertInstallation( copiedfiles );
 		return false;
 	}
 #endif
-	for( auto file : copiedfiles ) {
-		std::cout << CYAN << file << RESET << std::endl;
+	std::fstream installedfiles;
+	installedfiles.open( PACKAGE_DIR + "." + pkg.name, std::ios::out );
+	if( !installedfiles ) {
+		std::cout << RED << "Error in saving installation information!\nReverting installation ... " << RESET;
+		std::cout.flush();
+		RevertInstallation( copiedfiles );
+		return false;
 	}
+
+	for( auto file : copiedfiles ) {
+		installedfiles << file << std::endl;
+	}
+
+	installedfiles.close();
+
 	return true;
 }
 
@@ -128,16 +120,14 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::vector< s
 #endif
 }
 
-bool RemoveAllCopiedFiles( std::vector< std::string > & files )
+void RevertInstallation( std::vector< std::string > & copiedfiles )
 {
-	std::string tmpdispexec;
-
-	for( auto it = files.begin(); it != files.end(); ) {
-		if( DispExecute( "rm -rf " + ( * it ), tmpdispexec, false ) != 0 ) {
-			return false;
-		}
-		it = files.erase( it );
+	if( !RemoveAllCopiedFiles( copiedfiles ) ) {
+		std::cout << RED << CROSS << RESET << std::endl;
+		std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
 	}
-
-	return true;
+	else {
+		std::cout << GREEN << TICK << RESET << std::endl;
+		std::cout << YELLOW << "Reverting successful! Exiting!" << RESET << std::endl;
+	}
 }

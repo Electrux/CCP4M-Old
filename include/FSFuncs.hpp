@@ -2,6 +2,7 @@
 #define FSFUNCS_HPP
 
 #include <string>
+#include <vector>
 
 #include "PackageManagement/PackageData.hpp"
 
@@ -36,5 +37,7 @@ bool ChangeWorkingDir( std::string dir );
 std::string GetWorkingDir();
 
 void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir );
+
+bool RemoveAllCopiedFiles( std::vector< std::string > & files );
 
 #endif // FSFUNCS_HPP

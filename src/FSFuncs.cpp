@@ -287,3 +287,22 @@ void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddi
 		fileanddir.push_back( dir );
 	}
 }
+
+bool RemoveAllCopiedFiles( std::vector< std::string > & files )
+{
+	std::string tmpdispexec;
+
+	for( auto it = files.begin(); it != files.end(); ) {
+
+		if( !LocExists( * it ) ) {
+			it = files.erase( it );
+			continue;
+		}
+		if( DispExecute( "rm -rf " + ( * it ), tmpdispexec, false ) != 0 ) {
+			return false;
+		}
+		it = files.erase( it );
+	}
+
+	return true;
+}
