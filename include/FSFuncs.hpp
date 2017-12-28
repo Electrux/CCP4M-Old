@@ -31,7 +31,7 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 			std::string wildcards, bool recursive = true );
 
 int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
-			std::vector< DirFile > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );
+			std::vector< std::string > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 
