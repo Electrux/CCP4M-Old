@@ -299,6 +299,16 @@ void FetchExtraDirs( const Package & pkg,
 		std::vector< std::string > & fileanddir )
 {
 	for( auto type : copyfiles ) {
+		std::string prefix;
+		if( type.first == "inc" ) {
+			prefix = pkg.incdir + "/";
+		}
+		if( type.first == "lib" ) {
+			prefix = pkg.libdir + "/";
+		}
+		if( type.first == "fw" ) {
+			prefix = pkg.incdir + "/Library/Frameworks/";
+		}
 		for( auto data : type.second ) {
 			std::string dir = data.dir;
 			if( dir.empty() )
@@ -313,7 +323,7 @@ void FetchExtraDirs( const Package & pkg,
 			if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" )
 				continue;
 			
-			fileanddir.push_back( dir );
+			fileanddir.push_back( prefix + dir );
 		}
 	}
 }
