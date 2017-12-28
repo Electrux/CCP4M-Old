@@ -264,12 +264,15 @@ std::string GetWorkingDir()
 	return "";
 }
 
-void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir, const std::string & comparewith )
+void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir )
 {
 	for( auto fnd : fileanddir ) {
 		std::string dir = GetStringTillLastSlash( fnd );
 
-		if( dir + "/" == comparewith ) {
+		if( std::find( fileanddir.begin(), fileanddir.end(), dir ) != fileanddir.end() )
+			continue;
+
+		if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" ) {
 			continue;
 		}
 
