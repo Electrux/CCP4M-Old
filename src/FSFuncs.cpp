@@ -299,7 +299,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		prevsize = DisplayOneLinerString( * it );
+		prevsize = DisplayOneLinerString( cpdatafile );
 
 		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
 			prevsize = 0;
