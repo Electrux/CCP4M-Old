@@ -39,7 +39,7 @@ bool InstallDirectory( const Package & pkg )
 	std::string dispexectmp;
 
 	if( DispExecuteWithCopyFileLocations( copyinc, dispexectmp, copiedfiles ) != 0 ) {
-		FetchExtraDirs( pkg, copiedfiles, pkg.incdir );
+		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
 		std::cout.flush();
 		if( !RemoveAllCopiedFiles( copiedfiles ) ) {
@@ -59,7 +59,7 @@ bool InstallDirectory( const Package & pkg )
 		if( DispExecuteWithCopyFileLocations( lib, dispexectmp, copiedfiles ) != 0 ) {
 			failctr++;
 		}
-		FetchExtraDirs( pkg, copiedfiles, pkg.libdir );
+		FetchExtraDirs( pkg, copiedfiles );
 	}
 	if( failctr >= copylibs.size() ) {
 		std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
@@ -77,7 +77,7 @@ bool InstallDirectory( const Package & pkg )
 
 #ifdef __APPLE__
 	if( DispExecuteWithCopyFileLocations( copyfw, dispexectmp, copiedfiles ) != 0 ) {
-		FetchExtraDirs( pkg, copiedfiles, "/Library/Frameworks" );
+		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
 		std::cout.flush();
 		if( !RemoveAllCopiedFiles( copiedfiles ) ) {
