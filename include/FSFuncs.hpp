@@ -27,7 +27,8 @@ long long GetLastModifiedTime( std::string file );
 
 int GetFilesInDirNonSrc( std::string dir, std::vector< std::string > & temp, bool recursive = false );
 
-int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::string wildcards, bool recursive = true );
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
+			std::string wildcards, bool recursive = true );
 
 int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 			std::vector< std::string > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );

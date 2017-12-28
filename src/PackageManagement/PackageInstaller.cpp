@@ -149,7 +149,7 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 	std::string libdir = archivedir + "/lib/";
 	std::string fwdir = archivedir + "/Frameworks/";
 
-	std::map< std::string, std::vector< std::string > > list = {
+	std::map< std::string, std::vector< DirFile > > list = {
 		{ "inc", {} },
 		{ "lib", {} },
 		{ "fw", {} }
