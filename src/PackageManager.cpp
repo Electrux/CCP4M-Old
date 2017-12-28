@@ -41,6 +41,15 @@ int PackageManager::HandleCommand()
 		return InstallPackage( args[ 3 ] );
 	}
 
+	if( args[ 2 ] == "uninstall" ) {
+		if( args.size() < 4 ) {
+			std::cout << "Error: Use " << args[ 0 ] << " pkg uninstall < Package Name >"
+				<< std::endl;
+			return 1;
+		}
+		return UninstallPackage( args[ 3 ] );
+	}
+
 	return 1;
 }
 
