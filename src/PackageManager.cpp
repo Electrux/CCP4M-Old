@@ -294,8 +294,9 @@ bool PackageManager::IsInstalled( std::string package )
 	bool found = false;
 
 	while( std::getline( file, line ) ) {
-		if( line.find( package ) != std::string::npos ) {
+		if( !line.empty() && line.find( package ) != std::string::npos ) {
 			found = true;
+			std::cout << line << std::endl;
 			break;
 		}
 	}
