@@ -213,7 +213,7 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 	if( !LocExists( dir ) )
 		return 0;
 	
-	std::cout << tempdir << " " << dir << std::endl;
+	std::cout << dir << std::endl;
 
 	DIR* dirp = opendir( dir.c_str() );
 	struct dirent * p;
