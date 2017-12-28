@@ -283,6 +283,8 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 
 		MoveOutputCursorBack( prevsize );
 
+		prevsize = DisplayOneLinerString( * it );
+
 		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
 			return false;
 		}
@@ -293,15 +295,21 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 	}
 
 	MoveOutputCursorBack( prevsize );
-	prevsize = 0;
 
 	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
+		prevsize = DisplayOneLinerString( * it );
+
 		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
+			prevsize = 0;
 			return false;
 		}
 	}
+
+	MoveOutputCursorBack( prevsize );
+
+	prevsize = 0;
 
 	return true;
 }
