@@ -300,6 +300,8 @@ bool PackageManager::IsInstalled( std::string package )
 		}
 	}
 
+	std::cout << found << std::endl;
+
 	file.close();
 
 	return found;
