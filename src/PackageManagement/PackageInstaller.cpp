@@ -170,7 +170,7 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 #endif
 	for( auto lst : list ) {
 		for( auto item : lst.second ) {
-			std::cout << BLUE << lst.first << " : " << CYAN << item << RESET << std::endl;
+			std::cout << BLUE << lst.first << " : " << CYAN << item.dir + item.file << RESET << std::endl;
 		}
 	}
 }
