@@ -75,8 +75,6 @@ bool InstallDirectory( const Package & pkg )
 
 		MoveOutputCursorBack( prevsize );
 
-		std::cout << " cp -r " << cpinput << " " << cpoutput << std::endl;
-
 		prevsize = DisplayOneLinerString( op );
 		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
 			MoveOutputCursorBack( prevsize );
@@ -180,12 +178,6 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 		use_framework = true;
 	}
 #endif
-	for( auto lst : list ) {
-		for( auto item : lst.second ) {
-			std::cout << BLUE << lst.first << " : " << CYAN << item.dir + item.file << RESET << std::endl;
-		}
-	}
-
 	return list;
 }
 

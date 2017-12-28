@@ -310,7 +310,7 @@ void FetchExtraDirs( const Package & pkg,
 			prefix = pkg.incdir + "/Library/Frameworks/";
 		}
 		for( auto data : type.second ) {
-			std::string dir = data.dir;
+			std::string dir = prefix + data.dir;
 			if( dir.empty() )
 				continue;
 			
@@ -323,7 +323,7 @@ void FetchExtraDirs( const Package & pkg,
 			if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" )
 				continue;
 			
-			fileanddir.push_back( prefix + dir );
+			fileanddir.push_back( dir );
 		}
 	}
 }
