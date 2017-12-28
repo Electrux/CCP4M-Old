@@ -173,6 +173,8 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 			std::cout << BLUE << lst.first << " : " << CYAN << item.dir + item.file << RESET << std::endl;
 		}
 	}
+
+	return list;
 }
 
 void RevertInstallation( const Package & pkg, std::vector< std::string > & data )
