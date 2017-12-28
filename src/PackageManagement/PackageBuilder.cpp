@@ -5,6 +5,7 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/StringFuncs.hpp"
+#include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
