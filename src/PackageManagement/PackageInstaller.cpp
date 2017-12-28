@@ -27,6 +27,17 @@ bool InstallDirectory( const Package & pkg )
 
 	auto copyfiles = GetCopyList( pkg, use_framework );
 
+	FetchExtraDirs( pkg, copyfiles, copiedfiles );
+
+	for( auto dir : copiedfiles ) {
+		if( !CreateDir( dir, false ) ) {
+			std::cout << RED << CROSS << std::endl;
+			std::cout << RED << "Error: Unable to create required directory for installation!"
+				<< RESET << std::endl;
+			return false;
+		}
+	}
+
 #ifndef __APPLE__
 	use_framework = false;
 #endif
@@ -57,7 +68,7 @@ bool InstallDirectory( const Package & pkg )
 		std::string op = "Copying file: " + file.dir + file.file;
 
 		cpinput = incdir + file.dir + file.file;
-		cpoutput = pkg.incdir + "/" + file.dir + file.file;
+		cpoutput = pkg.incdir + "/" + file.dir;
 
 		copiedfiles.push_back( cpoutput );
 
@@ -87,7 +98,7 @@ bool InstallDirectory( const Package & pkg )
 		std::string op = "Copying file: " + file.dir + file.file;
 
 		cpinput = libdir + file.dir + file.file;
-		cpoutput = pkg.libdir + "/" + file.dir + file.file;
+		cpoutput = pkg.libdir + "/" + file.dir;
 
 		copiedfiles.push_back( cpoutput );
 
@@ -114,7 +125,7 @@ bool InstallDirectory( const Package & pkg )
 		std::string op = "Copying file: " + file.dir + file.file;
 
 		cpinput = fwdir + file.dir + file.file;
-		cpoutput = "/Library/Frameworks/" + file.dir + file.file;
+		cpoutput = "/Library/Frameworks/" + file.dir;
 
 		copiedfiles.push_back( cpoutput );
 
@@ -131,8 +142,6 @@ bool InstallDirectory( const Package & pkg )
 		}
 	}
 	std::cout << GREEN << TICK << std::endl;
-
-	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
 		std::cout << RED << CROSS << std::endl;
