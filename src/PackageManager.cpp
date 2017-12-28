@@ -296,12 +296,9 @@ bool PackageManager::IsInstalled( std::string package )
 	while( std::getline( file, line ) ) {
 		if( !line.empty() && line.find( package ) != std::string::npos ) {
 			found = true;
-			std::cout << line << std::endl;
 			break;
 		}
 	}
-
-	std::cout << found << std::endl;
 
 	file.close();
 
