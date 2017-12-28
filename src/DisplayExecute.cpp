@@ -97,7 +97,5 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 
 	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
-	std::cout << "Error: " << err << std::endl;
-
 	return pclose( pipe );
 }
