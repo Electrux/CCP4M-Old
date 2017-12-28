@@ -13,6 +13,7 @@
 #include "../include/UTFChars.hpp"
 #include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
+#include "../include/DisplayFuncs.hpp"
 #include "../include/DisplayExecute.hpp"
 
 #include "../include/PackageManagement/PackageData.hpp"
@@ -268,6 +269,9 @@ void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddi
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
+	int prevsize = 0;
+	std::string output;
+
 	for( auto it = data.begin(); it != data.end(); ) {
 
 		TrimString( * it );
@@ -276,16 +280,25 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 			it = data.erase( it );
 			continue;
 		}
+
+		MoveOutputCursorBack( prevsize );
+
 		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
 			return false;
 		}
+
+		prevsize = DisplayOneLinerString( * it );
+
 		it = data.erase( it );
 	}
 
-	std::string cpdatafile = "rm -rf " + PACKAGE_DIR + "." + pkg.name;
+	MoveOutputCursorBack( prevsize );
+	prevsize = 0;
+
+	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		if( DispExecuteNoErr( cpdatafile, true ) != 0 ) {
+		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
 			return false;
 		}
 	}

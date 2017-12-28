@@ -168,7 +168,7 @@ int PackageManager::UninstallPackage( std::string package )
 	std::cout.flush();
 	RemoveTempFiles( pkg, true );
 
-	std::cout << YELLOW << "Removing installed entry ... " << RESET;
+	std::cout << YELLOW << "Removing installation entry ... " << RESET;
 	return ( int )!RemoveInstalledEntry( pkg );
 }
 

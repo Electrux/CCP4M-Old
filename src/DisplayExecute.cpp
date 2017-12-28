@@ -33,10 +33,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( op );
 
-			std::string str = "[ " + op + " ]";
-			std::cout << str;
-			std::cout.flush();
-			prevdisp = str.size();
+			prevdisp = DisplayOneLinerString( op );
 		}
 	}
 
