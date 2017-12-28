@@ -300,10 +300,9 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 		it = data.erase( it );
 	}
 
-	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
+	std::string cpdatafile = "rm -rf " + PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		std::cout << "removing cpdatafile: " << cpdatafile << std::endl;
 		if( DispExecuteNoErr( cpdatafile, false ) != 0 ) {
 			return false;
 		}
