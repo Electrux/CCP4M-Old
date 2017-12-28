@@ -50,7 +50,7 @@ bool LocExists( const std::string & location )
 // Can create directory in directory B)
 int CreateDir( const std::string & dir )
 {
-	if( LocExists( dir ) )
+	if( dir.empty() || LocExists( dir ) )
 		return 0;
 
 	std::vector< std::string > dirs;
