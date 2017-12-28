@@ -197,6 +197,9 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::
 {
 	if( !LocExists( dir ) )
 		return 0;
+	
+	if( * ( dir.end() - 1 ) == '/' )
+		dir.erase( dir.end() - 1 );
 
 	std:remove( wildcards.begin(), wildcards.end(), ' ' );
 

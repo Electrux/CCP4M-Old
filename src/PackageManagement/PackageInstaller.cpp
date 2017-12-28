@@ -63,6 +63,8 @@ bool InstallDirectory( const Package & pkg )
 
 		MoveOutputCursorBack( prevsize );
 
+		std::cout << " cp -r " << cpinput << " " << cpoutput << std::endl;
+
 		prevsize = DisplayOneLinerString( op );
 		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
 			MoveOutputCursorBack( prevsize );
@@ -145,9 +147,9 @@ bool InstallDirectory( const Package & pkg )
 std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg, bool & use_framework )
 {
 	std::string archivedir = GetArchiveDir( pkg );
-	std::string incdir = archivedir + "/include/";
-	std::string libdir = archivedir + "/lib/";
-	std::string fwdir = archivedir + "/Frameworks/";
+	std::string incdir = archivedir + "/include";
+	std::string libdir = archivedir + "/lib";
+	std::string fwdir = archivedir + "/Frameworks";
 
 	std::map< std::string, std::vector< DirFile > > list = {
 		{ "inc", {} },
