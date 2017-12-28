@@ -30,6 +30,7 @@ bool InstallDirectory( const Package & pkg )
 	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
 	for( auto dir : copiedfiles ) {
+		std::cout << "Creating Directory... " << dir << std::endl;
 		if( !CreateDir( dir, false ) ) {
 			std::cout << RED << CROSS << std::endl;
 			std::cout << RED << "Error: Unable to create required directory for installation!"
