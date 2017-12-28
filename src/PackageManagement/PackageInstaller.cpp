@@ -16,6 +16,9 @@
 
 bool InstallDirectory( const Package & pkg )
 {
+	std::cout << YELLOW << "Copying files ... " << RESET;
+	std::cout.flush();
+
 	std::string copyinc, copyfw;
 	std::vector< std::string > copylibs;
 	std::vector< std::string > copiedfiles;
@@ -28,6 +31,7 @@ bool InstallDirectory( const Package & pkg )
 	useframework = false;
 #endif
 	if( !CheckNecessaryPermissions( pkg, useframework ) ) {
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
 			<< RESET << std::endl;
 		return false;
@@ -37,6 +41,7 @@ bool InstallDirectory( const Package & pkg )
 
 	if( DispExecuteWithCopyFileLocations( copyinc, dispexectmp, copiedfiles ) != 0 ) {
 		FetchExtraDirs( pkg, copiedfiles );
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
 		std::cout.flush();
 		RevertInstallation( pkg, copiedfiles );
@@ -49,9 +54,10 @@ bool InstallDirectory( const Package & pkg )
 		if( DispExecuteWithCopyFileLocations( lib, dispexectmp, copiedfiles ) != 0 ) {
 			failctr++;
 		}
-		FetchExtraDirs( pkg, copiedfiles );
 	}
 	if( failctr >= copylibs.size() ) {
+		FetchExtraDirs( pkg, copiedfiles );
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
 		std::cout.flush();
 		RevertInstallation( pkg, copiedfiles );
@@ -61,14 +67,20 @@ bool InstallDirectory( const Package & pkg )
 #ifdef __APPLE__
 	if( DispExecuteWithCopyFileLocations( copyfw, dispexectmp, copiedfiles ) != 0 ) {
 		FetchExtraDirs( pkg, copiedfiles );
+		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
 		std::cout.flush();
 		RevertInstallation( pkg, copiedfiles );
 		return false;
 	}
 #endif
-	if( !SaveCopiedData( pkg, copiedfiles ) )
+	FetchExtraDirs( pkg, copiedfiles );
+	if( !SaveCopiedData( pkg, copiedfiles ) ) {
+		std::cout << RED << CROSS << std::endl;
 		RevertInstallation( pkg, copiedfiles );
+	}
+
+	std::cout << GREEN << TICK << std::endl;
 
 	return true;
 }
