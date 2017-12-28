@@ -16,18 +16,18 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 
 	bool usecustomuninstaller = false;
 
-	if( pkg.type == "Source" && buildcmds.size() < 4 ) {
+	if( pkg.type == "Binary" || buildcmds.size() < 4 ) {
 		std::cout << YELLOW << "No uninstall command in build commands."
 			<< " Using pre-generated " << args[ 0 ] << " uninstaller file ... " << GREEN << TICK << RESET << std::endl;
 		usecustomuninstaller = true;
 	}
 
-	std::vector< std::string > cpdata = GetCopiedData( pkg );
-
 	std::cout << YELLOW << "Removing data ... " << RESET;
 	std::cout.flush();
 
 	if( usecustomuninstaller ) {
+		std::vector< std::string > cpdata = GetCopiedData( pkg );
+
 		if( !RemoveCopiedData( pkg, cpdata ) ) {
 			std::cout << RED << CROSS << RESET << std::endl;
 			std::cout << YELLOW << "Unable to remove all copied data! " << RED << CROSS << RESET << std::endl;
