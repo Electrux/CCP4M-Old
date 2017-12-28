@@ -263,3 +263,15 @@ std::string GetWorkingDir()
 
 	return "";
 }
+
+void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir, const std::string & comparewith )
+{
+	for( auto fnd : fileanddir ) {
+		std::string dir = GetStringTillLastSlash( fnd );
+
+		if( dir == comparewith )
+			continue;
+		
+		fileanddir.push_back( dir );
+	}
+}

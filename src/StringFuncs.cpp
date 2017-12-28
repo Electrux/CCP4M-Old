@@ -56,7 +56,7 @@ std::string GetStringBetweenQuotes( std::string & str )
 	return ret;
 }
 
-std::string GetStringTillLastSlash( std::string & str )
+std::string GetStringTillLastSlash( const std::string & str )
 {
 	std::string temp;
 
@@ -68,6 +68,27 @@ std::string GetStringTillLastSlash( std::string & str )
 			gotslash = true;
 
 		if( gotslash )
+			temp += * ch;
+	}
+
+	if( !temp.empty() )
+		std::reverse( temp.begin(), temp.end() );
+
+	return temp;
+}
+
+std::string GetStringAfterLastSlash( const std::string & str )
+{
+	std::string temp;
+
+	bool gotslash = false;
+
+	for( auto ch = str.rbegin(); ch != str.rend(); ++ch ) {
+
+		if( * ch == '/' )
+			gotslash = true;
+
+		if( !gotslash )
 			temp += * ch;
 	}
 

@@ -10,7 +10,9 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim = ',
 
 std::string GetStringBetweenQuotes( std::string & str );
 
-std::string GetStringTillLastSlash( std::string & str );
+std::string GetStringTillLastSlash( const std::string & str );
+
+std::string GetStringAfterLastSlash( const std::string & str );
 
 void StringToLower( std::string & str );
 

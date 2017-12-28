@@ -35,4 +35,6 @@ bool ChangeWorkingDir( std::string dir );
 
 std::string GetWorkingDir();
 
+void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir, const std::string & comparewith );
+
 #endif // FSFUNCS_HPP
