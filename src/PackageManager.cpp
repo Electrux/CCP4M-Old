@@ -190,7 +190,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetArchiveDir( pkg );
 	}
 	else {
-		rmcmd = "rm -rf " + GetArchiveDir( pkg );
+		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file;
 	}
 
 	if( DispExecuteNoErr( rmcmd, false ) != 0 ) {
