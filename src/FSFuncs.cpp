@@ -288,6 +288,8 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
 	for( auto it = data.begin(); it != data.end(); ) {
 
+		TrimString( * it );
+
 		if( !LocExists( * it ) ) {
 			it = data.erase( it );
 			continue;
@@ -301,6 +303,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
+		std::cout << "removing cpdatafile: " << cpdatafile << std::endl;
 		if( DispExecuteNoErr( cpdatafile, false ) != 0 ) {
 			return false;
 		}
