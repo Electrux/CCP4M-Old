@@ -155,8 +155,6 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 		{ "fw", {} }
 	};
 
-	std::cout << "here1" << std::endl;
-
 	if( LocExists( incdir ) ) {
 		GetWildCardFilesInDir( incdir, list[ "inc" ], "*" );
 
@@ -175,8 +173,6 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 			std::cout << BLUE << lst.first << " : " << CYAN << item.dir + item.file << RESET << std::endl;
 		}
 	}
-
-	std::cout << "here2" << std::endl;
 
 	return list;
 }
