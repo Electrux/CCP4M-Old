@@ -58,7 +58,7 @@ int CreateDir( const std::string & dir )
 	std::string temp;
 	for( auto ch : dir ) {
 
-		if( ch == '/' ) {
+		if( ch == '/' && !temp.empty() ) {
 
 			dirs.push_back( temp );
 			temp.clear();
