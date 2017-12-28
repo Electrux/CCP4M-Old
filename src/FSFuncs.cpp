@@ -81,7 +81,8 @@ int CreateDir( const std::string & dir )
 		finaldir += dirs[ i ];
 
 		if( !LocExists( finaldir ) )
-			retval |= mkdir( finaldir.c_str(), 0755 );
+			retval |= CreateDir( finaldir );
+		std::cout << "RetVal: " << retval << std::endl;
 
 		finaldir += "/";
 	}
