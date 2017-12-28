@@ -31,7 +31,7 @@ bool InstallDirectory( const Package & pkg )
 
 	for( auto dir : copiedfiles ) {
 		std::cout << "Creating Directory... " << dir << std::endl;
-		if( !CreateDir( dir, false ) ) {
+		if( CreateDir( dir, false ) != 0 ) {
 			std::cout << RED << CROSS << std::endl;
 			std::cout << RED << "Error: Unable to create required directory for installation!"
 				<< RESET << std::endl;
