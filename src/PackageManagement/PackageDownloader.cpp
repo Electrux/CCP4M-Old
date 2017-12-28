@@ -25,10 +25,6 @@ bool FetchPackage( const Package & pkg )
 	CURLcode ret;
 	CURL * hnd;
 
-	hnd = curl_easy_init();
-	if( !hnd )
-		return false;
-	
 	std::FILE * file;
 
 	std::string archive = PACKAGE_TMP + pkg.file;
@@ -40,6 +36,10 @@ bool FetchPackage( const Package & pkg )
 		std::cout << RED << "Error: You do not have correct permissions!" << RESET << std::endl;
 		return false;
 	}
+
+	hnd = curl_easy_init();
+	if( !hnd )
+		return false;
 
 	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
 	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
