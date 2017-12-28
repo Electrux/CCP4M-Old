@@ -18,9 +18,6 @@
 
 bool InstallDirectory( const Package & pkg )
 {
-	std::cout << YELLOW << "Copying files ... " << RESET;
-	std::cout.flush();
-
 	bool use_framework = false;
 
 	std::vector< std::string > copiedfiles;
@@ -30,7 +27,6 @@ bool InstallDirectory( const Package & pkg )
 	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
 	for( auto dir : copiedfiles ) {
-		std::cout << "Creating Directory... " << dir << std::endl;
 		if( CreateDir( dir, false ) != 0 ) {
 			std::cout << RED << CROSS << std::endl;
 			std::cout << RED << "Error: Unable to create required directory for installation!"
@@ -71,7 +67,7 @@ bool InstallDirectory( const Package & pkg )
 		cpinput = incdir + file.dir + file.file;
 		cpoutput = pkg.incdir + "/" + file.dir;
 
-		copiedfiles.push_back( cpoutput );
+		copiedfiles.push_back( cpoutput + file.file );
 
 		MoveOutputCursorBack( prevsize );
 
@@ -85,6 +81,7 @@ bool InstallDirectory( const Package & pkg )
 			return false;
 		}
 	}
+	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
 
 	// LIBRARY FILES
@@ -99,7 +96,7 @@ bool InstallDirectory( const Package & pkg )
 		cpinput = libdir + file.dir + file.file;
 		cpoutput = pkg.libdir + "/" + file.dir;
 
-		copiedfiles.push_back( cpoutput );
+		copiedfiles.push_back( cpoutput + file.file );
 
 		MoveOutputCursorBack( prevsize );
 
@@ -113,6 +110,7 @@ bool InstallDirectory( const Package & pkg )
 			return false;
 		}
 	}
+	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
 
 	if( !copyfiles[ "fw" ].empty() ) {
@@ -126,7 +124,7 @@ bool InstallDirectory( const Package & pkg )
 		cpinput = fwdir + file.dir + file.file;
 		cpoutput = "/Library/Frameworks/" + file.dir;
 
-		copiedfiles.push_back( cpoutput );
+		copiedfiles.push_back( cpoutput + file.file );
 
 		MoveOutputCursorBack( prevsize );
 
@@ -140,6 +138,7 @@ bool InstallDirectory( const Package & pkg )
 			return false;
 		}
 	}
+	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
@@ -174,7 +173,6 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 	}
 #ifdef __APPLE__
 	if( LocExists( fwdir ) && GetWildCardFilesInDir( fwdir, list[ "fw" ], "*" ) > 0 ) {
-		std::cout << RED << "Using frameworks... " << RESET << std::endl;
 		use_framework = true;
 	}
 #endif
