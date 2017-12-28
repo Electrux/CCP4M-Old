@@ -286,10 +286,9 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 		prevsize = DisplayOneLinerString( * it );
 
 		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
+			MoveOutputCursorBack( prevsize );
 			return false;
 		}
-
-		prevsize = DisplayOneLinerString( * it );
 
 		it = data.erase( it );
 	}
@@ -302,6 +301,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 		prevsize = DisplayOneLinerString( cpdatafile );
 
 		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
+			MoveOutputCursorBack( prevsize );
 			prevsize = 0;
 			return false;
 		}
