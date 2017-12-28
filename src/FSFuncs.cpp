@@ -269,7 +269,7 @@ void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddi
 	for( auto fnd : fileanddir ) {
 		std::string dir = GetStringTillLastSlash( fnd );
 
-		if( dir == comparewith ) {
+		if( dir + "/" == comparewith ) {
 			continue;
 		}
 
