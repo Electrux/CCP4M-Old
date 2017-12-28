@@ -93,7 +93,7 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 
 	double percentdown = ( cdl / totdl ) * 100;
 
-	std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
+	std::string percent = std::to_string( percentdown ) + "%";
 
 	MoveOutputCursorBack( prevpercentsize );
 	prevpercentsize = DisplayOneLinerString( percent );
