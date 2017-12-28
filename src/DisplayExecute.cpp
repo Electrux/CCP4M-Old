@@ -66,8 +66,6 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 
 	std::string finalcmd = cmd + " 2>" + TMP_FILE + " | cut -d \" \" -f3 | cut -d \"'\" -f2";
 
-	std::cout << "Executing: " << finalcmd << std::endl;
-
 	FILE * pipe = popen( finalcmd.c_str(), "r" );
 
 	if( !pipe )
@@ -98,6 +96,8 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 	errfile.close();
 
 	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
+
+	std::cout << "Error: " << err << std::endl;
 
 	return pclose( pipe );
 }
