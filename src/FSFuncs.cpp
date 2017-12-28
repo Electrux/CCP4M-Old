@@ -164,10 +164,9 @@ long long GetLastModifiedTime( std::string file )
 	return info.st_mtime;
 }
 
-int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recursive )
+int GetFilesInDirNonSrc( std::string dir, std::vector< std::string > & temp, bool recursive )
 {
-	struct stat info;
-	if( stat( dir.c_str(), & info ) != 0 )
+	if( !LocExists( dir ) )
 		return 1;
 
 	DIR* dirp = opendir( dir.c_str() );
@@ -186,12 +185,56 @@ int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recu
 			continue;
 
 		if( p->d_type == DT_DIR && recursive )
-			GetFilesInDir( dir + "/" + p->d_name, temp );
+			GetFilesInDirNonSrc( dir + "/" + p->d_name, temp );
 		else if( p->d_type != DT_DIR )
 			temp.push_back( tempdir + p->d_name );
 	}
 
 	return 0;
+}
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::string wildcards, bool recursive )
+{
+	if( !LocExists( dir ) )
+		return 0;
+
+	std:remove( wildcards.begin(), wildcards.end(), ' ' );
+
+	std::vector< std::string > wildcard_vec = DelimStringToVector( wildcards );
+
+	TrimWildCards( wildcard_vec );
+
+	return GetWildCardFilesInDir( dir, temp, wildcard_vec, recursive );
+}
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
+			std::vector< std::string > wildcard_vec, std::string tempdir, bool recursive )
+{
+	if( !LocExists( dir ) )
+		return 0;
+
+	DIR* dirp = opendir( dir.c_str() );
+	struct dirent * p;
+
+	if( !tempdir.empty() )
+		tempdir += "/";
+
+	int count = 0;
+
+	while( ( p = readdir( dirp ) ) != NULL ) {
+		if( strcmp( p->d_name, "." ) == 0 || strcmp( p->d_name, ".." ) == 0 )
+			continue;
+
+		if( p->d_type == DT_DIR && recursive ) {
+			count += GetWildCardFilesInDir( dir + "/" + p->d_name, temp, wildcard_vec, recursive, tempdir + p->d_name );
+		}
+		else if( p->d_type != DT_DIR && IsWildCardsCompatible( p->d_name, wildcard_vec ) ) {
+			temp.push_back( { tempdir, p->d_name } );
+			count++;
+		}
+	}
+
+	return count;
 }
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
@@ -246,31 +289,33 @@ std::string GetArchiveDir( const Package & pkg )
 	return archivedir;
 }
 
-void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir )
+void FetchExtraDirs( const Package & pkg,
+		const std::map< std::string, std::vector< DirFile > > & copyfiles,
+		std::vector< std::string > & fileanddir )
 {
-	for( auto fnd : fileanddir ) {
-		std::string dir = GetStringTillLastSlash( fnd );
+	for( auto type : copyfiles ) {
+		for( auto data : type.second ) {
+			std::string dir = data.dir;
+			if( dir.empty() )
+				continue;
+			
+			if( * ( dir.end() - 1 ) == '/' )
+				dir.erase( dir.end() - 1 );
+			
+			if( std::find( fileanddir.begin(), fileanddir.end(), dir ) != fileanddir.end() )
+				continue;
 
-		if( dir.empty() )
-			continue;
-		// Erase last trailing slash.
-		dir.erase( dir.end() - 1 );
-
-		if( std::find( fileanddir.begin(), fileanddir.end(), dir ) != fileanddir.end() )
-			continue;
-
-		if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" ) {
-			continue;
+			if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" )
+				continue;
+			
+			fileanddir.push_back( dir );
 		}
-		
-		fileanddir.push_back( dir );
 	}
 }
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
 	int prevsize = 0;
-	std::string output;
 
 	for( auto it = data.begin(); it != data.end(); ) {
 

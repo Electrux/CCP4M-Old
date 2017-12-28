@@ -18,4 +18,12 @@ void StringToLower( std::string & str );
 
 void TrimString( std::string & str );
 
+bool IsWildCardsCompatible( const std::string & str, std::vector< std::string > & wildcards );
+
+bool IsWildCardCompatible( const std::string & str, std::string & wildcard );
+
+void TrimWildCards( std::vector< std::string > & wildcards );
+
+void TrimWildCard( std::string & wildcard );
+
 #endif //COMMONFUNCS_HPP

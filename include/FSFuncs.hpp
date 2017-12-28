@@ -1,6 +1,7 @@
 #ifndef FSFUNCS_HPP
 #define FSFUNCS_HPP
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -24,7 +25,12 @@ bool IsLatestBuild( std::string filename );
 
 long long GetLastModifiedTime( std::string file );
 
-int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recursive = false );
+int GetFilesInDirNonSrc( std::string dir, std::vector< std::string > & temp, bool recursive = false );
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::string wildcards, bool recursive = true );
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
+			std::vector< std::string > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 
@@ -32,7 +38,9 @@ bool CreateArchiveDir( const Package & pkg, bool verbose = false );
 
 std::string GetArchiveDir( const Package & pkg );
 
-void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir );
+void FetchExtraDirs( const Package & pkg,
+		const std::map< std::string, std::vector< DirFile > > & copyfiles,
+		std::vector< std::string > & fileanddir );
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data );
 

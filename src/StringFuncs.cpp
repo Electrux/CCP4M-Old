@@ -37,7 +37,6 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 	return val;
 }
 
-
 std::string GetStringBetweenQuotes( std::string & str )
 {
 	bool inquote = false;
@@ -129,5 +128,69 @@ void TrimString( std::string & str )
 		else {
 			++it;
 		}
+	}
+}
+
+bool IsWildCardsCompatible( const std::string & str, std::vector< std::string > & wildcards )
+{
+	for( auto card : wildcards ) {
+		if( IsWildCardCompatible( str, card ) )
+			return true;
+	}
+
+	return false;
+}
+
+bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
+{
+	if( wildcard == "*" )
+		return true;
+
+	auto strit = str.begin();
+	auto wcardit = wildcard.begin();
+
+	while( strit != str.end() ) {
+		if( * wcardit == * strit ) {
+			wcardit++;
+		}
+		else if( * wcardit == '*' ) {
+			if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.end() )
+				wcardit++;
+			else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.end() )
+				wcardit += 2;
+		}
+		else {
+			break;
+		}
+
+		strit++;
+	}
+
+	while( * wcardit == '*' )
+		wcardit++;
+
+	if( strit == str.end() && wcardit == wildcard.end() )
+		return true;
+
+	return false;
+}
+
+void TrimWildCards( std::vector< std::string > & wildcards )
+{
+	for( auto wildcard = wildcards.begin(); wildcard != wildcards.end(); ++wildcard ) {
+		TrimWildCard( * wildcard );
+	}
+}
+
+void TrimWildCard( std::string & wildcard )
+{
+	for( auto it = wildcard.begin(); it != wildcard.end(); ) {
+		if( * it == '*' ) {
+			++it;
+
+			while( * it == '*' )
+				it = wildcard.erase( it );
+		}
+		++it;
 	}
 }

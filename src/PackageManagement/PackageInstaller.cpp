@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <map>
 #include <vector>
 #include <cstdlib>
 #include <fstream>
@@ -8,6 +9,7 @@
 #include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
 #include "../../include/PackageManagement/PackageData.hpp"
@@ -19,62 +21,117 @@ bool InstallDirectory( const Package & pkg )
 	std::cout << YELLOW << "Copying files ... " << RESET;
 	std::cout.flush();
 
-	std::string copyinc, copyfw;
-	std::vector< std::string > copylibs;
+	bool use_framework = false;
+
 	std::vector< std::string > copiedfiles;
 
-	GetCopyCommands( pkg, copyinc, copylibs, copyfw );
-
-	bool useframework = !copyfw.empty();
+	auto copyfiles = GetCopyList( pkg, use_framework );
 
 #ifndef __APPLE__
-	useframework = false;
+	use_framework = false;
 #endif
-	if( !CheckNecessaryPermissions( pkg, useframework ) ) {
+	if( !CheckNecessaryPermissions( pkg, use_framework ) ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
 			<< RESET << std::endl;
 		return false;
 	}
 
-	std::string dispexectmp;
+	std::string archivedir = GetArchiveDir( pkg );
+	std::string incdir = archivedir + "/include/";
+	std::string libdir = archivedir + "/lib/";
+	std::string fwdir = archivedir + "/Frameworks/";
 
-	if( DispExecuteWithCopyFileLocations( copyinc, dispexectmp, copiedfiles ) != 0 ) {
-		FetchExtraDirs( pkg, copiedfiles );
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
+	int prevsize = 0;
+
+	std::string cpinput;
+	std::string cpoutput;
+
+	// INCLUDE FILES
+	if( !copyfiles[ "inc" ].empty() ) {
+		std::cout << YELLOW << "Copying include files ... " << RESET;
 		std::cout.flush();
-		RevertInstallation( pkg, copiedfiles );
-		return false;
 	}
 
-	int failctr = 0;
+	for( auto file : copyfiles[ "inc" ] ) {
+		std::string op = "Copying file: " + file.dir + file.file;
 
-	for( auto lib : copylibs ) {
-		if( DispExecuteWithCopyFileLocations( lib, dispexectmp, copiedfiles ) != 0 ) {
-			failctr++;
+		cpinput = incdir + file.dir + file.file;
+		cpoutput = pkg.incdir + "/" + file.dir + file.file;
+
+		copiedfiles.push_back( cpoutput );
+
+		MoveOutputCursorBack( prevsize );
+
+		prevsize = DisplayOneLinerString( op );
+		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
+			MoveOutputCursorBack( prevsize );
+			std::cout << RED << CROSS << std::endl;
+			std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
+			std::cout.flush();
+			RevertInstallation( pkg, copiedfiles );
+			return false;
 		}
 	}
-	if( failctr >= copylibs.size() ) {
-		FetchExtraDirs( pkg, copiedfiles );
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
+	std::cout << GREEN << TICK << std::endl;
+
+	// LIBRARY FILES
+	if( !copyfiles[ "lib" ].empty() ) {
+		std::cout << YELLOW << "Copying library files ... " << RESET;
 		std::cout.flush();
-		RevertInstallation( pkg, copiedfiles );
-		return false;
 	}
 
-#ifdef __APPLE__
-	if( DispExecuteWithCopyFileLocations( copyfw, dispexectmp, copiedfiles ) != 0 ) {
-		FetchExtraDirs( pkg, copiedfiles );
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
-		std::cout.flush();
-		RevertInstallation( pkg, copiedfiles );
-		return false;
+	for( auto file : copyfiles[ "lib" ] ) {
+		std::string op = "Copying file: " + file.dir + file.file;
+
+		cpinput = libdir + file.dir + file.file;
+		cpoutput = pkg.libdir + "/" + file.dir + file.file;
+
+		copiedfiles.push_back( cpoutput );
+
+		MoveOutputCursorBack( prevsize );
+
+		prevsize = DisplayOneLinerString( op );
+		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
+			MoveOutputCursorBack( prevsize );
+			std::cout << RED << CROSS << std::endl;
+			std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
+			std::cout.flush();
+			RevertInstallation( pkg, copiedfiles );
+			return false;
+		}
 	}
-#endif
-	FetchExtraDirs( pkg, copiedfiles );
+	std::cout << GREEN << TICK << std::endl;
+
+	if( !copyfiles[ "fw" ].empty() ) {
+		std::cout << YELLOW << "Copying framework files ... " << RESET;
+		std::cout.flush();
+	}
+
+	for( auto file : copyfiles[ "fw" ] ) {
+		std::string op = "Copying file: " + file.dir + file.file;
+
+		cpinput = fwdir + file.dir + file.file;
+		cpoutput = "/Library/Frameworks/" + file.dir + file.file;
+
+		copiedfiles.push_back( cpoutput );
+
+		MoveOutputCursorBack( prevsize );
+
+		prevsize = DisplayOneLinerString( op );
+		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
+			MoveOutputCursorBack( prevsize );
+			std::cout << RED << CROSS << std::endl;
+			std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
+			std::cout.flush();
+			RevertInstallation( pkg, copiedfiles );
+			return false;
+		}
+	}
+	std::cout << GREEN << TICK << std::endl;
+
+	FetchExtraDirs( pkg, copyfiles, copiedfiles );
+
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
 		std::cout << RED << CROSS << std::endl;
 		RevertInstallation( pkg, copiedfiles );
@@ -85,35 +142,37 @@ bool InstallDirectory( const Package & pkg )
 	return true;
 }
 
-void GetCopyCommands( const Package & pkg, std::string & include, std::vector< std::string > & libs, std::string & framework )
+std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg, bool & use_framework )
 {
 	std::string archivedir = GetArchiveDir( pkg );
-	std::string incdir = archivedir + "/include";
-	std::string libdir = archivedir + "/lib";
-	std::string fwdir = archivedir + "/Frameworks";
+	std::string incdir = archivedir + "/include/";
+	std::string libdir = archivedir + "/lib/";
+	std::string fwdir = archivedir + "/Frameworks/";
 
-	std::string lib;
-
-	libs.clear();
-	include = "";
-	framework = "";
+	std::map< std::string, std::vector< std::string > > list = {
+		{ "inc", {} },
+		{ "lib", {} },
+		{ "fw", {} }
+	};
 
 	if( LocExists( incdir ) ) {
-		include = "cp -rv " + incdir + "/* " + pkg.incdir;
+		GetWildCardFilesInDir( incdir, list[ "inc" ], "*" );
+
 	}
 	if( LocExists( libdir ) ) {
-		lib = "cp -rv " + libdir + "/*.so* " + pkg.libdir;
-		libs.push_back( lib );
-		lib = "cp -rv " + libdir + "/*.l* " + pkg.libdir;
-		libs.push_back( lib );
-		lib = "cp -rv " + libdir + "/*.dyl* " + pkg.libdir;
-		libs.push_back( lib );
+		GetWildCardFilesInDir( libdir, list[ "lib" ], "*.so*, *.l*, *.dyl*" );
 	}
 #ifdef __APPLE__
-	if( LocExists( fwdir ) ) {
-		framework = "cp -r " + fwdir + "/* /Library/Frameworks/";
+	if( LocExists( fwdir ) && GetWildCardFilesInDir( fwdir, list[ "fw" ], "*" ) > 0 ) {
+		std::cout << RED << "Using frameworks... " << RESET << std::endl;
+		use_framework = true;
 	}
 #endif
+	for( auto lst : list ) {
+		for( auto item : lst.second ) {
+			std::cout << BLUE << lst.first << " : " << CYAN << item << RESET << std::endl;
+		}
+	}
 }
 
 void RevertInstallation( const Package & pkg, std::vector< std::string > & data )
