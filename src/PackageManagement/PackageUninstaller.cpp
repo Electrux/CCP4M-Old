@@ -41,11 +41,13 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
+		std::cout << RED << CROSS << RESET << std::endl;
 		std::cout << YELLOW << "Unable to get working directory! " << RED << CROSS << RESET << std::endl;
 		return false;
 	}
 
 	if( !ChangeWorkingDir( GetArchiveDir( pkg ) ) ) {
+		std::cout << RED << CROSS << RESET << std::endl;
 		std::cout << YELLOW << "Unable to change working directory to "
 			<< "extracted package directory! " << RED << CROSS << RESET << std::endl;
 		return false;
