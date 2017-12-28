@@ -245,22 +245,6 @@ std::string GetArchiveDir( const Package & pkg )
 	return archivedir;
 }
 
-bool ChangeWorkingDir( std::string dir )
-{
-	return chdir( dir.c_str() ) == 0;
-}
-
-std::string GetWorkingDir()
-{
-	char cwd[ 1024 ];
-
-	if( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
-		return cwd;
-	}
-
-	return "";
-}
-
 void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir )
 {
 	for( auto fnd : fileanddir ) {
@@ -292,7 +276,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 			it = data.erase( it );
 			continue;
 		}
-		if( DispExecuteNoErr( "rm -rf " + ( * it ), false ) != 0 ) {
+		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
 			return false;
 		}
 		it = data.erase( it );
@@ -301,7 +285,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 	std::string cpdatafile = "rm -rf " + PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		if( DispExecuteNoErr( cpdatafile, false ) != 0 ) {
+		if( DispExecuteNoErr( cpdatafile, true ) != 0 ) {
 			return false;
 		}
 	}

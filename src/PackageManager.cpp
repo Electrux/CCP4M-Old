@@ -251,6 +251,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 	file.close();
 
 	std::cout << GREEN << TICK << RESET << std::endl;
+	std::cout << BOLD_YELLOW << "Uninstallation successful! " << BOLD_GREEN << TICK << RESET << std::endl;
 
 	return true;
 }

@@ -5,6 +5,7 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/StringFuncs.hpp"
+#include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
@@ -17,9 +18,13 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	bool usecustomuninstaller = false;
 
 	if( pkg.type == "Binary" || buildcmds.size() < 4 ) {
-		std::cout << YELLOW << "No uninstall command in build commands."
-			<< " Using pre-generated " << args[ 0 ] << " uninstaller file ... " << GREEN << TICK << RESET << std::endl;
+		std::cout << YELLOW << "Using pre-generated " << args[ 0 ]
+			<< " uninstaller file ... " << GREEN << TICK << RESET << std::endl;
 		usecustomuninstaller = true;
+	}
+	else {
+		std::cout << YELLOW << "Using uninstall command from library config ... "
+			<< GREEN << TICK << RESET << std::endl;
 	}
 
 	std::cout << YELLOW << "Removing data ... " << RESET;

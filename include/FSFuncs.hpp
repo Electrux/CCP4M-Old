@@ -32,10 +32,6 @@ bool CreateArchiveDir( const Package & pkg, bool verbose = false );
 
 std::string GetArchiveDir( const Package & pkg );
 
-bool ChangeWorkingDir( std::string dir );
-
-std::string GetWorkingDir();
-
 void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir );
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data );
