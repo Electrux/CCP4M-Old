@@ -77,6 +77,9 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 
 			TrimString( op );
 
+			if( op.empty() )
+				continue;
+
 			if( std::find( files.begin(), files.end(), op ) != files.end() )
 				continue;
 			

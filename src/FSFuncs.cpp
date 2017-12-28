@@ -270,6 +270,8 @@ void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddi
 	for( auto fnd : fileanddir ) {
 		std::string dir = GetStringTillLastSlash( fnd );
 
+		if( dir.empty() )
+			continue;
 		// Erase last trailing slash.
 		dir.erase( dir.end() - 1 );
 
