@@ -38,6 +38,10 @@ std::string GetWorkingDir();
 
 void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddir );
 
-bool RemoveAllCopiedFiles( std::vector< std::string > & files );
+bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data );
+
+bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & data );
+
+std::vector< std::string > GetCopiedData( const Package & pkg );
 
 #endif // FSFUNCS_HPP

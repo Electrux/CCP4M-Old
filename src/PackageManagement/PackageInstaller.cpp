@@ -3,9 +3,6 @@
 #include <vector>
 #include <cstdlib>
 #include <fstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
@@ -30,7 +27,6 @@ bool InstallDirectory( const Package & pkg )
 #ifndef __APPLE__
 	useframework = false;
 #endif
-
 	if( !CheckNecessaryPermissions( pkg, useframework ) ) {
 		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
 			<< RESET << std::endl;
@@ -43,7 +39,7 @@ bool InstallDirectory( const Package & pkg )
 		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		RevertInstallation( copiedfiles );
+		RevertInstallation( pkg, copiedfiles );
 		return false;
 	}
 
@@ -58,7 +54,7 @@ bool InstallDirectory( const Package & pkg )
 	if( failctr >= copylibs.size() ) {
 		std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		RevertInstallation( copiedfiles );
+		RevertInstallation( pkg, copiedfiles );
 		return false;
 	}
 
@@ -67,24 +63,12 @@ bool InstallDirectory( const Package & pkg )
 		FetchExtraDirs( pkg, copiedfiles );
 		std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
 		std::cout.flush();
-		RevertInstallation( copiedfiles );
+		RevertInstallation( pkg, copiedfiles );
 		return false;
 	}
 #endif
-	std::fstream installedfiles;
-	installedfiles.open( PACKAGE_DIR + "." + pkg.name, std::ios::out );
-	if( !installedfiles ) {
-		std::cout << RED << "Error in saving installation information!\nReverting installation ... " << RESET;
-		std::cout.flush();
-		RevertInstallation( copiedfiles );
-		return false;
-	}
-
-	for( auto file : copiedfiles ) {
-		installedfiles << file << std::endl;
-	}
-
-	installedfiles.close();
+	if( !SaveCopiedData( pkg, copiedfiles ) )
+		RevertInstallation( pkg, copiedfiles );
 
 	return true;
 }
@@ -120,9 +104,9 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::vector< s
 #endif
 }
 
-void RevertInstallation( std::vector< std::string > & copiedfiles )
+void RevertInstallation( const Package & pkg, std::vector< std::string > & data )
 {
-	if( !RemoveAllCopiedFiles( copiedfiles ) ) {
+	if( !RemoveCopiedData( pkg, data ) ) {
 		std::cout << RED << CROSS << RESET << std::endl;
 		std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
 	}

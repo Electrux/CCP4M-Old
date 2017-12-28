@@ -197,34 +197,30 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 {
 	int ret = 0;
 
-	std::string dispexectemp;
-
-	if( DispExecute( "touch " + pkg.incdir + "/pkgtest", dispexectemp, false ) != 0 )
+	if( DispExecuteNoErr( "touch " + pkg.incdir + "/pkgtest", false ) != 0 )
 		return false;
-	DispExecute( "rm -rf " + pkg.incdir + "/pkgtest", dispexectemp, false );
+	DispExecuteNoErr( "rm -rf " + pkg.incdir + "/pkgtest", false );
 
-	if( DispExecute( "touch " + pkg.libdir + "/pkgtest", dispexectemp, false ) != 0 )
+	if( DispExecuteNoErr( "touch " + pkg.libdir + "/pkgtest", false ) != 0 )
 		return false;
-	DispExecute( "rm -rf " + pkg.libdir + "/pkgtest", dispexectemp, false );
+	DispExecuteNoErr( "rm -rf " + pkg.libdir + "/pkgtest", false );
 
 	if( framework_exists ) {
-		if( DispExecute( "touch /Library/Frameworks/pkgtest", dispexectemp, false ) != 0 )
+		if( DispExecuteNoErr( "touch /Library/Frameworks/pkgtest", false ) != 0 )
 			return false;
-		DispExecute( "rm -rf /Library/Frameworks/pkgtest", dispexectemp, false );
+		DispExecuteNoErr( "rm -rf /Library/Frameworks/pkgtest", false );
 	}
 	return !( bool )ret;
 }
 
 bool CreateArchiveDir( const Package & pkg )
 {
-	struct stat info;
-
 	std::string archivedir = GetArchiveDir( pkg );
 
-	if( stat( archivedir.c_str(), & info ) == 0 )
+	if( LocExists( archivedir ) )
 		return true;
 	
-	int ret = mkdir( archivedir.c_str(), 0755 );
+	int ret = CreateDir( archivedir );
 
 	if( ret != 0 ) {
 		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
@@ -281,28 +277,77 @@ void FetchExtraDirs( const Package & pkg, std::vector< std::string > & fileanddi
 		if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" ) {
 			continue;
 		}
-
-		std::cout << "Adding: " << dir << std::endl;
 		
 		fileanddir.push_back( dir );
 	}
 }
 
-bool RemoveAllCopiedFiles( std::vector< std::string > & files )
+bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
-	std::string tmpdispexec;
-
-	for( auto it = files.begin(); it != files.end(); ) {
+	for( auto it = data.begin(); it != data.end(); ) {
 
 		if( !LocExists( * it ) ) {
-			it = files.erase( it );
+			it = data.erase( it );
 			continue;
 		}
-		if( DispExecute( "rm -rf " + ( * it ), tmpdispexec, false ) != 0 ) {
+		if( DispExecuteNoErr( "rm -rf " + ( * it ), false ) != 0 ) {
 			return false;
 		}
-		it = files.erase( it );
+		it = data.erase( it );
+	}
+
+	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
+
+	if( LocExists( cpdatafile ) ) {
+		if( DispExecuteNoErr( cpdatafile, false ) != 0 ) {
+			return false;
+		}
 	}
 
 	return true;
+}
+
+bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & copiedfiles )
+{
+	std::fstream installedfiles;
+	installedfiles.open( PACKAGE_DIR + "." + pkg.name, std::ios::out );
+	if( !installedfiles ) {
+		std::cout << RED << "Error in saving installation information!\nReverting installation ... " << RESET;
+		std::cout.flush();
+		return false;
+	}
+
+	for( auto file : copiedfiles ) {
+		installedfiles << file << std::endl;
+	}
+
+	installedfiles.close();
+
+	return true;
+}
+
+std::vector< std::string > GetCopiedData( const Package & pkg )
+{
+	std::vector< std::string > data;
+
+	std::fstream file;
+	file.open( PACKAGE_DIR + "." + pkg.name, std::ios::in );
+
+	if( !file ) {
+		return data;
+	}
+
+	std::string line;
+
+	while( std::getline( file, line ) ) {
+		if( !line.empty() && line != "\n" ) {
+			TrimString( line );
+
+			data.push_back( line );
+		}
+	}
+
+	file.close();
+
+	return data;
 }

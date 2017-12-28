@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cstdlib>
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
@@ -17,20 +16,20 @@ bool BuildDirectory( const Package & pkg )
 		DelimStringToVector( pkg.buildcmds );
 
 	if( buildcmds.empty() ) {
-		std::cout << YELLOW << "Nothing to build! Exiting!" << RED << CROSS << std::endl;
+		std::cout << YELLOW << "Nothing to build! Exiting!" << RED << CROSS << RESET << std::endl;
 		return false;
 	}
 
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
-		std::cout << YELLOW << "Unable to get working directory! " << RED << CROSS << std::endl;
+		std::cout << YELLOW << "Unable to get working directory! " << RED << CROSS << RESET << std::endl;
 		return false;
 	}
 
 	if( !ChangeWorkingDir( GetArchiveDir( pkg ) ) ) {
 		std::cout << YELLOW << "Unable to change working directory to "
-			<< "extracted package directory! " << RED << CROSS << std::endl;
+			<< "extracted package directory! " << RED << CROSS << RESET << std::endl;
 		return false;
 	}
 

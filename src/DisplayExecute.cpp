@@ -102,3 +102,10 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 
 	return pclose( pipe );
 }
+
+int DispExecuteNoErr( std::string cmd, bool show_output )
+{
+	std::string temperr;
+
+	return DispExecute( cmd, temperr, show_output );
+}

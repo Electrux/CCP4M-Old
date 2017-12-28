@@ -22,6 +22,10 @@ public:
 
 	std::string GetDependencyFlags( std::string package );
 
+	bool RemoveTempFiles( const Package & pkg, bool allfiles = false );
+
+	bool RemoveInstalledEntry( const Package & pkg );
+
 	bool PackageExists( std::string package, Package & pkg );
 
 	bool IsInstalled( std::string packge );
