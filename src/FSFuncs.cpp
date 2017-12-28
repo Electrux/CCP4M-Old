@@ -86,8 +86,6 @@ int CreateDir( const std::string & dir, bool verbose )
 		finaldir += "/";
 	}
 
-	std::cout << retval << std::endl;
-
 	return retval;
 }
 
