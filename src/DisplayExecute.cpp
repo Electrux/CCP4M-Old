@@ -66,6 +66,8 @@ int DispExecuteWithCopyFileLocations( std::string cmd, std::string & err, std::v
 
 	std::string finalcmd = cmd + " 2>" + TMP_FILE + " | cut -d ' ' -f3 | cut -d '\'' -f2";
 
+	std::cout << "Executing: " << finalcmd << std::endl;
+
 	FILE * pipe = popen( finalcmd.c_str(), "r" );
 
 	if( !pipe )
