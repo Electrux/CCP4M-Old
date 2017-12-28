@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include <cstdlib>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -9,15 +10,18 @@
 #include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayExecute.hpp"
+
 #include "../../include/PackageManagement/PackageData.hpp"
 
 #include "../../include/PackageManagement/PackageInstaller.hpp"
 
 bool InstallDirectory( const Package & pkg )
 {
-	std::string copyinc, copylib, copyfw;
+	std::string copyinc, copyfw;
+	std::vector< std::string > copylibs;
 
-	GetCopyCommands( pkg, copyinc, copylib, copyfw );
+	GetCopyCommands( pkg, copyinc, copylibs, copyfw );
 
 	bool useframework = !copyfw.empty();
 
@@ -31,7 +35,9 @@ bool InstallDirectory( const Package & pkg )
 		return false;
 	}
 
-	if( std::system( copyinc.c_str() ) != 0 ) {
+	std::string dispexectmp;
+
+	if( DispExecute( copyinc, dispexectmp, false ) != 0 ) {
 		std::cout << RED << "Error in copying includes!"
 			<< " Reverting installation!"
 			<< RESET << std::endl;
@@ -39,14 +45,21 @@ bool InstallDirectory( const Package & pkg )
 		return false;
 	}
 
-	if( std::system( copylib.c_str() ) != 0 ) {
+	int failctr = 0;
+
+	for( auto lib : copylibs ) {
+		if( DispExecute( lib, dispexectmp, false ) != 0 ) {
+			failctr++;
+		}
+	}
+	if( failctr >= copylibs.size() ) {
 		std::cout << RED << "Error in copying libraries!"
 			<< RESET << std::endl;
 		return false;
 	}
 
 #ifdef __APPLE__
-	if( std::system( copyfw.c_str() ) != 0 ) {
+	if( DispExecute( copyfw, dispexectmp, false ) != 0 ) {
 		std::cout << RED << "Error in copying frameworks!"
 			<< RESET << std::endl;
 		return false;
@@ -55,7 +68,7 @@ bool InstallDirectory( const Package & pkg )
 	return true;
 }
 
-void GetCopyCommands( const Package & pkg, std::string & include, std::string & lib, std::string & framework )
+void GetCopyCommands( const Package & pkg, std::string & include, std::vector< std::string > & libs, std::string & framework )
 {
 	std::string archivedir = GetArchiveDir( pkg );
 	std::string incdir = archivedir + "/include";
@@ -63,15 +76,23 @@ void GetCopyCommands( const Package & pkg, std::string & include, std::string & 
 	std::string fwdir = archivedir + "/Frameworks";
 
 	include = "";
-	lib = "";
+	std::string lib;
 	framework = "";
 
-	if( LocExists( incdir ) )
+	if( LocExists( incdir ) ) {
 		include = "cp -r " + incdir + "/* " + pkg.incdir;
-	if( LocExists( libdir ) )
-		lib = "cp -r " + libdir + "/*.so* " + libdir + "/*.l* " + libdir + "/*.dyl* " + pkg.libdir;
+	}
+	if( LocExists( libdir ) ) {
+		lib = "cp -r " + libdir + "/*.so* " + pkg.libdir;
+		libs.push_back( lib );
+		lib = "cp -r " + libdir + "/*.l* " + pkg.libdir;
+		libs.push_back( lib );
+		lib = "cp -r " + libdir + "/*.dyl* " + pkg.libdir;
+		libs.push_back( lib );
+	}
 #ifdef __APPLE__
-	if( LocExists( fwdir ) )
+	if( LocExists( fwdir ) ) {
 		framework = "cp -r " + fwdir + "/* /Library/Frameworks/";
+	}
 #endif
 }

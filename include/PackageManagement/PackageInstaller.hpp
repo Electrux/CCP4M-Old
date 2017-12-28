@@ -7,6 +7,6 @@
 
 bool InstallDirectory( const Package & pkg );
 
-void GetCopyCommands( const Package & pkg, std::string & include, std::string & lib, std::string & framework );
+void GetCopyCommands( const Package & pkg, std::string & include, std::vector< std::string > & libs, std::string & framework );
 
 #endif // PACKAGEINSTALLER_HPP
