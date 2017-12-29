@@ -7,12 +7,8 @@
 
 void MoveOutputCursorBack( int & len )
 {
-	for( int i = 0; i < len; ++i ) {
-		std::cout << "\b \b";
-	}
+	std::cout << "\33[2K\r";
 	std::cout.flush();
-
-	std::cout << "moved back " << len << std::endl;
 }
 
 int DisplayOneLinerString( const std::string & str )
