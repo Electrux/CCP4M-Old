@@ -28,17 +28,19 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	std::array< char, 10000 > opline_temp;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline_temp.data(), 10000, pipe ) != NULL ) {
-			MoveOutputCursorBack( prevdisp );
+		if( fgets( opline_temp.data(), 10000, pipe ) != NULL && show_output ) {
+			//MoveOutputCursorBack( prevdisp );
 			std::string opline = std::string( opline_temp.data() );
 
 			TrimString( opline );
 
-			prevdisp = DisplayOneLinerString( opline );
+			std::cout << opline << "\n" << std::endl << std::endl;
+
+			//prevdisp = DisplayOneLinerString( opline );
 		}
 	}
 
-	MoveOutputCursorBack( prevdisp );
+	//MoveOutputCursorBack( prevdisp );
 
 	prevdisp = 0;
 
