@@ -38,7 +38,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		}
 	}
 
-	std::cout << "PrevDisp: " << prevdisp << std::endl;
+	std::cout << "PrevDisp: " << prevdisp << " last line: " << opline << std::endl;
 
 	MoveOutputCursorBack( prevdisp );
 
