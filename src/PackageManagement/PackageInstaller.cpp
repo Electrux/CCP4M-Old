@@ -26,6 +26,13 @@ bool InstallDirectory( const Package & pkg )
 
 	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
+	if( !CheckNecessaryPermissions( pkg, use_framework ) ) {
+		std::cout << RED << CROSS << std::endl;
+		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
+			<< RESET << std::endl;
+		return false;
+	}
+
 	for( auto dir : copiedfiles ) {
 		if( CreateDir( dir, false ) != 0 ) {
 			std::cout << RED << CROSS << std::endl;
@@ -38,12 +45,6 @@ bool InstallDirectory( const Package & pkg )
 #ifndef __APPLE__
 	use_framework = false;
 #endif
-	if( !CheckNecessaryPermissions( pkg, use_framework ) ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
-			<< RESET << std::endl;
-		return false;
-	}
 
 	std::string archivedir = GetPackageVersionDir( pkg );
 	std::string incdir = archivedir + "/include/";
