@@ -30,7 +30,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	while( !feof( pipe ) ) {
 		if( fgets( opline_temp.data(), 10000, pipe ) != NULL ) {
 			//MoveOutputCursorBack( prevdisp );
-			std::string opline = std::string( opline.data() );
+			std::string opline = std::string( opline_temp.data() );
 
 			TrimString( opline );
 
