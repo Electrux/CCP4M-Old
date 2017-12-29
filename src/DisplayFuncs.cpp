@@ -11,6 +11,8 @@ void MoveOutputCursorBack( int & len )
 		std::cout << "\b \b";
 	}
 	std::cout.flush();
+
+	std::cout << "moved back " << len << std::endl;
 }
 
 int DisplayOneLinerString( const std::string & str )
