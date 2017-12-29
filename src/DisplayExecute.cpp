@@ -35,13 +35,14 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	while( !feof( pipe ) ) {
 		if( fgets( opline_temp.data(), 10000, pipe ) != NULL && show_output ) {
 
-			if( strlen( opline_temp.data() ) > term_width )
-				continue;
-
-			MoveOutputCursorBack( prevdisp );
 			std::string opline = std::string( opline_temp.data() );
 
 			TrimString( opline );
+
+			if( ( "[ " + opline + " ]" ).size() > term_width )
+				continue;
+
+			MoveOutputCursorBack( prevdisp );
 
 			prevdisp = DisplayOneLinerString( opline );
 		}
