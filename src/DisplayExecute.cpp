@@ -6,6 +6,7 @@
 #include <array>
 #include <memory>
 #include <cstdio>
+#include <string.h>
 
 #include "../include/Paths.hpp"
 #include "../include/StringFuncs.hpp"
@@ -28,7 +29,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	while( !feof( pipe ) ) {
 		if( fgets( opline, sizeof opline, pipe ) != NULL && show_output ) {
-			std::cout << std::strlen( opline ) << ": " << opline << std::endl;
+			std::cout << trlen( opline ) << ": " << opline << std::endl;
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline );
 
