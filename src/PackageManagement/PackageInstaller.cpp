@@ -45,7 +45,7 @@ bool InstallDirectory( const Package & pkg )
 		return false;
 	}
 
-	std::string archivedir = GetArchiveDir( pkg );
+	std::string archivedir = GetPackageVersionDir( pkg );
 	std::string incdir = archivedir + "/include/";
 	std::string libdir = archivedir + "/lib/";
 	std::string fwdir = archivedir + "/Frameworks/";
@@ -83,6 +83,7 @@ bool InstallDirectory( const Package & pkg )
 	}
 	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
+	prevsize = 0;
 
 	// LIBRARY FILES
 	if( !copyfiles[ "lib" ].empty() ) {
@@ -112,7 +113,9 @@ bool InstallDirectory( const Package & pkg )
 	}
 	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
+	prevsize = 0;
 
+	// FRAMEWORK FILES
 	if( !copyfiles[ "fw" ].empty() ) {
 		std::cout << YELLOW << "Copying framework files ... " << RESET;
 		std::cout.flush();
@@ -140,20 +143,19 @@ bool InstallDirectory( const Package & pkg )
 	}
 	MoveOutputCursorBack( prevsize );
 	std::cout << GREEN << TICK << std::endl;
+	prevsize = 0;
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
 		std::cout << RED << CROSS << std::endl;
 		RevertInstallation( pkg, copiedfiles );
 	}
 
-	std::cout << GREEN << TICK << std::endl;
-
 	return true;
 }
 
 std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg, bool & use_framework )
 {
-	std::string archivedir = GetArchiveDir( pkg );
+	std::string archivedir = GetPackageVersionDir( pkg );
 	std::string incdir = archivedir + "/include";
 	std::string libdir = archivedir + "/lib";
 	std::string fwdir = archivedir + "/Frameworks";

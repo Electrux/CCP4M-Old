@@ -201,9 +201,10 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp, std::
 	if( * ( dir.end() - 1 ) == '/' )
 		dir.erase( dir.end() - 1 );
 
-	std:remove( wildcards.begin(), wildcards.end(), ' ' );
-
 	std::vector< std::string > wildcard_vec = DelimStringToVector( wildcards );
+
+	for( auto wc = wildcard_vec.begin(); wc != wildcard_vec.end(); ++wc )
+		TrimString( * wc );
 
 	TrimWildCards( wildcard_vec );
 
@@ -260,9 +261,9 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 	return !( bool )ret;
 }
 
-bool CreateArchiveDir( const Package & pkg, bool verbose )
+bool CreatePackageDir( const Package & pkg, bool verbose )
 {
-	std::string archivedir = GetArchiveDir( pkg );
+	std::string archivedir = GetPackageVersionDir( pkg );
 
 	if( LocExists( archivedir ) )
 		return true;
@@ -278,18 +279,14 @@ bool CreateArchiveDir( const Package & pkg, bool verbose )
 	return true;
 }
 
-std::string GetArchiveDir( const Package & pkg )
+std::string GetPackageDir( const Package & pkg )
 {
-	size_t loc;
+	return PACKAGE_TMP + pkg.name;
+}
 
-	loc = pkg.file.find( ".tar" );
-
-	std::string archivedir = PACKAGE_TMP;
-
-	for( size_t i = 0; i < loc; ++i )
-		archivedir += pkg.file[ i ];
-
-	return archivedir;
+std::string GetPackageVersionDir( const Package & pkg )
+{
+	return PACKAGE_TMP + pkg.name + "/" + pkg.version;
 }
 
 void FetchExtraDirs( const Package & pkg,

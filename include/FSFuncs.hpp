@@ -35,9 +35,10 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 
-bool CreateArchiveDir( const Package & pkg, bool verbose = false );
+bool CreatePackageDir( const Package & pkg, bool verbose = false );
 
-std::string GetArchiveDir( const Package & pkg );
+std::string GetPackageDir( const Package & pkg );
+std::string GetPackageVersionDir( const Package & pkg );
 
 void FetchExtraDirs( const Package & pkg,
 		const std::map< std::string, std::vector< DirFile > > & copyfiles,

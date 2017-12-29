@@ -184,10 +184,12 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 {
 	std::string rmcmd;
 
+	std::string toremdir;
+
 	// By default, this is true only for source packages since
 	// buildcmds has some value in source packages only.
 	if( pkg.buildcmds.find( "uninstall" ) == std::string::npos || allfiles ) {
-		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetArchiveDir( pkg );
+		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetPackageVersionDir( pkg );
 	}
 	else {
 		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file;
@@ -200,6 +202,17 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 		return false;
 	}
 	else {
+		std::vector< DirFile > temp;
+		if( GetWildCardFilesInDir( PACKAGE_TMP + pkg.name, temp, "*" ) <= 0 ) {
+			std::cout << GREEN << TICK << RESET << std::endl;
+			std::cout << YELLOW << "Removing parent directory ... " << RESET;
+			std::cout.flush();
+			if( DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
+				std::cout << RED << CROSS << RESET << std::endl;
+				std::cout << "Removing parent directory: " << GetPackageDir( pkg ) << " failed... "
+					<< "Continuing... " << std::endl;
+			}
+		}
 		std::cout << GREEN << TICK << std::endl;
 	}
 

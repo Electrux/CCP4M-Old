@@ -23,7 +23,8 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 	for( auto ch : str ) {
 
 		if( ch == delim ) {
-			val.push_back( temp );
+			if( !temp.empty() )
+				val.push_back( temp );
 			temp.clear();
 			continue;
 		}
@@ -146,33 +147,65 @@ bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
 	if( wildcard == "*" )
 		return true;
 
-	auto strit = str.begin();
-	auto wcardit = wildcard.begin();
+	bool part1 = false, part2 = false;
 
-	while( strit != str.end() ) {
-		if( * wcardit == * strit ) {
-			wcardit++;
-		}
-		else if( * wcardit == '*' ) {
-			if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.end() )
+	{
+		auto strit = str.begin();
+		auto wcardit = wildcard.begin();
+
+		while( strit != str.end() ) {
+			if( * wcardit == * strit ) {
 				wcardit++;
-			else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.end() )
-				wcardit += 2;
-		}
-		else {
-			break;
+			}
+			else if( * wcardit == '*' ) {
+				if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.end() )
+					wcardit++;
+				else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.end() )
+					wcardit += 2;
+			}
+			else {
+				break;
+			}
+
+			strit++;
 		}
 
-		strit++;
+		while( * wcardit == '*' )
+			wcardit++;
+
+		if( strit == str.end() && wcardit == wildcard.end() )
+		part1 = true;
 	}
 
-	while( * wcardit == '*' )
-		wcardit++;
+	{
+		auto strit = str.rbegin();
+		auto wcardit = wildcard.rbegin();
 
-	if( strit == str.end() && wcardit == wildcard.end() )
-		return true;
+		while( strit != str.rend() ) {
+			if( * wcardit == * strit ) {
+				wcardit++;
+			}
+			else if( * wcardit == '*' ) {
+				if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.rend() )
+					wcardit++;
+				else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.rend() )
+					wcardit += 2;
+			}
+			else {
+				break;
+			}
 
-	return false;
+			strit++;
+		}
+
+		while( * wcardit == '*' )
+			wcardit++;
+
+		if( strit == str.rend() && wcardit == wildcard.rend() )
+			part2 = true;
+	}
+
+	return part1 || part2;
 }
 
 void TrimWildCards( std::vector< std::string > & wildcards )

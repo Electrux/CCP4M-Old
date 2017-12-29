@@ -28,7 +28,7 @@ bool BuildDirectory( const Package & pkg )
 		return false;
 	}
 
-	if( !ChangeWorkingDir( GetArchiveDir( pkg ) ) ) {
+	if( !ChangeWorkingDir( GetPackageVersionDir( pkg ) ) ) {
 		std::cout << YELLOW << "Unable to change working directory to "
 			<< "extracted package directory! " << RED << CROSS << RESET << std::endl;
 		return false;

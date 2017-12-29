@@ -22,13 +22,13 @@ bool ExtractArchive( const Package & pkg )
 		return false;
 	}
 
-	std::string archivedir = GetArchiveDir( pkg );
+	std::string archivedir = GetPackageVersionDir( pkg );
 
 	if( LocExists( archivedir ) ) {
 		DispExecuteNoErr( "rm -rf " + archivedir, false );
 	}
 
-	if( !CreateArchiveDir( pkg ) ) {
+	if( !CreatePackageDir( pkg ) ) {
 		std::cout << RED << CROSS << std::endl;
 		return false;
 	}
