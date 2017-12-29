@@ -2,11 +2,14 @@
 #define PACKAGEINSTALLER_HPP
 
 #include <string>
+#include <map>
 
 #include "PackageData.hpp"
 
 bool InstallDirectory( const Package & pkg );
 
-void GetCopyCommands( const Package & pkg, std::string & include, std::string & lib, std::string & framework );
+std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg, bool & use_framework );
+
+void RevertInstallation( const Package & pkg, std::vector< std::string > & data );
 
 #endif // PACKAGEINSTALLER_HPP

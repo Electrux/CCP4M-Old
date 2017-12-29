@@ -14,4 +14,8 @@ std::string GetHomeDir();
 
 std::string GetEnvVar( std::string key );
 
+bool ChangeWorkingDir( std::string dir );
+
+std::string GetWorkingDir();
+
 #endif // PATHS_HPP

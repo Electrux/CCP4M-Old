@@ -1,7 +1,9 @@
 #ifndef FSFUNCS_HPP
 #define FSFUNCS_HPP
 
+#include <map>
 #include <string>
+#include <vector>
 
 #include "PackageManagement/PackageData.hpp"
 
@@ -14,7 +16,7 @@ void SetFolderPaths( std::string & directory,
 
 bool LocExists( const std::string & location );
 
-int CreateDir( const std::string & dir );
+int CreateDir( const std::string & dir, bool verbose = true );
 
 void CreateFileWithContents( const std::string & filename,
 			     const std::string & contents = std::string() );
@@ -23,16 +25,29 @@ bool IsLatestBuild( std::string filename );
 
 long long GetLastModifiedTime( std::string file );
 
-int GetFilesInDir( std::string dir, std::vector< std::string > & temp, bool recursive = false );
+int GetFilesInDirNonSrc( std::string dir, std::vector< std::string > & temp, bool recursive = false );
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
+			std::string wildcards, bool recursive = true );
+
+int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
+			std::vector< std::string > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 
-bool CreateArchiveDir( const Package & pkg );
+bool CreatePackageDir( const Package & pkg, bool verbose = false );
 
-std::string GetArchiveDir( const Package & pkg );
+std::string GetPackageDir( const Package & pkg );
+std::string GetPackageVersionDir( const Package & pkg );
 
-bool ChangeWorkingDir( std::string dir );
+void FetchExtraDirs( const Package & pkg,
+		const std::map< std::string, std::vector< DirFile > > & copyfiles,
+		std::vector< std::string > & fileanddir );
 
-std::string GetWorkingDir();
+bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data );
+
+bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & data );
+
+std::vector< std::string > GetCopiedData( const Package & pkg );
 
 #endif // FSFUNCS_HPP

@@ -23,4 +23,10 @@ struct Package
 	std::string buildcmds;
 };
 
+struct DirFile
+{
+	std::string dir;
+	std::string file;
+};
+
 #endif // PACKAGEDATA_HPP

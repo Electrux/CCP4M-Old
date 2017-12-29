@@ -23,7 +23,8 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 	for( auto ch : str ) {
 
 		if( ch == delim ) {
-			val.push_back( temp );
+			if( !temp.empty() )
+				val.push_back( temp );
 			temp.clear();
 			continue;
 		}
@@ -36,7 +37,6 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 
 	return val;
 }
-
 
 std::string GetStringBetweenQuotes( std::string & str )
 {
@@ -56,7 +56,7 @@ std::string GetStringBetweenQuotes( std::string & str )
 	return ret;
 }
 
-std::string GetStringTillLastSlash( std::string & str )
+std::string GetStringTillLastSlash( const std::string & str )
 {
 	std::string temp;
 
@@ -68,6 +68,27 @@ std::string GetStringTillLastSlash( std::string & str )
 			gotslash = true;
 
 		if( gotslash )
+			temp += * ch;
+	}
+
+	if( !temp.empty() )
+		std::reverse( temp.begin(), temp.end() );
+
+	return temp;
+}
+
+std::string GetStringAfterLastSlash( const std::string & str )
+{
+	std::string temp;
+
+	bool gotslash = false;
+
+	for( auto ch = str.rbegin(); ch != str.rend(); ++ch ) {
+
+		if( * ch == '/' )
+			gotslash = true;
+
+		if( !gotslash )
 			temp += * ch;
 	}
 
@@ -104,6 +125,104 @@ void TrimString( std::string & str )
 		}
 		else if( * it == '\r' ) {
 			it = str.erase( it );
+		}
+		else {
+			++it;
+		}
+	}
+}
+
+bool IsWildCardsCompatible( const std::string & str, std::vector< std::string > & wildcards )
+{
+	for( auto card : wildcards ) {
+		if( IsWildCardCompatible( str, card ) )
+			return true;
+	}
+
+	return false;
+}
+
+bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
+{
+	if( wildcard == "*" )
+		return true;
+
+	bool part1 = false, part2 = false;
+
+	{
+		auto strit = str.begin();
+		auto wcardit = wildcard.begin();
+
+		while( strit != str.end() ) {
+			if( * wcardit == * strit ) {
+				wcardit++;
+			}
+			else if( * wcardit == '*' ) {
+				if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.end() )
+					wcardit++;
+				else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.end() )
+					wcardit += 2;
+			}
+			else {
+				break;
+			}
+
+			strit++;
+		}
+
+		while( * wcardit == '*' )
+			wcardit++;
+
+		if( strit == str.end() && wcardit == wildcard.end() )
+		part1 = true;
+	}
+
+	{
+		auto strit = str.rbegin();
+		auto wcardit = wildcard.rbegin();
+
+		while( strit != str.rend() ) {
+			if( * wcardit == * strit ) {
+				wcardit++;
+			}
+			else if( * wcardit == '*' ) {
+				if( * ( wcardit + 1 ) == * ( strit + 1 ) && wcardit + 1 != wildcard.rend() )
+					wcardit++;
+				else if( * ( wcardit + 1 ) == * strit && wcardit + 2 != wildcard.rend() )
+					wcardit += 2;
+			}
+			else {
+				break;
+			}
+
+			strit++;
+		}
+
+		while( * wcardit == '*' )
+			wcardit++;
+
+		if( strit == str.rend() && wcardit == wildcard.rend() )
+			part2 = true;
+	}
+
+	return part1 || part2;
+}
+
+void TrimWildCards( std::vector< std::string > & wildcards )
+{
+	for( auto wildcard = wildcards.begin(); wildcard != wildcards.end(); ++wildcard ) {
+		TrimWildCard( * wildcard );
+	}
+}
+
+void TrimWildCard( std::string & wildcard )
+{
+	for( auto it = wildcard.begin(); it != wildcard.end(); ) {
+		if( * it == '*' ) {
+			++it;
+
+			while( * it == '*' )
+				it = wildcard.erase( it );
 		}
 		else {
 			++it;

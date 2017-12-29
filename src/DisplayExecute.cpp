@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <array>
 #include <memory>
@@ -31,10 +33,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( op );
 
-			std::string str = "[ " + op + " ]";
-			std::cout << str;
-			std::cout.flush();
-			prevdisp = str.size();
+			prevdisp = DisplayOneLinerString( op );
 		}
 	}
 
@@ -56,4 +55,11 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
+}
+
+int DispExecuteNoErr( std::string cmd, bool show_output )
+{
+	std::string temperr;
+
+	return DispExecute( cmd, temperr, show_output );
 }

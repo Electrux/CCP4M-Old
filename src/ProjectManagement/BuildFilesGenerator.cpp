@@ -205,7 +205,7 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 
 	if( __othersrc.size() == 1 && * __othersrc.begin() == "*" ) {
 
-		if( GetFilesInDir( "src", othersrc, true ) != 0 )
+		if( GetFilesInDirNonSrc( "src", othersrc, true ) != 0 )
 			return 1;
 	}
 	else {
@@ -242,7 +242,7 @@ int GetWildCardSources( std::vector< std::string > & __othersrc,
 
 			loc += ( *it == "src" ) ? "src" : "src/" + *it;
 
-			if( GetFilesInDir( loc, othersrc ) != 0 )
+			if( GetFilesInDirNonSrc( loc, othersrc ) != 0 )
 				return 1;
 		}
 

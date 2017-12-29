@@ -22,21 +22,20 @@ bool ExtractArchive( const Package & pkg )
 		return false;
 	}
 
-	std::string archivedir = GetArchiveDir( pkg );
+	std::string archivedir = GetPackageVersionDir( pkg );
 
 	if( LocExists( archivedir ) ) {
-		std::string tmpdispexec;
-		DispExecute( "rm -rf " + archivedir, tmpdispexec, false );
+		DispExecuteNoErr( "rm -rf " + archivedir, false );
 	}
 
-	if( !CreateArchiveDir( pkg ) ) {
+	if( !CreatePackageDir( pkg ) ) {
 		std::cout << RED << CROSS << std::endl;
 		return false;
 	}
 
 	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
 
-	if( std::system( cmd.c_str() ) != 0 ) {
+	if( DispExecuteNoErr( cmd, false ) != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error: Unable to extract archive! Exiting!"
 			<< RESET << std::endl;

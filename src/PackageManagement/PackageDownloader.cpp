@@ -25,10 +25,6 @@ bool FetchPackage( const Package & pkg )
 	CURLcode ret;
 	CURL * hnd;
 
-	hnd = curl_easy_init();
-	if( !hnd )
-		return false;
-	
 	std::FILE * file;
 
 	std::string archive = PACKAGE_TMP + pkg.file;
@@ -40,6 +36,10 @@ bool FetchPackage( const Package & pkg )
 		std::cout << RED << "Error: You do not have correct permissions!" << RESET << std::endl;
 		return false;
 	}
+
+	hnd = curl_easy_init();
+	if( !hnd )
+		return false;
 
 	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
 	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
@@ -64,16 +64,16 @@ bool FetchPackage( const Package & pkg )
 
 	hnd = NULL;
 
+	MoveOutputCursorBack( prevpercentsize );
+
+	prevpercentsize = 0;
+
 	if( ( int )ret != 0 ) {
 		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error: Failed to download package: " << YELLOW << pkg.name
 			<< RESET << "\n" << MAGENTA << "LibCurl Error: "
 			<< BLUE << curl_easy_strerror( ret ) << RESET << std::endl;
 	}
-
-	MoveOutputCursorBack( prevpercentsize );
-
-	prevpercentsize = 0;
 
 	std::cout << GREEN << TICK << std::endl;
 
@@ -93,14 +93,10 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 
 	double percentdown = ( cdl / totdl ) * 100;
 
-	std::string percent = "[ " + std::to_string( percentdown ) + "% ]";
+	std::string percent = std::to_string( percentdown ) + "%";
 
 	MoveOutputCursorBack( prevpercentsize );
-
-	std::cout << CYAN << percent << RESET;
-	std::cout.flush();
-
-	prevpercentsize = ( int )percent.size();
+	prevpercentsize = DisplayOneLinerString( percent );
 
 	return 0;
 }

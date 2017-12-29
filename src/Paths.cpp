@@ -37,3 +37,19 @@ std::string GetEnvVar( std::string key )
 	}
 	return retval;
 }
+
+bool ChangeWorkingDir( std::string dir )
+{
+	return chdir( dir.c_str() ) == 0;
+}
+
+std::string GetWorkingDir()
+{
+	char cwd[ 1024 ];
+
+	if( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
+		return cwd;
+	}
+
+	return "";
+}
