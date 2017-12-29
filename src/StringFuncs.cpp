@@ -123,7 +123,7 @@ void TrimString( std::string & str )
 				it = str.erase( it );
 			}
 		}
-		else if( * it == '\r' ) {
+		else if( * it == '\r' || * it == '\n' ) {
 			it = str.erase( it );
 		}
 		else {
