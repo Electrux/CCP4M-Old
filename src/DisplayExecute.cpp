@@ -34,7 +34,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( opline );
 
-			std::cout << opline << "\n" << std::endl << std::endl;
+			std::cout << "My: " << opline << "\n" << std::endl << std::endl;
 
 			//prevdisp = DisplayOneLinerString( opline );
 		}
