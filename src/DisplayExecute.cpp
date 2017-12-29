@@ -16,7 +16,7 @@
 
 int DispExecute( std::string cmd, std::string & err, bool show_output )
 {
-	char opline[ 10000 ];
+	char opline[ 100 ];
 
 	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
