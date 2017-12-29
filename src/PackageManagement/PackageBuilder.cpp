@@ -91,7 +91,7 @@ bool BuildDirectory( const Package & pkg )
 		std::cout << YELLOW << "Installing using make install ... " << RESET;
 		std::cout.flush();
 
-		res = DispExecute( install, errors, false );
+		res = DispExecute( install, errors );
 
 		if( res != 0 ) {
 			std::cout << RED << CROSS << std::endl;

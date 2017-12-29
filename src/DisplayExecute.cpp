@@ -28,8 +28,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		return false;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline, sizeof opline, pipe ) != NULL && show_output ) {
-			//std::cout << strlen( opline ) << ": " << opline << std::endl;
+		if( fgets( opline, sizeof opline, pipe ) != NULL && show_output ) {;
 			MoveOutputCursorBack( prevdisp );
 			std::string op = std::string( opline );
 
