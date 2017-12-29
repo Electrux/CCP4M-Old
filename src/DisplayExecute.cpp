@@ -28,22 +28,22 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	while( !feof( pipe ) ) {
 		std::array< char, 10000 > opline;
 		if( fgets( opline.data(), 10000, pipe ) != NULL ) {
-			MoveOutputCursorBack( prevdisp );
+			//MoveOutputCursorBack( prevdisp );
 			std::string op = "[ " + std::string( opline.data() ) + " ]";
 
 			TrimString( op );
 
 			prevdisp = op.size();
 
-			std::cout << op;
-			std::cout.flush();
+			std::cout << op << std::endl;
+			//std::cout.flush();
 
 			//if( show_output )
 				//prevdisp = DisplayOneLinerString( op );
 		}
 	}
 
-	MoveOutputCursorBack( prevdisp );
+	//MoveOutputCursorBack( prevdisp );
 
 	std::cout << "PrevDisp: " << prevdisp << std::endl;
 
