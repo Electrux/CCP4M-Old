@@ -60,7 +60,7 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 
 	std::string makeuninstall = buildcmds[ 3 ];
 
-	std::cout << YELLOW << "Uninstalling using make uninstall ... " << RESET;
+	std::cout << YELLOW << "\nUninstalling using make uninstall ... " << RESET;
 	std::cout.flush();
 
 	int res;
