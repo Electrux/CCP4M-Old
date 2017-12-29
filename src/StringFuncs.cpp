@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <string.h>
 
 #include "../include/StringFuncs.hpp"
 
