@@ -6,7 +6,8 @@
 #include <array>
 #include <memory>
 #include <cstdio>
-#include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "../include/Paths.hpp"
 #include "../include/StringFuncs.hpp"
@@ -25,21 +26,24 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	if( !pipe )
 		return false;
 
+	winsize w;
+	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
+	int term_width = w.ws_col;
+
 	std::array< char, 10000 > opline_temp;
 
 	while( !feof( pipe ) ) {
 		if( fgets( opline_temp.data(), 10000, pipe ) != NULL && show_output ) {
+
+			if( strlen( opline_temp.data() ) > term_width )
+				continue;
+
 			MoveOutputCursorBack( prevdisp );
 			std::string opline = std::string( opline_temp.data() );
 
 			TrimString( opline );
 
-			std::cout << opline;
-			std::cout.flush();
-
-			prevdisp = opline.size();
-
-			//prevdisp = DisplayOneLinerString( opline );
+			prevdisp = DisplayOneLinerString( opline );
 		}
 	}
 

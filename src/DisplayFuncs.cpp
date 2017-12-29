@@ -7,7 +7,9 @@
 
 void MoveOutputCursorBack( int & len )
 {
-	std::cout << "\33[2K\r";
+	for( int i = 0; i < len; ++i ) {
+		std::cout << "\b \b";
+	}
 	std::cout.flush();
 }
 
