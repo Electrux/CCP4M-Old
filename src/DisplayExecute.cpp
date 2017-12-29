@@ -15,7 +15,7 @@
 
 int DispExecute( std::string cmd, std::string & err, bool show_output )
 {
-	std::array< char, 10000 > opline;
+	char opline[ 10000 ];
 
 	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
@@ -27,9 +27,10 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		return false;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline.data(), 10000, pipe ) != NULL && show_output ) {
+		if( fgets( opline, sizeof opline, pipe ) != NULL && show_output ) {
+			std::cout << strlen( opline ) << ": " << opline << std::endl;
 			MoveOutputCursorBack( prevdisp );
-			std::string op = std::string( opline.data() );
+			std::string op = std::string( opline );
 
 			TrimString( op );
 
