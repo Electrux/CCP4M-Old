@@ -27,7 +27,6 @@ bool InstallDirectory( const Package & pkg )
 	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
 	if( !CheckNecessaryPermissions( pkg, use_framework ) ) {
-		std::cout << RED << CROSS << std::endl;
 		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
 			<< RESET << std::endl;
 		return false;
@@ -35,7 +34,6 @@ bool InstallDirectory( const Package & pkg )
 
 	for( auto dir : copiedfiles ) {
 		if( CreateDir( dir, false ) != 0 ) {
-			std::cout << RED << CROSS << std::endl;
 			std::cout << RED << "Error: Unable to create required directory for installation!"
 				<< RESET << std::endl;
 			return false;
