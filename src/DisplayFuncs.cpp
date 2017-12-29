@@ -15,6 +15,9 @@ void MoveOutputCursorBack( int len )
 
 int DisplayOneLinerString( const std::string & str )
 {
+	if( str.empty() )
+		return 0;
+
 	std::string output = BOLD_CYAN + "[ " + BOLD_MAGENTA + str + BOLD_CYAN + " ]" + RESET;
 
 	std::cout << output;
