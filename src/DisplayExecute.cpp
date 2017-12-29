@@ -21,7 +21,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	FILE * pipe = popen( finalcmd.c_str(), "r" );
 
-	static int prevdisp = 0;
+	int prevdisp = 0;
 
 	if( !pipe )
 		return false;
