@@ -16,8 +16,6 @@
 
 int DispExecute( std::string cmd, std::string & err, bool show_output )
 {
-	char opline[ 100 ];
-
 	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
 	FILE * pipe = popen( finalcmd.c_str(), "r" );
@@ -28,25 +26,23 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		return false;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline, sizeof opline, pipe ) != NULL ) {
+		std::array< char, 10000 > opline;
+		if( fgets( opline.data(), 10000, pipe ) != NULL ) {
 			MoveOutputCursorBack( prevdisp );
-			std::string op = "[ " + std::string( opline ) + " ]";
+			std::string op = "[ " + std::string( opline.data() ) + " ]";
 
 			TrimString( op );
 
 			prevdisp = op.size();
 
-			std::cout << "PrevDisp: " << prevdisp << "\t" << op;
-			std::cout.flush();
-
-			if( show_output )
+			//if( show_output )
 				prevdisp = DisplayOneLinerString( op );
 		}
 	}
 
 	MoveOutputCursorBack( prevdisp );
 
-	std::cout << "PrevDisp: " << prevdisp << " last line: " << opline << std::endl;
+	std::cout << "PrevDisp: " << prevdisp << std::endl;
 
 	std::cout << "PrevDisp: " << prevdisp << std::endl;
 
