@@ -40,10 +40,6 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	MoveOutputCursorBack( prevdisp );
 
-	std::cout << "PrevDisp: " << prevdisp << std::endl;
-
-	std::cout << "PrevDisp: " << prevdisp << std::endl;
-
 	prevdisp = 0;
 
 	err = "";
