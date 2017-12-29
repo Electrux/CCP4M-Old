@@ -35,8 +35,11 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			prevdisp = op.size();
 
+			std::cout << op;
+			std::cout.flush();
+
 			//if( show_output )
-				prevdisp = DisplayOneLinerString( op );
+				//prevdisp = DisplayOneLinerString( op );
 		}
 	}
 
