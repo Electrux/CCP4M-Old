@@ -28,13 +28,19 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 		return false;
 
 	while( !feof( pipe ) ) {
-		if( fgets( opline, sizeof opline, pipe ) != NULL && show_output ) {
+		if( fgets( opline, sizeof opline, pipe ) != NULL ) {
 			MoveOutputCursorBack( prevdisp );
-			std::string op = std::string( opline );
+			std::string op = "[ " + std::string( opline ) + " ]";
 
 			TrimString( op );
 
-			prevdisp = DisplayOneLinerString( op );
+			prevdisp = op.size();
+
+			std::cout << "PrevDisp: " << prevdisp << "\t" << op;
+			std::cout.flush();
+
+			if( show_output )
+				prevdisp = DisplayOneLinerString( op );
 		}
 	}
 

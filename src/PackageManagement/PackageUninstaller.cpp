@@ -66,7 +66,7 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	int res;
 	std::string errors;
 
-	res = DispExecute( makeuninstall, errors );
+	res = DispExecute( makeuninstall, errors, false );
 
 	if( res != 0 ) {
 		std::cout << RED << CROSS << std::endl;

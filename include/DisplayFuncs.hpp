@@ -3,7 +3,7 @@
 
 #include <string>
 
-void MoveOutputCursorBack( int len );
+void MoveOutputCursorBack( int & len );
 
 int DisplayOneLinerString( const std::string & str );
 
