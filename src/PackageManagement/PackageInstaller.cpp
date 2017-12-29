@@ -82,7 +82,8 @@ bool InstallDirectory( const Package & pkg )
 		}
 	}
 	MoveOutputCursorBack( prevsize );
-	std::cout << GREEN << TICK << std::endl;
+	if( !copyfiles[ "inc" ].empty() )
+		std::cout << GREEN << TICK << std::endl;
 	prevsize = 0;
 
 	// LIBRARY FILES
@@ -112,7 +113,8 @@ bool InstallDirectory( const Package & pkg )
 		}
 	}
 	MoveOutputCursorBack( prevsize );
-	std::cout << GREEN << TICK << std::endl;
+	if( !copyfiles[ "lib" ].empty() )
+		std::cout << GREEN << TICK << std::endl;
 	prevsize = 0;
 
 	// FRAMEWORK FILES
@@ -142,7 +144,8 @@ bool InstallDirectory( const Package & pkg )
 		}
 	}
 	MoveOutputCursorBack( prevsize );
-	std::cout << GREEN << TICK << std::endl;
+	if( !copyfiles[ "fw" ].empty() )
+		std::cout << GREEN << TICK << std::endl;
 	prevsize = 0;
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {

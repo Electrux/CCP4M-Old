@@ -221,7 +221,7 @@ void TrimWildCard( std::string & wildcard )
 		if( * it == '*' ) {
 			++it;
 
-			while( * it == '*' )
+			while( it != wildcard.end() && * it == '*' )
 				it = wildcard.erase( it );
 		}
 		else {
