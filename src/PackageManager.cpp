@@ -145,7 +145,7 @@ int PackageManager::UninstallPackage( std::string package )
 		return 1;
 	}
 	if( res == -1 ) {
-		DispColoredData( "Package not installed by", args[ 0 ], "!\nNothing to remove!" );
+		DispColoredData( "Package not installed by", args[ 0 ], "!\nNothing to remove!", FIRST_COL, SECOND_COL, THIRD_COL );
 		DispColoredData( " " + CROSS, RED, true );
 		return 1;
 	}
