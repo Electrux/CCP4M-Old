@@ -26,6 +26,8 @@ int GenerateProjectFiles( ProjectData & data )
 		DispColoredData( "NONE", GREEN, true );
 	}
 
+	DispColoredData( "", FIRST_COL, true );
+
 	std::string proj_dir, proj_src, proj_inc, proj_build;
 
 	SetFolderPaths( data.dir, data.name, proj_dir, proj_src, proj_inc, proj_build );
