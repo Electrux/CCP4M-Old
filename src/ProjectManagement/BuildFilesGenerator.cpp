@@ -86,7 +86,7 @@ int GenerateBuildFiles()
 			compilestr += " src/" + mainsrc;
 
 			DispColoredData( "[100%]\t", RESET, false );
-			DispColoredData( "Building and Linking" + langstr + "executable:", "build/" + data.name, " ... ",
+			DispColoredData( "Building and Linking " + langstr + " executable:", "build/" + data.name, " ... ",
 					BOLD_YELLOW, BOLD_GREEN, RESET, false );
 
 			int res = ExecuteCommand( compilestr );
