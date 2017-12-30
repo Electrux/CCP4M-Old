@@ -17,22 +17,28 @@ int main( int argc, char ** argv )
 		return 1;
 	}
 
+	int retval = 0;
+
+	DispColoredData( "", FIRST_COL, true );
+
 	if( args[ 1 ] == "project" ) {
-		return HandleProject( args );
+		retval = HandleProject( args );
 	}
 	else if( args[ 1 ] == "pkg" ) {
 		PackageManager pkgmgr( args );
-		return pkgmgr.HandleCommand();
+		retval = pkgmgr.HandleCommand();
 	}
 	else if( args[ 1 ] == "help" ) {
 		ShowMainHelp( args );
 	}
 	else {
 		DispColoredData( "Invalid parameter. Possible options are: help, project, pkg", RED, true );
-		return 1;
+		retval = 1;
 	}
 
-	return 0;
+	DispColoredData( "", FIRST_COL, true );
+
+	return retval;
 }
 
 void ShowMainHelp( std::vector< std::string > & args )
