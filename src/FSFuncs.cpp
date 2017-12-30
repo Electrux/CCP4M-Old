@@ -44,6 +44,9 @@ bool LocExists( const std::string & location )
 
 	if( stat( location.c_str(), & info ) == 0 )
 		return true;
+	
+	if( lstat( location.c_str(), & info ) == 0)
+		return true;
 
 	return false;
 }
@@ -332,43 +335,28 @@ void FetchExtraDirs( const Package & pkg,
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
-	int prevsize = 0;
-
 	for( auto it = data.begin(); it != data.end(); ) {
-
-		TrimString( * it );
 
 		if( !LocExists( * it ) ) {
 			it = data.erase( it );
 			continue;
 		}
 
-		MoveOutputCursorBack( prevsize );
-
-		prevsize = DisplayOneLinerString( * it );
-
 		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
-			MoveOutputCursorBack( prevsize );
 			return false;
 		}
 
 		it = data.erase( it );
 	}
 
-	MoveOutputCursorBack( prevsize );
-
 	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		prevsize = DisplayOneLinerString( cpdatafile );
 
 		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
-			MoveOutputCursorBack( prevsize );
 			return false;
 		}
 	}
-
-	MoveOutputCursorBack( prevsize );
 
 	return true;
 }

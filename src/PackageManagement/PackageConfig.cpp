@@ -88,7 +88,7 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 #endif
 		}
 		
-		DispColoredData( "Exists as:", file, FIRST_COL, SECOND_COL, true );
+		DispColoredData( "Exists as:", existas, FIRST_COL, SECOND_COL, true );
 	}
 
 	if( file.empty() )
