@@ -66,16 +66,18 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	err = "";
 
+	bool iserrfile = false;
 	std::fstream errfile;
 	errfile.open( TMP_FILE, std::ios::in );
 	if( errfile ) {
+		iserrfile = true;
 		std::string line;
 		while( std::getline( errfile, line ) )
 			err += line;
 	}
 	errfile.close();
 
-	if( !err.empty() )
+	if( iserrfile )
 		std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
