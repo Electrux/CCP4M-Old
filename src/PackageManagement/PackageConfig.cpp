@@ -46,7 +46,17 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	pkg.deplist = DelimStringToVector( deps );
 
 	parser.GetDataString( "Core", prefix + "IncludeDir", pkg.incdir );
-	parser.GetDataString( "Core", prefix + "LibDir", pkg.libdir );
+	parser.GetDataString( "Core", prefix + "LibraryDir", pkg.libdir );
+
+	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
+		parser.GetDataString( "Core", "IncludeDir", pkg.incdir );
+		parser.GetDataString( "Core", "LibraryDir", pkg.libdir );
+	}
+
+	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
+		FetchDefaultIncLibDir( pkg );
+	}
+
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
 	pkg.existfile = FetchExistFile( parser );
@@ -124,4 +134,15 @@ bool PackageConfig::HandlePkgDirs()
 		return false;
 
 	return true;
+}
+
+void PackageConfig::FetchDefaultIncLibDir( Package & pkg )
+{
+#ifdef __linux__
+	pkg.incdir = "/usr/include";
+	pkg.libdir = "/usr/lib";
+#elif __APPLE__
+	pkg.incdir = "/usr/local/include";
+	pkg.libdir = "/usr/local/lib";
+#endif
 }
