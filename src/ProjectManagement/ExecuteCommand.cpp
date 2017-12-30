@@ -7,6 +7,7 @@
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/ProjectManagement/ExecuteCommand.hpp"
 #include "../../include/ProjectManagement/CompileCommandData.hpp"
@@ -20,15 +21,14 @@ int ExecuteCommand( std::string command )
 
 void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, int percent )
 {
-	std::cout << "[" << percent << "%]\t"
-		  << YELLOW << "Building " + langstr + " object: "
-		  << CYAN << "build/buildfiles/" << commands.othersource << ".o"
-		  << RESET << " ...";
+	DispColoredData( "[" + std::to_string( percent ) + "%]\t", RESET, false );
+	DispColoredData( "Building and Linking" + langstr + "object: ", "build/buildfiles/" + commands.othersource, " ...",
+			FIRST_COL, SECOND_COL, RESET, false );
 
 	if( res == 0 )
-		std::cout << " " << GREEN << TICK << RESET << "\n";
+		DispColoredData( TICK, GREEN, true );
 	else
-		std::cout << " " << RED << CROSS << RESET << "\n";
+		DispColoredData( CROSS, RED, true );
 }
 
 int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & langstr, int count )
@@ -78,10 +78,8 @@ int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & la
 	for( auto & res : results )
 		res.get();
 
-	if( cancel ) {
-		std::cout << RED << "Error: Building failed. Cancelled building."
-			<< RESET << std::endl;
-	}
+	if( cancel )
+		DispColoredData( "Error: Building failed. Cancelled process!", RED, true );
 
 	return retval;
 }

@@ -6,6 +6,7 @@
 extern const std::string FIRST_COL;
 extern const std::string SECOND_COL;
 extern const std::string THIRD_COL;
+extern const std::string EXTRA_COL;
 
 void MoveOutputCursorBack( int & len );
 

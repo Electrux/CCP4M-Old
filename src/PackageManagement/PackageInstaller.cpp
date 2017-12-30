@@ -145,6 +145,8 @@ bool InstallDirectory( const Package & pkg )
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
 		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to save installation information!", RED, true );
+		DispColoredData( "Reverting installation ... ", RED, true );
 		RevertInstallation( pkg, copiedfiles );
 	}
 

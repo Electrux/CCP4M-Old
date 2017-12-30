@@ -8,6 +8,7 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -72,7 +73,7 @@ int GenerateBuildFiles()
 		auto buildfilemodtime = GetLastModifiedTime( "build/" + data.name );
 
 		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime && filecount == 1) {
-			std::cout << BOLD_GREEN << "Project up to date!" << RESET << std::endl;
+			DispColoredData( "Project up to date!", BOLD_GREEN, true );
 		}
 		else {
 			std::string compilestr =
@@ -84,16 +85,18 @@ int GenerateBuildFiles()
 
 			compilestr += " src/" + mainsrc;
 
-			std::cout << "\n[100%]\t"
-				  << BOLD_YELLOW << "Building and Linking " + langstr + " executable: "
-				  << BOLD_GREEN << "build/" << data.name << RESET << " ...";
+			DispColoredData( "[100%]\t", RESET, false );
+			DispColoredData( "Building and Linking" + langstr + "executable: ", "build/" + data.name, " ...",
+					BOLD_YELLOW, BOLD_GREEN, RESET, false );
 
 			int res = ExecuteCommand( compilestr );
 
 			if( res == 0 )
-				std::cout << " " << GREEN << TICK << RESET << std::endl;
+				DispColoredData( TICK, GREEN, true );
 			else
-				std::cout << " " << RED << CROSS << RESET << std::endl;;
+				DispColoredData( CROSS, RED, true );
+
+			DispColoredData( "", FIRST_COL, true );
 
 			if( res != 0 )
 				return res;

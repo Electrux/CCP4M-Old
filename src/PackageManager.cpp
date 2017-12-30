@@ -28,15 +28,15 @@ PackageManager::PackageManager( std::vector< std::string > & _args ) : args( _ar
 int PackageManager::HandleCommand()
 {
 	if( args.size() < 3 ) {
-		std::cout << "Error: Use " << args[ 0 ] << " pkg [install/search/update/remove]"
-			<< std::endl;
+		DispColoredData( "Error: Use", args[ 0 ] + " pkg [install/search/update/remove]",
+				FIRST_COL, SECOND_COL, true );
 		return 1;
 	}
 
 	if( args[ 2 ] == "install" ) {
 		if( args.size() < 4 ) {
-			std::cout << "Error: Use " << args[ 0 ] << " pkg install < Package Name >"
-				<< std::endl;
+			DispColoredData( "Error: Use", args[ 0 ] + " pkg install < Package Name >",
+				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
 		return InstallPackage( args[ 3 ] );
@@ -44,8 +44,8 @@ int PackageManager::HandleCommand()
 
 	if( args[ 2 ] == "uninstall" ) {
 		if( args.size() < 4 ) {
-			std::cout << "Error: Use " << args[ 0 ] << " pkg uninstall < Package Name >"
-				<< std::endl;
+			DispColoredData( "Error: Use", args[ 0 ] + " pkg uninstall < Package Name >",
+				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
 		return UninstallPackage( args[ 3 ] );
@@ -206,7 +206,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 						"Continuing... ", FIRST_COL, FIRST_COL, true );
 			}
 		}
-		std::cout << GREEN << TICK << std::endl;
+		DispColoredData( GREEN << TICK << std::endl;
 	}
 
 	return true;

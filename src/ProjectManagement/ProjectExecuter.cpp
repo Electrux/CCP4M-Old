@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../../include/ColorDefs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectBuilder.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -36,8 +37,7 @@ int ExecuteProject( std::vector< std::string > & args )
 		command.erase( command.end() - 1 );
 	}
 
-	std::cout << "\n" << BOLD_MAGENTA << "Executing Project..."
-		  << RESET << std::endl << std::endl;
+	DispColoredData( "\nExecuting Project...\n", BOLD_MAGENTA, true );
 
 	return std::system( command.c_str() );
 }

@@ -2,7 +2,9 @@
 #include <vector>
 #include <string>
 
+#include "../../include/ColorDefs.hpp"
 #include "../../include/StringFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectData.hpp"
 
@@ -41,8 +43,8 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				if( data.deps.empty() ) {
 					invalidformat = true;
 
-					std::cout << "Error: No dependencies specified."
-						  << " However, the --deps flag was used\n";
+					DispColoredData( "Error: No dependencies specified, however the", "--deps", "flag was used!",
+							RED, SECOND_COL, RED, true );
 
 					break;
 				}
@@ -53,10 +55,10 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				foundlang = true;
 			}
 			else {
-				std::cout << "Error: Invalid flag or repetition occurred."
-					  << " Please use:\n"
-					  << "\t" << args[ 0 ] << " project new help\n"
-					  << "for more information\n";
+				DispColoredData( "Error: Invalid flag or repetiton occurred.", RED, true );
+				DispColoredData( "Please use:", FIRST_COL, true );
+				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
+				DispColoredData( "for more information.", FIRST_COL, true );
 
 				invalidformat = true;
 
@@ -65,10 +67,10 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 		}
 		else {
 			if( foundname ) {
-				std::cout << "Error: Invalid flag or repetition occurred."
-					  << " Please use:\n"
-					  << "\t" << args[ 0 ] << " project new help\n"
-					  << "for more information\n";
+				DispColoredData( "Error: Invalid flag or repetiton occurred.", RED, true );
+				DispColoredData( "Please use:", FIRST_COL, true );
+				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
+				DispColoredData( "for more information.", FIRST_COL, true );
 
 				invalidformat = true;
 
@@ -89,7 +91,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 	if( invalidformat ) {
 
 		if( data.name.empty() ) {
-			std::cout << "Cannot have unnamed project\n";
+			DispColoredData( "Error: Cannot have unnamed project!", RED, true );
 		}
 		data.name.clear();
 		data.deps.clear();

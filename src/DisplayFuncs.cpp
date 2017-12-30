@@ -8,6 +8,7 @@
 const std::string FIRST_COL = YELLOW;
 const std::string SECOND_COL = CYAN;
 const std::string THIRD_COL = YELLOW;
+const std::string EXTRA_COL = MAGENTA;
 
 static int last_disp_len = 0;
 

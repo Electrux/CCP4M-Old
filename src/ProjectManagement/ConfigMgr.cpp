@@ -4,6 +4,7 @@
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/StringFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 
@@ -24,8 +25,9 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 
 	for( auto lib : data.deps ) {
 		if( !IsCompatible( data.lang, GetLibraryLang( lib ) ) ) {
-			std::cout << RED << "Warning: Library: " << lib << " is written in C++, but the project is in C."
-				<< std::endl << "Skipping the library..." << RESET << std::endl;
+			DispColoredData( "Warning: Library:", lib, "is written in C++, but the project is in C",
+					RED, SECOND_COL, RED, true );
+			DispColoredData( "Skipping the library...", RED, true );
 			continue;
 		}
 		concatlibs += lib;
@@ -59,7 +61,7 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 		parser.SetDataString( lib, "Version", GetLibraryVersion( lib ) );
 	}
 
-	std::cout << BLUE << "Creating file: " << MAGENTA << project_dir + "/ccp4m.ini" << RESET << std::endl;
+	DispColoredData( "Creating file: ", project_dir + "/ccp4m.ini", BLUE, MAGENTA, true );
 	parser.SaveToFile( project_dir + "/ccp4m.ini" );
 
 	return 0;
@@ -89,8 +91,9 @@ std::string ConfigMgr::GetLibraryLang( std::string lib )
 	Package pkg;
 
 	if( !PackageConfig::GetPackage( lib, pkg ) ) {
-		std::cout << "Package " << lib << " does not exist!" << std::endl
-			<< "You must check library compatibility yourselves." << std::endl;
+		DispColoredData( "Package:", lib, "does not exist!",
+				FIRST_COL, SECOND_COL, THIRD_COL, true );
+		DispColoredData( "You must check library compatibility yourselves.", FIRST_COL, true );
 		return "";
 	}
 
@@ -102,8 +105,9 @@ std::string ConfigMgr::GetIncludeFlags( std::string lib )
 	Package pkg;
 
 	if( !PackageConfig::GetPackage( lib, pkg ) ) {
-		std::cout << "Package " << lib << " does not exist!" << std::endl
-			<< "You must enter the flags for it if there are." << std::endl;
+		DispColoredData( "Package:", lib, "does not exist!",
+				FIRST_COL, SECOND_COL, THIRD_COL, true );
+		DispColoredData( "You must enter the flags for it if there are.", FIRST_COL, true );
 		return "";
 	}
 
@@ -125,8 +129,9 @@ std::string ConfigMgr::GetLibraryFlags( std::string lib )
 	Package pkg;
 
 	if( !PackageConfig::GetPackage( lib, pkg ) ) {
-		std::cout << "Package " << lib << " does not exist!" << std::endl
-			<< "You must enter the flags for it if there are." << std::endl;
+		DispColoredData( "Package:", lib, "does not exist!",
+				FIRST_COL, SECOND_COL, THIRD_COL, true );
+		DispColoredData( "You must enter the flags for it if there are.", FIRST_COL, true );
 		return "";
 	}
 
