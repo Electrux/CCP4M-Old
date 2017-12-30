@@ -115,6 +115,7 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 
 	if( stat( buildfilesdir.c_str(), & info ) != 0 ) {
 		retval |= CreateDir( buildfilesdir );
+		ctr++;
 	}
 
 	for( auto src : othersrc ) {
@@ -123,9 +124,12 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 			continue;
 
 		retval |= CreateDir( buildfilesdir + GetDirectoryFromSource( src ) );
+
+		ctr++;
 	}
 
-	DispColoredData( "", FIRST_COL, true );
+	if( ctr > 0 )
+		DispColoredData( "", FIRST_COL, true );
 
 	return retval;
 }
