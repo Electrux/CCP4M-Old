@@ -75,11 +75,18 @@ int PackageManager::InstallMultiplePackages()
 		packages.push_back( args[ i ] );
 	}
 
+	return InstallMultiplePackages( packages, forceinstall );
+}
+
+int PackageManager::InstallMultiplePackages( std::vector< std::string > & packages, bool forceinstall )
+{
+	int retval = 0;
+
 	for( int i = 0; i < ( int )packages.size(); ++i ) {
-		retval = InstallPackage( packages[ i ] );
+		retval = InstallPackage( packages[ i ], forceinstall );
 
 		if( retval != 0 )
-			return retval;
+			break;
 
 		if( i != packages.size() - 1 )
 			DispColoredData( "", FIRST_COL, true );

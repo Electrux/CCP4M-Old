@@ -10,9 +10,11 @@ public:
 
 	int HandleCommand();
 
-	int InstallPackage( std::string package, bool forceinstall = false );
-
 	int InstallMultiplePackages();
+
+	int InstallMultiplePackages( std::vector< std::string > & packages, bool forceinstall = false );
+
+	int InstallPackage( std::string package, bool forceinstall = false );
 
 	int UninstallPackage( std::string package );
 
