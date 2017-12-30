@@ -61,6 +61,9 @@ int GenerateBuildFiles()
 			commands.push_back( { othersource, compilestr } );
 	}
 
+	if( !commands.empty() )
+		DispColoredData( "", FIRST_COL, true );
+
 	if( ExecuteAllCommands( commands, langstr, filecount ) != 0 )
 		return 1;
 
