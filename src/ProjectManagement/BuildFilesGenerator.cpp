@@ -111,8 +111,6 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 	int retval = 0;
 	int ctr = 0;
 
-	struct stat info;
-
 	if( !LocExists( buildfilesdir ) ) {
 		retval |= CreateDir( buildfilesdir );
 		ctr++;
