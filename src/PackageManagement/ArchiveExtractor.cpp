@@ -46,15 +46,26 @@ bool ExtractArchive( const Package & pkg )
 	return true;
 }
 
-std::string GetTarOptions( const std::string & filename )
+std::string GetTarOptions( const Package & pkg )
 {
-	if( filename.find( ".tar.gz" ) != std::string::npos )
+	if( pkg.file.find( ".tar.gz" ) != std::string::npos )
 		return "-xzf";
 
-	if( filename.find( ".tar.bz2" ) != std::string::npos )
+	if( pkg.file.find( ".tar.bz2" ) != std::string::npos )
 		return "-xjf";
 
-	if( filename.find( ".tar" ) != std::string::npos )
+	if( pkg.file.find( ".tar" ) != std::string::npos )
+		return "-xf";
+
+	std::string file = pkg.url + pkg.file;
+
+	if( file.find( "tar.gz" ) != std::string::npos )
+		return "-xzf";
+
+	if( file.find( "tar.bz2" ) != std::string::npos )
+		return "-xjf";
+
+	if( file.find( "tar" ) != std::string::npos )
 		return "-xf";
 
 	return "";
