@@ -15,7 +15,7 @@ bool ExtractArchive( const Package & pkg )
 {
 	std::string archive = PACKAGE_TMP + pkg.file;
 
-	std::string taroptions = GetTarOptions( pkg.file );
+	std::string taroptions = GetTarOptions( pkg );
 	if( taroptions.empty() ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Unknown archive format! Exiting!", RED, true );
