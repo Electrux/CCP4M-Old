@@ -206,7 +206,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 						"Continuing... ", FIRST_COL, FIRST_COL, true );
 			}
 		}
-		DispColoredData( GREEN << TICK << std::endl;
+		DispColoredData( TICK, GREEN, true );
 	}
 
 	return true;
