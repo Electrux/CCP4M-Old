@@ -112,11 +112,11 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 	std::string buildfilesdir = "build/buildfiles/";
 
 	int retval = 0;
+	int ctr = 0;
 
 	struct stat info;
 
 	if( stat( buildfilesdir.c_str(), & info ) != 0 ) {
-		std::cout << std::endl;
 		retval |= CreateDir( buildfilesdir );
 	}
 
