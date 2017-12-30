@@ -68,17 +68,19 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 	parser.GetDataString( "Core", "ExistsAs", existas );
 
 	std::string file;
+	std::vector< std::string > vec;
 	if( !existas.empty() ) {
-		auto vec = DelimStringToVector( existas, ':' );
+		vec = DelimStringToVector( existas, ':' );
+
 		if( vec.size() <= 1 )
 			return "";
 
 		// Binary
-		if( existas == "Binary" ) {
+		if( vec[ 0 ] == "Binary" ) {
 			file = vec[ 1 ];
 		}
 		// Library
-		else if( existas == "Library" ) {
+		else if( vec[ 0 ] == "Library" ) {
 #ifdef __linux__
 			file = vec[ 1 ];
 #elif __APPLE__
@@ -87,14 +89,12 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 			file = vec[ 2 ];
 #endif
 		}
-		
-		DispColoredData( "Exists as:", existas, FIRST_COL, SECOND_COL, true );
 	}
 
 	if( file.empty() )
 		return "";
 
-	if( existas == "Binary" ) {
+	if( vec[ 0 ] == "Binary" ) {
 		auto path = GetEnvPath();
 
 		for( auto p : path ) {
@@ -103,7 +103,7 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 			}
 		}
 	}
-	else if( existas == "Library" ) {
+	else if( vec[ 0 ] == "Library" ) {
 		if( LocExists( "/usr/lib/" + file ) ) {
 			return "/usr/lib/" + file;
 		}
