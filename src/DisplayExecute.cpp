@@ -28,7 +28,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	winsize w;
 	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
-	int term_width = w.ws_col - 1;
+	int term_width = w.ws_col;
 
 	int current_disp_len = GetLastDispLen();
 
