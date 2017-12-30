@@ -34,6 +34,9 @@ namespace Electrux
 		    str.find( ']' ) != std::string::npos )
 			return false;
 
+		if( * str.begin() == '#' )
+			return false;
+
 		bool found_equals = false;
 
 		bool found_quote = false;

@@ -34,17 +34,13 @@ int PackageManager::HandleCommand()
 	}
 
 	if( args[ 2 ] == "install" ) {
-		if( args.size() < 4 ) {
+		if( args.size() < 4 && args[ 3 ] != "--force" ) {
 			DispColoredData( "Error: Use", args[ 0 ] + " pkg install < Package Name >",
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-		bool forceinstall = false;
-		for( auto arg : args ) {
-			if( arg.find( "--force" ) != std::string::npos )
-				forceinstall = true;
-		}
-		return InstallPackage( args[ 3 ], forceinstall );
+
+		return InstallMultiplePackages();
 	}
 
 	if( args[ 2 ] == "uninstall" ) {
@@ -59,11 +55,51 @@ int PackageManager::HandleCommand()
 	return 1;
 }
 
+int PackageManager::InstallMultiplePackages()
+{
+	int retval = 0;
+
+	bool forceinstall = false;
+
+	int loc = -1;
+
+	std::vector< std::string > packages;
+
+	for( int i = 3; i < ( int )args.size(); ++i ) {
+		if( args[ i ].find( "--force" ) != std::string::npos ) {
+			forceinstall = true;
+			loc = i;
+			continue;
+		}
+
+		packages.push_back( args[ i ] );
+	}
+
+	return InstallMultiplePackages( packages, forceinstall );
+}
+
+int PackageManager::InstallMultiplePackages( std::vector< std::string > & packages, bool forceinstall )
+{
+	int retval = 0;
+
+	for( int i = 0; i < ( int )packages.size(); ++i ) {
+		retval = InstallPackage( packages[ i ], forceinstall );
+
+		if( retval != 0 )
+			break;
+
+		if( i != packages.size() - 1 )
+			DispColoredData( "", FIRST_COL, true );
+	}
+
+	return retval;
+}
+
 int PackageManager::InstallPackage( std::string package, bool forceinstall )
 {
 	Package pkg;
 
-	DispColoredData( "Starting package", package, "installation...\n", BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
+	DispColoredData( "Starting package", package, "installation ...\n", BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {

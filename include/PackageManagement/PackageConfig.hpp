@@ -13,6 +13,8 @@ public:
 
 	static std::string FetchExistFile( Electrux::INI_Parser & parser);
 
+	static void FetchDefaultIncLibDir( Package & pkg );
+
 	static bool HandlePkgDirs();
 };
 

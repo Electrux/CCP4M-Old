@@ -7,6 +7,6 @@
 
 bool ExtractArchive( const Package & pkg );
 
-std::string GetTarOptions( const std::string & filename );
+std::string GetTarOptions( const Package & pkg );
 
 #endif // ARCHIVEEXTRACTOR_HPP
