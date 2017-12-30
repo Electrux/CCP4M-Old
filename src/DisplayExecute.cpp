@@ -41,8 +41,11 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( opline );
 
-			if( current_disp_len + ( "[ " + opline + " ]" ).size() >= term_width )
-				continue;
+			if( current_disp_len + ( "[ " + opline + " ]" ).size() >= term_width ) {
+				std::string teststr = "[  ]";
+				opline = opline.substr( 0, term_width - current_disp_len - teststr.size() - 4 );
+				opline += " ...";
+			}
 
 			MoveOutputCursorBack( prevdisp );
 
