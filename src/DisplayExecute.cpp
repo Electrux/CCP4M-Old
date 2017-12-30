@@ -28,7 +28,9 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	winsize w;
 	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
-	int term_width = w.ws_col;
+
+	// To accomodate \n, max column usable is ws_col - 1
+	int term_width = w.ws_col - 1;
 
 	int current_disp_len = GetLastDispLen();
 
@@ -44,7 +46,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( opline );
 
-			if( current_disp_len + brackets.size() + opline.size() > term_width ) {
+			if( current_disp_len + brackets.size() + opline.size() >= term_width ) {
 				// the size to work with is:
 				// termwidth - 1 -> total size to work with
 				// - current_disp_len -> already used by previous displayed line
