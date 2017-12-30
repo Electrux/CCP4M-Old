@@ -44,9 +44,6 @@ int GenerateBuildFiles()
 
 	int filecount = othersrc.size() + ( int )!mainsrc.empty();
 
-	if( !othersrc.empty() )
-		std::cout << std::endl;
-
 	std::vector< CCData > commands;
 
 	for( auto othersource : othersrc ) {
@@ -98,8 +95,6 @@ int GenerateBuildFiles()
 				DispColoredData( TICK, GREEN, true );
 			else
 				DispColoredData( CROSS, RED, true );
-
-			DispColoredData( "", FIRST_COL, true );
 
 			if( res != 0 )
 				return res;
