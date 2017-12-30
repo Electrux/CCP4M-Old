@@ -75,11 +75,14 @@ int PackageManager::InstallMultiplePackages()
 		packages.push_back( args[ i ] );
 	}
 
-	for( auto pkg : packages ) {
-		retval = InstallPackage( pkg );
+	for( int i = 0; i < ( int )packages.size(); ++i ) {
+		retval = InstallPackage( pkg[ i ] );
 
 		if( retval != 0 )
 			return retval;
+
+		if( i != packages.size() - 1 )
+			DispColoredData( "", FIRST_COL, true );
 	}
 
 	return retval;
