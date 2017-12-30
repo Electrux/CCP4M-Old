@@ -28,5 +28,8 @@ public:
 
 	bool PackageExists( std::string package, Package & pkg );
 
-	bool IsInstalled( std::string packge );
+	// 0 - Yes!
+	// 1 - No!
+	// -1 - Unmanageable ( other )
+	int IsInstalled( std::string packge );
 };

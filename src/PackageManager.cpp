@@ -73,8 +73,7 @@ int PackageManager::InstallPackage( std::string package )
 
 	DispColoredData( "Checking already installed ... " );
 	bool res = IsInstalled( package );
-	DispColoredData( TICK, GREEN, true );
-	if( res ) {
+	if( res == 0 || res == -1 ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
@@ -141,9 +140,7 @@ int PackageManager::UninstallPackage( std::string package )
 
 	DispColoredData( "Checking if package is installed ... " );
 	bool res = IsInstalled( package );
-	DispColoredData( TICK, GREEN, true );
-
-	if( !res ) {
+	if( res == 1 || res == -1 ) {
 		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
@@ -266,39 +263,43 @@ bool PackageManager::PackageExists( std::string package, Package & pkg )
 	return PackageConfig::GetPackage( package, pkg );
 }
 
-bool PackageManager::IsInstalled( std::string package )
+int PackageManager::IsInstalled( std::string package )
 {
 	Package pkg;
 
 	if( !PackageExists( package, pkg ) ) {
+		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Package", package, "does not exist!", RED, SECOND_COL, RED, true );
-		return false;
+		return 1;
 	}
 
 	if( !pkg.existfile.empty() ) {
+		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
 		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
-		return true;
+		return -1;
 	}
 
 	if( !LocExists( INSTALLED_PKGS ) ) {
 		std::fstream file;
 		file.open( INSTALLED_PKGS, std::ios::out );
 		if( !file ) {
+			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Error: Unable to create installed packages list!", RED, true );
-			return true;
+			return 0;
 		}
 		file.close();
 
-		return false;
+		return 1;
 	}
 
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::in );
 
 	if( !file ) {
+		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Unable to open package list to read!", RED, true );
-		return true;
+		return 0;
 	}
 
 	std::string line;
@@ -314,5 +315,10 @@ bool PackageManager::IsInstalled( std::string package )
 
 	file.close();
 
-	return found;
+	if( found )
+		DispColoredData( TICK, GREEN, true );
+	else
+		DispColoredData( CROSS, RED, true );
+
+	return !found;
 }
