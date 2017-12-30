@@ -43,7 +43,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			if( current_disp_len + ( "[ " + opline + " ]" ).size() >= term_width ) {
 				std::string teststr = "[  ]";
-				opline = opline.substr( 0, term_width - current_disp_len - teststr.size() - 4 );
+				opline = opline.substr( 0, term_width - current_disp_len - teststr.size() - 4 - 1 );
 				opline += " ...";
 			}
 
