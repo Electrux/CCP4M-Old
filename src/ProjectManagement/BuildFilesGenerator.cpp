@@ -62,9 +62,7 @@ int GenerateBuildFiles()
 		else
 			commands.push_back( { othersource, compilestr } );
 	}
-	for( auto cmd : commands ) {
-		std::cout << cmd.command << std::endl;
-	}
+
 	if( ExecuteAllCommands( commands, langstr, filecount ) != 0 )
 		return 1;
 
