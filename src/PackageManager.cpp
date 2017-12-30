@@ -76,7 +76,7 @@ int PackageManager::InstallMultiplePackages()
 	}
 
 	for( int i = 0; i < ( int )packages.size(); ++i ) {
-		retval = InstallPackage( pkg[ i ] );
+		retval = InstallPackage( packages[ i ] );
 
 		if( retval != 0 )
 			return retval;
