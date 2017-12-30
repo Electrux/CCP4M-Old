@@ -99,7 +99,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 {
 	Package pkg;
 
-	DispColoredData( "Starting package", package, "installation...\n", BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
+	DispColoredData( "Starting package", package, "installation ...\n", BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
