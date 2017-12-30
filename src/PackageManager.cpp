@@ -79,7 +79,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	DispColoredData( "Checking already installed ... " );
 	int res = IsInstalled( package );
 	if( forceinstall )
-		DispColoredData( "Forcing installationg! This may produce unintended results!" RED, true );
+		DispColoredData( "Forcing installationg! This may produce unintended results!", TICK, RED, RED, true );
 	if( res == 0 || ( res == -1 && !forceinstall ) ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
