@@ -48,6 +48,14 @@ bool LocExists( const std::string & location )
 	return false;
 }
 
+bool LocExistsAsWildCard( std::string dir, std::string wildcard, std::string & file )
+{
+	std::vector< DirFile > temp;
+	int count = GetWildCardFilesInDir( dir, temp, wildcard, false );
+
+	return count > 0;
+}
+
 // Can create directory in directory B)
 int CreateDir( const std::string & dir, bool verbose )
 {

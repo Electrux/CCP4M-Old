@@ -2,6 +2,7 @@
 #define PATHS_HPP
 
 #include <string>
+#include <vector>
 
 extern std::string PACKAGE_DIR;
 const std::string PACKAGE_EXT = ".pkgi";
@@ -17,5 +18,7 @@ std::string GetEnvVar( std::string key );
 bool ChangeWorkingDir( std::string dir );
 
 std::string GetWorkingDir();
+
+std::vector< std::string > GetEnvPath();
 
 #endif // PATHS_HPP

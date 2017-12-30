@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
 
 std::string PACKAGE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
@@ -52,4 +53,17 @@ std::string GetWorkingDir()
 	}
 
 	return "";
+}
+
+std::vector< std::string > GetEnvPath()
+{
+	std::string path = GetEnvVar( "PATH" );
+
+	auto path_vec = DelimStringToVector( path, ':' );
+
+	for( auto p = path_vec.begin(); p != path_vec.end(); ++p ) {
+		* p = ( * p ) + "/";
+	}
+
+	return path_vec;
 }

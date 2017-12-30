@@ -275,6 +275,12 @@ bool PackageManager::IsInstalled( std::string package )
 		return false;
 	}
 
+	if( !pkg.existfile.empty() ) {
+		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
+		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
+		return true;
+	}
+
 	if( !LocExists( INSTALLED_PKGS ) ) {
 		std::fstream file;
 		file.open( INSTALLED_PKGS, std::ios::out );
