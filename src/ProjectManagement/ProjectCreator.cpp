@@ -64,4 +64,6 @@ void ShowCreateHelp( std::vector< std::string > & args )
 	DispColoredData( "\t\t\t\tAdd a comma separated list of dependencies/libraries", EXTRA_COL, true );
 	DispColoredData( "\t\t\t--lang", SECOND_COL, true );
 	DispColoredData( "\t\t\t\tLanguage to use in the project ( default: C++ )", EXTRA_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
 }

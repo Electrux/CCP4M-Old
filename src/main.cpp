@@ -49,9 +49,11 @@ void ShowMainHelp( std::vector< std::string > & args )
 	DispColoredData( "\t\t\tCreate, manipulate and run C++ projects", SECOND_COL, true );
 
 	DispColoredData( "\t\tpkg", FIRST_COL, true );
-	DispColoredData( "\t\t\tManage C++ packages - libraries", FIRST_COL, true );
+	DispColoredData( "\t\t\tManage C++ packages - libraries", SECOND_COL, true );
 
 	DispColoredData( "\nYou can get more information from the categorized help of " );
 	DispColoredData( "each parameter. To do that, here is an example:", FIRST_COL, true );
 	DispColoredData( "\t", args[ 0 ] + " project help", FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
 }
