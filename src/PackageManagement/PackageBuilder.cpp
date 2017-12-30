@@ -7,6 +7,7 @@
 #include "../../include/StringFuncs.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
 #include "../../include/PackageManagement/PackageBuilder.hpp"
@@ -17,20 +18,20 @@ bool BuildDirectory( const Package & pkg )
 		DelimStringToVector( pkg.buildcmds );
 
 	if( buildcmds.empty() ) {
-		std::cout << YELLOW << "Nothing to build! Exiting!" << RED << CROSS << RESET << std::endl;
+		DispColoredData( "Nothing to build! Exiting!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
-		std::cout << YELLOW << "Unable to get working directory! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( "Unable to get working directory!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
 	if( !ChangeWorkingDir( GetPackageVersionDir( pkg ) ) ) {
-		std::cout << YELLOW << "Unable to change working directory to "
-			<< "extracted package directory! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( "Unable to change working directory to the extracted package directory!",
+				CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
@@ -44,12 +45,11 @@ bool BuildDirectory( const Package & pkg )
 	}
 
 	if( create.find( "configure" ) != std::string::npos ) {
-		std::cout << YELLOW << "Creating makefile using configure ... " << RESET;
+		DispColoredData( "Creating makefile using configure ... " );
 	}
 	else if( create.find( "cmake" ) != std::string::npos ) {
-		std::cout << YELLOW << "Creating makefile using CMake ... " << RESET;
+		DispColoredData( "Creating makefile using CMake ... " );
 	}
-	std::cout.flush();
 
 	int res;
 	std::string errors;
@@ -57,53 +57,54 @@ bool BuildDirectory( const Package & pkg )
 	res = DispExecute( create, errors );
 
 	if( res != 0 ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << YELLOW << "Unable to create makefile! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Unable to create makefile!", CROSS, FIRST_COL, RED, true );
 		if( !errors.empty() ) {
-			std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+			DispColoredData( "Errors:", RED, true );
+			DispColoredData( errors, CYAN, true );
 		}
 		ChangeWorkingDir( cwd );
 		return false;
 	}
 	else {
-		std::cout << GREEN << TICK << std::endl;
+		DispColoredData( TICK, GREEN, true );
 	}
 
-	std::cout << YELLOW << "Using make ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Using make ... " );
 
 	res = DispExecute( make, errors );
 
 	if( res != 0 ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << YELLOW << "Unable to make the package! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Unable to make the package!", CROSS, FIRST_COL, RED, true );
 		if( !errors.empty() ) {
-			std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+			DispColoredData( "Errors:", RED, true );
+			DispColoredData( errors, CYAN, true );
 		}
 		ChangeWorkingDir( cwd );
 		return false;
 	}
 	else {
-		std::cout << GREEN << TICK << std::endl;
+		DispColoredData( TICK, GREEN, true );
 	}
 
 	if( !install.empty() ) {
-		std::cout << YELLOW << "Installing using make install ... " << RESET;
-		std::cout.flush();
+		DispColoredData( "Installing using make install ... " );
 
 		res = DispExecute( install, errors );
 
 		if( res != 0 ) {
-			std::cout << RED << CROSS << std::endl;
-			std::cout << YELLOW << "Unable to install using make install! " << RED << CROSS << RESET << std::endl;
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( "Unable to install using make install!", CROSS, FIRST_COL, RED, true );
 			if( !errors.empty() ) {
-				std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+				DispColoredData( "Errors:", RED, true );
+				DispColoredData( errors, CYAN, true );
 			}
 			ChangeWorkingDir( cwd );
 			return false;
 		}
 		else {
-			std::cout << GREEN << TICK << std::endl;
+			DispColoredData( TICK, GREEN, true );
 		}
 	}
 

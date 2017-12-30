@@ -16,6 +16,8 @@ MacLibDir = /usr/local/lib
 
 LibraryFlags = -lcurl
 
+ExistsAs = Library:libcurl.so:libcurl.dylib
+
 [Source]
 
 URL = https://curl.haxx.se/download/

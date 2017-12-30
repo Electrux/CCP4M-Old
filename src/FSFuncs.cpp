@@ -44,8 +44,19 @@ bool LocExists( const std::string & location )
 
 	if( stat( location.c_str(), & info ) == 0 )
 		return true;
+	
+	if( lstat( location.c_str(), & info ) == 0)
+		return true;
 
 	return false;
+}
+
+bool LocExistsAsWildCard( std::string dir, std::string wildcard, std::string & file )
+{
+	std::vector< DirFile > temp;
+	int count = GetWildCardFilesInDir( dir, temp, wildcard, false );
+
+	return count > 0;
 }
 
 // Can create directory in directory B)
@@ -73,7 +84,7 @@ int CreateDir( const std::string & dir, bool verbose )
 		dirs.push_back( temp );
 
 	if( verbose )
-		std::cout << BLUE << "Creating Directory: " << MAGENTA << dir << RESET << "\n";
+		DispColoredData( "Creating Directory:", dir, BLUE, MAGENTA, true );
 
 	int retval = 0;
 	std::string finaldir;
@@ -93,7 +104,7 @@ int CreateDir( const std::string & dir, bool verbose )
 void CreateFileWithContents( const std::string & filename,
 			     const std::string & contents )
 {
-	std::cout << BLUE << "Creating file: " << MAGENTA << filename << RESET << std::endl;
+	DispColoredData( "Creating file:", filename, BLUE, MAGENTA, true );
 
 	std::fstream file;
 
@@ -271,8 +282,7 @@ bool CreatePackageDir( const Package & pkg, bool verbose )
 	int ret = CreateDir( archivedir, verbose );
 
 	if( ret != 0 ) {
-		std::cout << RED << "Error: Unable to create temporary archive directory! Exiting!"
-			<< RESET << std::endl;
+		DispColoredData( "Error: Unable to create temporary archive directory! Exiting!", RED, true );
 		return false;
 	}
 
@@ -325,46 +335,28 @@ void FetchExtraDirs( const Package & pkg,
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 {
-	int prevsize = 0;
-
 	for( auto it = data.begin(); it != data.end(); ) {
-
-		TrimString( * it );
 
 		if( !LocExists( * it ) ) {
 			it = data.erase( it );
 			continue;
 		}
 
-		MoveOutputCursorBack( prevsize );
-
-		prevsize = DisplayOneLinerString( * it );
-
 		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
-			MoveOutputCursorBack( prevsize );
 			return false;
 		}
 
 		it = data.erase( it );
 	}
 
-	MoveOutputCursorBack( prevsize );
-
 	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
-		prevsize = DisplayOneLinerString( cpdatafile );
 
 		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
-			MoveOutputCursorBack( prevsize );
-			prevsize = 0;
 			return false;
 		}
 	}
-
-	MoveOutputCursorBack( prevsize );
-
-	prevsize = 0;
 
 	return true;
 }
@@ -374,8 +366,6 @@ bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & cop
 	std::fstream installedfiles;
 	installedfiles.open( PACKAGE_DIR + "." + pkg.name, std::ios::out );
 	if( !installedfiles ) {
-		std::cout << RED << "Error in saving installation information!\nReverting installation ... " << RESET;
-		std::cout.flush();
 		return false;
 	}
 

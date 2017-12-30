@@ -7,6 +7,7 @@
 #include "../../include/StringFuncs.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
 #include "../../include/PackageManagement/PackageData.hpp"
@@ -18,50 +19,45 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	bool usecustomuninstaller = false;
 
 	if( pkg.type == "Binary" || buildcmds.size() < 4 ) {
-		std::cout << YELLOW << "Using pre-generated " << args[ 0 ]
-			<< " uninstaller file ... " << GREEN << TICK << RESET << std::endl;
+		DispColoredData( "Using auto generated uninstaller file ...", TICK, FIRST_COL, GREEN, true );
 		usecustomuninstaller = true;
 	}
 	else {
-		std::cout << YELLOW << "Using uninstall command from library config ... "
-			<< GREEN << TICK << RESET << std::endl;
+		DispColoredData( "Using uninstall command from library config ...", TICK, FIRST_COL, GREEN, true );
 	}
 
-	std::cout << YELLOW << "Removing data ... " << RESET;
-	std::cout.flush();
-
 	if( usecustomuninstaller ) {
+		DispColoredData( "Removing data ... " );
 		std::vector< std::string > cpdata = GetCopiedData( pkg );
 
 		if( !RemoveCopiedData( pkg, cpdata ) ) {
-			std::cout << RED << CROSS << RESET << std::endl;
-			std::cout << YELLOW << "Unable to remove all copied data! " << RED << CROSS << RESET << std::endl;
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( "Unable to remove all copied data!", CROSS, FIRST_COL, RED, true );
 			return false;
 		}
 
-		std::cout << GREEN << TICK << std::endl;
+		DispColoredData( TICK, GREEN, true );
 		return true;
 	}
 
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << YELLOW << "Unable to get working directory! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Unable to get working directory!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
 	if( !ChangeWorkingDir( GetPackageVersionDir( pkg ) ) ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << YELLOW << "Unable to change working directory to "
-			<< "extracted package directory! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Unable to change working directory to the extracted package directory!",
+				CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
 	std::string makeuninstall = buildcmds[ 3 ];
 
-	std::cout << YELLOW << "Uninstalling using make uninstall ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Uninstalling using make uninstall ... " );
 
 	int res;
 	std::string errors;
@@ -69,16 +65,17 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	res = DispExecute( makeuninstall, errors );
 
 	if( res != 0 ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << YELLOW << "Unable to uninstall using make uninstall! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Unable to uninstall using make uninstall!", CROSS, FIRST_COL, RED, true );
 		if( !errors.empty() ) {
-			std::cout << RED << "Errors:" << RESET << std::endl << errors << std::endl;
+			DispColoredData( "Errors:", RED, true );
+			DispColoredData( errors, CYAN, true );
 		}
 		ChangeWorkingDir( cwd );
 		return false;
 	}
 	else {
-		std::cout << GREEN << TICK << std::endl;
+		DispColoredData( TICK, GREEN, true );
 	}
 
 	ChangeWorkingDir( cwd );

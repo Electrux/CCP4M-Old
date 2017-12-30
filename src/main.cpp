@@ -1,6 +1,8 @@
 #include <iostream>
 
+#include "../include/ColorDefs.hpp"
 #include "../include/StringFuncs.hpp"
+#include "../include/DisplayFuncs.hpp"
 #include "../include/ProjectManager.hpp"
 #include "../include/PackageManager.hpp"
 
@@ -11,44 +13,53 @@ int main( int argc, char ** argv )
 	auto args = ToVector( argc, argv );
 
 	if( args.size() < 2 ) {
-		std::cout << "Usage: " << args[ 0 ] << " [ help/project/pkg ] ...\n";
+		DispColoredData( "Usage:", args[ 0 ] + " [ help/project/pkg ]", FIRST_COL, SECOND_COL, true );
 		return 1;
 	}
 
+	int retval = 0;
+
+	DispColoredData( "", FIRST_COL, true );
+
 	if( args[ 1 ] == "project" ) {
-		return HandleProject( args );
+		retval = HandleProject( args );
 	}
 	else if( args[ 1 ] == "pkg" ) {
 		PackageManager pkgmgr( args );
-		return pkgmgr.HandleCommand();
+		retval = pkgmgr.HandleCommand();
 	}
 	else if( args[ 1 ] == "help" ) {
 		ShowMainHelp( args );
 	}
 	else {
-		std::cout << "Invalid parameter. Possible options are: help, project, pkg\n";
-		return 1;
+		DispColoredData( "Invalid parameter. Possible options are: help, project, pkg", RED, true );
+		retval = 1;
 	}
 
-	return 0;
+	DispColoredData( "", FIRST_COL, true );
+
+	return retval;
 }
 
 void ShowMainHelp( std::vector< std::string > & args )
 {
-	std::cout << "Help:\n\n";
+	DispColoredData( "Help:\n", FIRST_COL, true );
 
-	std::cout << "Usage: " << args[ 0 ] << " parameter [ parameter args ]\n";
-	std::cout << "\tParameters are:\n";
-	std::cout << "\t\thelp\n";
-	std::cout << "\t\t\tShow this help menu\n";
+	DispColoredData( "Usage: ", args[ 0 ] + " parameter [ parameter args ]", FIRST_COL, SECOND_COL, true );
 
-	std::cout << "\t\tproject\n";
-	std::cout << "\t\t\tCreate, manipulate and run C++ projects\n";
+	DispColoredData( "\tParameters are:", FIRST_COL, true );
+	DispColoredData( "\t\thelp", FIRST_COL, true );
+	DispColoredData( "\t\t\tShow this help menu", SECOND_COL, true );
 
-	std::cout << "\t\tpkg\n";
-	std::cout << "\t\t\tManage C++ packages - libraries\n";
+	DispColoredData( "\t\tproject", FIRST_COL, true );
+	DispColoredData( "\t\t\tCreate, manipulate and run C++ projects", SECOND_COL, true );
 
-	std::cout << "\nYou can get more information from the categorized help of "
-		  << "each parameter. To do that, here is an example:\n";
-	std::cout << "\t" << args[ 0 ] << " project help\n";
+	DispColoredData( "\t\tpkg", FIRST_COL, true );
+	DispColoredData( "\t\t\tManage C++ packages - libraries", SECOND_COL, true );
+
+	DispColoredData( "\nYou can get more information from the categorized help of " );
+	DispColoredData( "each parameter. To do that, here is an example:", FIRST_COL, true );
+	DispColoredData( "\t", args[ 0 ] + " project help", FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
 }

@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 
+#include "../include/ColorDefs.hpp"
+#include "../include/DisplayFuncs.hpp"
+
 #include "../include/ProjectManagement/ProjectCreator.hpp"
 #include "../include/ProjectManagement/ProjectBuilder.hpp"
 #include "../include/ProjectManagement/ProjectExecuter.hpp"
@@ -10,7 +13,8 @@
 int HandleProject( std::vector< std::string > & args )
 {
 	if( args.size() < 3 ) {
-		std::cout << "Usage: " << args[ 0 ] << " project [ help/new/run/build ] ...\n";
+		DispColoredData( "Usage:", args[ 0 ] + " project [ help/new/run/build ] ...",
+				FIRST_COL, SECOND_COL, true );
 		return 1;
 	}
 
@@ -27,7 +31,7 @@ int HandleProject( std::vector< std::string > & args )
 		return ExecuteProject( args );
 	}
 	else {
-		std::cout << "Invalid parameter. Possible Options are: help, new, run, build\n";
+		DispColoredData( "Invalid parameter. Possible Options are: help, new, run, build", FIRST_COL, true );
 		return 1;
 	}
 
@@ -36,24 +40,25 @@ int HandleProject( std::vector< std::string > & args )
 
 void ShowProjectHelp( std::vector< std::string > & args )
 {
-	std::cout << "Help:\n\n";
+	DispColoredData( "Help:\n", FIRST_COL, true );
 
-	std::cout << "Usage: " << args[ 0 ] << " project [ help/new/run/build ] ...\n";
-	std::cout << "\tParameters are:\n";
-	std::cout << "\t\thelp\n";
-	std::cout << "\t\t\tShow this help menu\n";
+	DispColoredData( "Usage:", args[ 0 ] + " project [ help/new/run/build ]", FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tParameters are:", FIRST_COL, true );
+	DispColoredData( "\t\thelp", FIRST_COL, true );
+	DispColoredData( "\t\t\tShow this help menu", SECOND_COL, true );
 
-	std::cout << "\t\tnew\n";
-	std::cout << "\t\t\tCreate a new C++ project\n";
+	DispColoredData( "\t\tnew", FIRST_COL, true );
+	DispColoredData( "\t\t\tCreate a new C++ project", SECOND_COL, true );
 
-	std::cout << "\t\tbuild\n";
-	std::cout << "\t\t\tBuild C++ projects. You must be in the directory of a project\n";
+	DispColoredData( "\t\tbuild", FIRST_COL, true );
+	DispColoredData( "\t\t\tBuild C++ projects. You must be in the directory of a project", SECOND_COL, true );
 
-	std::cout << "\t\trun\n";
-	std::cout << "\t\t\tBuild and run C++ projects."
-		  << " You must be in the directory of a project\n";
+	DispColoredData( "\t\trun", FIRST_COL, true );
+	DispColoredData( "\t\t\tBuild and run C++ projects. You must be in the directory of a project", SECOND_COL, true );
 
-	std::cout << "\nYou can get more information from the categorized help of "
-		  << "each parameter. To do that, here is an example:\n";
-	std::cout << "\t" << args[ 0 ] << " project new help\n";
+	DispColoredData( "\nYou can get more information from the categorized help of ", FIRST_COL, false );
+	DispColoredData( "each parameter. To do that, here is an example:", FIRST_COL, true );
+	DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
 }

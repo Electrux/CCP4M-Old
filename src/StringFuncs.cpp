@@ -123,7 +123,7 @@ void TrimString( std::string & str )
 				it = str.erase( it );
 			}
 		}
-		else if( * it == '\r' ) {
+		else if( * it == '\r' || * it == '\n' ) {
 			it = str.erase( it );
 		}
 		else {
@@ -221,7 +221,7 @@ void TrimWildCard( std::string & wildcard )
 		if( * it == '*' ) {
 			++it;
 
-			while( * it == '*' )
+			while( it != wildcard.end() && * it == '*' )
 				it = wildcard.erase( it );
 		}
 		else {

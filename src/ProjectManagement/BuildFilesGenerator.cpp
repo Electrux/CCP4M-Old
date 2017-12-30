@@ -8,6 +8,7 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -30,22 +31,25 @@ int GenerateBuildFiles()
 	if( CreateBuildDirectories( othersrc ) != 0 )
 		return 1;
 
-	std::string clangstr = data.lang == "c" ? "clang" : "clang++";
+	std::string compiler;
+#ifdef __linux__
+	compiler = data.lang == "c" ? "gcc" : "g++";
+#elif __APPLE__
+	compiler = data.lang == "c" ? "clang" : "clang++";
+#endif
+
 	std::string langstr = data.lang == "c" ? "C" : "CXX";
 
 	std::string standard = config.GetDataString( "Core", "Std" );
 
 	int filecount = othersrc.size() + ( int )!mainsrc.empty();
 
-	if( !othersrc.empty() )
-		std::cout << std::endl;
-
 	std::vector< CCData > commands;
 
 	for( auto othersource : othersrc ) {
 
 		std::string compilestr =
-			clangstr + " -c " + incdirs + flags + "-std=" + standard
+			compiler + " -c " + incdirs + flags + "-std=" + standard
 			+ " -o build/buildfiles/" + othersource
 			+ ".o src/" + othersource;
 
@@ -66,11 +70,11 @@ int GenerateBuildFiles()
 		auto buildfilemodtime = GetLastModifiedTime( "build/" + data.name );
 
 		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime && filecount == 1) {
-			std::cout << BOLD_GREEN << "Project up to date!" << RESET << std::endl;
+			DispColoredData( "Project up to date!", BOLD_GREEN, true );
 		}
 		else {
 			std::string compilestr =
-				clangstr + " -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
+				compiler + " -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
 				+ data.name;
 
 			for( auto othersource : othersrc )		
@@ -78,16 +82,19 @@ int GenerateBuildFiles()
 
 			compilestr += " src/" + mainsrc;
 
-			std::cout << "\n[100%]\t"
-				  << BOLD_YELLOW << "Building and Linking " + langstr + " executable: "
-				  << BOLD_GREEN << "build/" << data.name << RESET << " ...";
+			if( !commands.empty() )
+				DispColoredData( "", FIRST_COL, true );
+
+			DispColoredData( "[100%]\t", RESET, false );
+			DispColoredData( "Building and Linking " + langstr + " executable:", "build/" + data.name, "... ",
+					BOLD_YELLOW, BOLD_GREEN, RESET, false );
 
 			int res = ExecuteCommand( compilestr );
 
 			if( res == 0 )
-				std::cout << " " << GREEN << TICK << RESET << std::endl;
+				DispColoredData( TICK, GREEN, true );
 			else
-				std::cout << " " << RED << CROSS << RESET << std::endl;;
+				DispColoredData( CROSS, RED, true );
 
 			if( res != 0 )
 				return res;
@@ -102,12 +109,11 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 	std::string buildfilesdir = "build/buildfiles/";
 
 	int retval = 0;
+	int ctr = 0;
 
-	struct stat info;
-
-	if( stat( buildfilesdir.c_str(), & info ) != 0 ) {
-		std::cout << std::endl;
+	if( !LocExists( buildfilesdir ) ) {
 		retval |= CreateDir( buildfilesdir );
+		ctr++;
 	}
 
 	for( auto src : othersrc ) {
@@ -115,8 +121,14 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 		if( src.find( '/' ) == std::string::npos )
 			continue;
 
-		retval |= CreateDir( buildfilesdir + GetDirectoryFromSource( src ) );
+		if( !LocExists( buildfilesdir + GetDirectoryFromSource( src ) ) ) {
+			retval |= CreateDir( buildfilesdir + GetDirectoryFromSource( src ) );
+			ctr++;
+		}
 	}
+
+	if( ctr > 0 )
+		DispColoredData( "", FIRST_COL, true );
 
 	return retval;
 }

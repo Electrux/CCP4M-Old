@@ -16,6 +16,8 @@ void SetFolderPaths( std::string & directory,
 
 bool LocExists( const std::string & location );
 
+bool LocExistsAsWildCard( std::string dir, std::string wildcard );
+
 int CreateDir( const std::string & dir, bool verbose = true );
 
 void CreateFileWithContents( const std::string & filename,

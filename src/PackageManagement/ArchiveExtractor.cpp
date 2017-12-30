@@ -7,6 +7,7 @@
 
 #include "../../include/FSFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
+#include "../../include/DisplayFuncs.hpp"
 
 #include "../../include/PackageManagement/ArchiveExtractor.hpp"
 
@@ -16,9 +17,8 @@ bool ExtractArchive( const Package & pkg )
 
 	std::string taroptions = GetTarOptions( pkg.file );
 	if( taroptions.empty() ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error: Unknown archive format! Exiting!"
-			<< RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unknown archive format! Exiting!", RED, true );
 		return false;
 	}
 
@@ -29,20 +29,19 @@ bool ExtractArchive( const Package & pkg )
 	}
 
 	if( !CreatePackageDir( pkg ) ) {
-		std::cout << RED << CROSS << std::endl;
+		DispColoredData( CROSS, RED, true );
 		return false;
 	}
 
 	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
 
 	if( DispExecuteNoErr( cmd, false ) != 0 ) {
-		std::cout << RED << CROSS << std::endl;
-		std::cout << RED << "Error: Unable to extract archive! Exiting!"
-			<< RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to extract archive! Exiting!", RED, true );
 		return false;
 	}
 
-	std::cout << GREEN << TICK << std::endl;
+	DispColoredData( TICK, GREEN, true );
 
 	return true;
 }

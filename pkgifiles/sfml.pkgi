@@ -16,6 +16,8 @@ MacLibDir = /usr/local/lib
 
 LibraryFlags = -lsfml-graphics, -lsfml-window, -lsfml-system, -lsfml-network
 
+ExistsAs = Library:libsfml-system.so:libsfml-system.dylib
+
 [Binary]
 
 URL = http://mirror3.sfml-dev.org/files/
