@@ -140,8 +140,13 @@ int PackageManager::UninstallPackage( std::string package )
 
 	DispColoredData( "Checking if package is installed ... " );
 	bool res = IsInstalled( package );
-	if( res == 1 || res == -1 ) {
+	if( res == 1 ) {
 		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
+		return 1;
+	}
+	if( res == -1 ) {
+		DispColoredData( "Package not installed by", args[ 0 ], "!\nNothing to remove!" );
+		DispColoredData( " " + CROSS, RED, true );
 		return 1;
 	}
 
