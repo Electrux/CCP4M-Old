@@ -30,7 +30,13 @@ int GenerateBuildFiles()
 	if( CreateBuildDirectories( othersrc ) != 0 )
 		return 1;
 
-	std::string clangstr = data.lang == "c" ? "clang" : "clang++";
+	std::string compiler;
+#ifdef __linux__
+	compiler = data.lang == "c" ? "gcc" : "g++";
+#elif __APPLE__
+	compiler = data.lang == "c" ? "clang" : "clang++";
+#endif
+
 	std::string langstr = data.lang == "c" ? "C" : "CXX";
 
 	std::string standard = config.GetDataString( "Core", "Std" );
@@ -45,7 +51,7 @@ int GenerateBuildFiles()
 	for( auto othersource : othersrc ) {
 
 		std::string compilestr =
-			clangstr + " -c " + incdirs + flags + "-std=" + standard
+			compiler + " -c " + incdirs + flags + "-std=" + standard
 			+ " -o build/buildfiles/" + othersource
 			+ ".o src/" + othersource;
 
@@ -70,7 +76,7 @@ int GenerateBuildFiles()
 		}
 		else {
 			std::string compilestr =
-				clangstr + " -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
+				compiler + " -g " + incdirs + libs + flags + "-std=" + standard + " -o build/"
 				+ data.name;
 
 			for( auto othersource : othersrc )		
