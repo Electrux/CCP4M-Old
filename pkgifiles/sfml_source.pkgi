@@ -1,0 +1,28 @@
+[Core]
+
+Name = sfml
+Description = "SFML multi purpose multimedia C++ library"
+Lang = cpp
+Type = Source
+
+Version = 2.4.2
+Deps = 
+
+LinuxIncludeDir = /usr/include
+LinuxLibDir = /usr/lib
+
+MacIncludeDir = /usr/local/include
+MacLibDir = /usr/local/lib
+
+LibraryFlags = -lsfml-graphics, -lsfml-window, -lsfml-system, -lsfml-network
+
+ExistsAs = Library:libsfml-system.so:libsfml-system.dylib
+
+[Source]
+
+URL = https://github.com/SFML/SFML/archive/
+
+LinuxFile = 2.4.2.tar.gz
+MacFile = 2.4.2.tar.gz
+
+BuildCommands = "cmake .", make
