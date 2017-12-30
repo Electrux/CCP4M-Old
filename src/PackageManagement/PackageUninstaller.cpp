@@ -26,8 +26,8 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 		DispColoredData( "Using uninstall command from library config ...", TICK, FIRST_COL, GREEN, true );
 	}
 
-	DispColoredData( "Removing data ... " );
 	if( usecustomuninstaller ) {
+		DispColoredData( "Removing data ... " );
 		std::vector< std::string > cpdata = GetCopiedData( pkg );
 
 		if( !RemoveCopiedData( pkg, cpdata ) ) {

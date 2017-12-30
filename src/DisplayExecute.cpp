@@ -28,11 +28,14 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	winsize w;
 	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
-	int term_width = w.ws_col;
+	int term_width = w.ws_col - 1;
 
 	int current_disp_len = GetLastDispLen();
 
 	std::array< char, 10000 > opline_temp;
+
+	std::string brackets = "[  ]";
+	std::string continuation = " ...";
 
 	while( !feof( pipe ) ) {
 		if( fgets( opline_temp.data(), 10000, pipe ) != NULL && show_output ) {
@@ -41,10 +44,14 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( opline );
 
-			if( current_disp_len + ( "[ " + opline + " ]" ).size() >= term_width ) {
-				std::string teststr = "[  ]";
-				opline = opline.substr( 0, term_width - current_disp_len - teststr.size() - 4 - 1 );
-				opline += " ...";
+			if( current_disp_len + brackets.size() + opline.size() > term_width ) {
+				// the size to work with is:
+				// termwidth - 1 -> total size to work with
+				// - current_disp_len -> already used by previous displayed line
+				// - teststr.size() -> to account for the additional brackets put by DisplayOneLinerString()
+				// - 4 -> to account for adding 3 dots and a space to describe left out output.
+				opline = opline.substr( 0, term_width - current_disp_len - brackets.size() - continuation.size() );
+				opline += continuation;
 			}
 
 			MoveOutputCursorBack( prevdisp );
