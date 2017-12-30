@@ -116,9 +116,10 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	DispColoredData( "Checking already installed ... " );
 	int res = IsInstalled( package );
-	if( forceinstall )
-		DispColoredData( "Forcing installationg! This may produce unintended results!", TICK, RED, RED, true );
-	if( res == 0 || ( res == -1 && !forceinstall ) ) {
+	if( forceinstall ) {
+		DispColoredData( "Forcing installation! This may produce unintended results!", TICK, RED, RED, true );
+	}
+	else if( res == 0 || ( res == -1 && !forceinstall ) ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
@@ -198,7 +199,8 @@ int PackageManager::UninstallPackage( std::string package )
 	std::string pkgtolower = package;
 	StringToLower( pkgtolower );
 
-	DispColoredData( "Starting package " + pkgtolower + " uninstallation ...", TICK, FIRST_COL, GREEN, true );
+	DispColoredData( "Starting package ", pkgtolower, " uninstallation ...", FIRST_COL, SECOND_COL, THIRD_COL,
+			true );
 	if( !UninstallArchive( pkg, args ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;

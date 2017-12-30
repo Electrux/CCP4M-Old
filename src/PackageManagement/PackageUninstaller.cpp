@@ -31,7 +31,6 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 		std::vector< std::string > cpdata = GetCopiedData( pkg );
 
 		if( !RemoveCopiedData( pkg, cpdata ) ) {
-			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to remove all copied data!", CROSS, FIRST_COL, RED, true );
 			return false;
 		}
@@ -43,13 +42,11 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
-		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Unable to get working directory!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
 	if( !ChangeWorkingDir( GetPackageVersionDir( pkg ) ) ) {
-		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Unable to change working directory to the extracted package directory!",
 				CROSS, FIRST_COL, RED, true );
 		return false;
