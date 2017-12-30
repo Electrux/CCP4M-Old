@@ -315,10 +315,7 @@ int PackageManager::IsInstalled( std::string package )
 
 	file.close();
 
-	if( found )
-		DispColoredData( TICK, GREEN, true );
-	else
-		DispColoredData( CROSS, RED, true );
+	DispColoredData( TICK, GREEN, true );
 
 	return !found;
 }
