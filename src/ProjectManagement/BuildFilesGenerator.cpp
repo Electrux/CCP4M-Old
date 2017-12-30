@@ -113,7 +113,7 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 
 	struct stat info;
 
-	if( stat( buildfilesdir.c_str(), & info ) != 0 ) {
+	if( !LocExists( buildfilesdir ) ) {
 		retval |= CreateDir( buildfilesdir );
 		ctr++;
 	}
@@ -123,9 +123,10 @@ int CreateBuildDirectories( std::vector< std::string > & othersrc )
 		if( src.find( '/' ) == std::string::npos )
 			continue;
 
-		retval |= CreateDir( buildfilesdir + GetDirectoryFromSource( src ) );
-
-		ctr++;
+		if( !LocExists( buildfilesdir + GetDirectoryFromSource( src ) ) ) {
+			retval |= CreateDir( buildfilesdir + GetDirectoryFromSource( src ) );
+			ctr++;
+		}
 	}
 
 	if( ctr > 0 )
