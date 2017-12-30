@@ -34,17 +34,13 @@ int PackageManager::HandleCommand()
 	}
 
 	if( args[ 2 ] == "install" ) {
-		if( args.size() < 4 ) {
+		if( args.size() < 4 && args[ 3 ] != "--force" ) {
 			DispColoredData( "Error: Use", args[ 0 ] + " pkg install < Package Name >",
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-		bool forceinstall = false;
-		for( auto arg : args ) {
-			if( arg.find( "--force" ) != std::string::npos )
-				forceinstall = true;
-		}
-		return InstallPackage( args[ 3 ], forceinstall );
+
+		return InstallMultiplePackages();
 	}
 
 	if( args[ 2 ] == "uninstall" ) {
@@ -57,6 +53,36 @@ int PackageManager::HandleCommand()
 	}
 
 	return 1;
+}
+
+int PackageManager::InstallMultiplePackages()
+{
+	int retval = 0;
+
+	bool forceinstall = false;
+
+	int loc = -1;
+
+	std::vector< std::string > packages;
+
+	for( int i = 3; i < ( int )args.size(); ++i ) {
+		if( args[ i ].find( "--force" ) != std::string::npos ) {
+			forceinstall = true;
+			loc = i;
+			continue;
+		}
+
+		packages.push_back( args[ i ] );
+	}
+
+	for( auto pkg : packages ) {
+		retval = InstallPackage( pkg );
+
+		if( retval != 0 )
+			return retval;
+	}
+
+	return retval;
 }
 
 int PackageManager::InstallPackage( std::string package, bool forceinstall )

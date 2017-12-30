@@ -12,6 +12,8 @@ public:
 
 	int InstallPackage( std::string package, bool forceinstall = false );
 
+	int InstallMultiplePackages();
+
 	int UninstallPackage( std::string package );
 
 	int GetInfo( std::string package );
