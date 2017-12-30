@@ -27,15 +27,14 @@ bool InstallDirectory( const Package & pkg )
 	FetchExtraDirs( pkg, copyfiles, copiedfiles );
 
 	if( !CheckNecessaryPermissions( pkg, use_framework ) ) {
-		std::cout << RED << "Error! Check if you have necessary permissions to modify package directories!"
-			<< RESET << std::endl;
+		DispColoredData( "Error: You do not have necessary permissions to modify package directories!",
+				RED, true );
 		return false;
 	}
 
 	for( auto dir : copiedfiles ) {
 		if( CreateDir( dir, false ) != 0 ) {
-			std::cout << RED << "Error: Unable to create required directory for installation!"
-				<< RESET << std::endl;
+			DispColoredData( "Error: Unable to create required directory for installation!", RED, true );
 			return false;
 		}
 	}
@@ -55,10 +54,8 @@ bool InstallDirectory( const Package & pkg )
 	std::string cpoutput;
 
 	// INCLUDE FILES
-	if( !copyfiles[ "inc" ].empty() ) {
-		std::cout << YELLOW << "Copying include files ... " << RESET;
-		std::cout.flush();
-	}
+	if( !copyfiles[ "inc" ].empty() )
+		DispColoredData( "Copying include files ... " );
 
 	for( auto file : copyfiles[ "inc" ] ) {
 		std::string op = "Copying file: " + file.dir + file.file;
@@ -73,23 +70,22 @@ bool InstallDirectory( const Package & pkg )
 		prevsize = DisplayOneLinerString( op );
 		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
 			MoveOutputCursorBack( prevsize );
-			std::cout << RED << CROSS << std::endl;
-			std::cout << RED << "Error in copying includes!\nReverting installation ... " << RESET;
-			std::cout.flush();
+
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( "Error: Could not copy includes!", RED, true );
+			DispColoredData( "Reverting installationg ... ", RED, true );
+
 			RevertInstallation( pkg, copiedfiles );
 			return false;
 		}
 	}
 	MoveOutputCursorBack( prevsize );
 	if( !copyfiles[ "inc" ].empty() )
-		std::cout << GREEN << TICK << std::endl;
-	prevsize = 0;
+		DispColoredData( TICK, GREEN, true );
 
 	// LIBRARY FILES
-	if( !copyfiles[ "lib" ].empty() ) {
-		std::cout << YELLOW << "Copying library files ... " << RESET;
-		std::cout.flush();
-	}
+	if( !copyfiles[ "lib" ].empty() )
+		DispColoredData( "Copying library files ... " );
 
 	for( auto file : copyfiles[ "lib" ] ) {
 		std::string op = "Copying file: " + file.dir + file.file;
@@ -104,23 +100,22 @@ bool InstallDirectory( const Package & pkg )
 		prevsize = DisplayOneLinerString( op );
 		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
 			MoveOutputCursorBack( prevsize );
-			std::cout << RED << CROSS << std::endl;
-			std::cout << RED << "Error in copying libraries!\nReverting installation ... " << RESET;
-			std::cout.flush();
+
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( "Error: Could not copy libraries!", RED, true );
+			DispColoredData( "Reverting installationg ... ", RED, true );
+
 			RevertInstallation( pkg, copiedfiles );
 			return false;
 		}
 	}
 	MoveOutputCursorBack( prevsize );
 	if( !copyfiles[ "lib" ].empty() )
-		std::cout << GREEN << TICK << std::endl;
-	prevsize = 0;
+		DispColoredData( TICK, GREEN, true );
 
 	// FRAMEWORK FILES
-	if( !copyfiles[ "fw" ].empty() ) {
-		std::cout << YELLOW << "Copying framework files ... " << RESET;
-		std::cout.flush();
-	}
+	if( !copyfiles[ "fw" ].empty() )
+		DispColoredData( "Copying framework files ... " );
 
 	for( auto file : copyfiles[ "fw" ] ) {
 		std::string op = "Copying file: " + file.dir + file.file;
@@ -135,20 +130,21 @@ bool InstallDirectory( const Package & pkg )
 		prevsize = DisplayOneLinerString( op );
 		if( DispExecuteNoErr( "cp -r " + cpinput + " " + cpoutput, false ) != 0 ) {
 			MoveOutputCursorBack( prevsize );
-			std::cout << RED << CROSS << std::endl;
-			std::cout << RED << "Error in copying frameworks!\nReverting installation ... " << RESET;
-			std::cout.flush();
+
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( "Error: Could not copy frameworks!", RED, true );
+			DispColoredData( "Reverting installationg ... ", RED, true );
+
 			RevertInstallation( pkg, copiedfiles );
 			return false;
 		}
 	}
 	MoveOutputCursorBack( prevsize );
 	if( !copyfiles[ "fw" ].empty() )
-		std::cout << GREEN << TICK << std::endl;
-	prevsize = 0;
+		DispColoredData( TICK, GREEN, true );
 
 	if( !SaveCopiedData( pkg, copiedfiles ) ) {
-		std::cout << RED << CROSS << std::endl;
+		DispColoredData( CROSS, RED, true );
 		RevertInstallation( pkg, copiedfiles );
 	}
 
@@ -186,11 +182,11 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 void RevertInstallation( const Package & pkg, std::vector< std::string > & data )
 {
 	if( !RemoveCopiedData( pkg, data ) ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << YELLOW << "Reverting failed! Exiting!" << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Reverting failed! Exiting!", FIRST_COL, true );
 	}
 	else {
-		std::cout << GREEN << TICK << RESET << std::endl;
-		std::cout << YELLOW << "Reverting successful! Exiting!" << RESET << std::endl;
+		DispColoredData( TICK, GREEN, true );
+		DispColoredData( "Reverting successful! Exiting!", FIRST_COL, true );
 	}
 }

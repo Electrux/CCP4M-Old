@@ -30,6 +30,8 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
 	int term_width = w.ws_col;
 
+	int current_disp_len = GetLastDispLen();
+
 	std::array< char, 10000 > opline_temp;
 
 	while( !feof( pipe ) ) {
@@ -39,7 +41,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 			TrimString( opline );
 
-			if( ( "[ " + opline + " ]" ).size() > term_width )
+			if( current_disp_len + ( "[ " + opline + " ]" ).size() > term_width )
 				continue;
 
 			MoveOutputCursorBack( prevdisp );
@@ -49,8 +51,6 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	}
 
 	MoveOutputCursorBack( prevdisp );
-
-	prevdisp = 0;
 
 	err = "";
 
@@ -63,7 +63,8 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	}
 	errfile.close();
 
-	std::system( ( "rm -rf " + TMP_FILE ).c_str() );
+	if( !err.empty() )
+		std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
 }

@@ -10,6 +10,7 @@
 #include "../include/Paths.hpp"
 #include "../include/StringFuncs.hpp"
 #include "../include/FSFuncs.hpp"
+#include "../include/DisplayFuncs.hpp"
 #include "../include/DisplayExecute.hpp"
 
 #include "../include/PackageManagement/PackageData.hpp"
@@ -57,66 +58,59 @@ int PackageManager::InstallPackage( std::string package )
 {
 	Package pkg;
 
-	std::cout << YELLOW << "Checking package exists ... " << RESET;
+	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << "Error: Package does not exist!" << std::endl
-			<< "Perhaps try to update package list using:" << std::endl
-			<< "\n\t" << args[ 0 ] << " pkg update\n" << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
+		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
 		return 1;
 	}
-	std::cout << GREEN << TICK << RESET << std::endl;
+	DispColoredData( TICK, GREEN, true );
 
 	std::string pkgtypelower = pkg.type;
 	StringToLower( pkgtypelower );
 
-	std::cout << YELLOW << "Checking already installed ... " << RESET;
+	DispColoredData( "Checking already installed ... " );
 	bool res = IsInstalled( package );
-	std::cout << GREEN << TICK << RESET << std::endl;
+	DispColoredData( TICK, GREEN, true );
 	if( res ) {
-		std::cout << BOLD_YELLOW << "Package already installed! "
-			<< BOLD_GREEN << TICK << RESET << std::endl;
+		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
 
-	std::cout << YELLOW << "Fetching " << pkgtypelower << " package ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Fetching " + pkgtypelower + " package ... " );
 	if( !FetchPackage( pkg ) ) {
 		return 1;
 	}
 
-	std::cout << YELLOW << "Extracting downloaded archive ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Extracting downloaded archive ... " );
 	if( !ExtractArchive( pkg ) ) {
-		std::cout << YELLOW << "Unable to extract archive! " << RED << CROSS << std::endl;
+		DispColoredData( "Unable to extract archive!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
 
 	if( pkg.type == "Source" ) {
-		std::cout << YELLOW << "Building from source"
-			<< " package ... " << GREEN << TICK << RESET << std::endl;
-		std::cout.flush();
+		DispColoredData( "Building package from source ...", TICK, FIRST_COL, GREEN, true );
 		if( !BuildDirectory( pkg ) ) {
-			std::cout << YELLOW << "Build failed! " << RED << CROSS << RESET << std::endl;
+			DispColoredData( "Build failed!", CROSS, FIRST_COL, RED, true );
 			return 1;
 		}
 	}
 
 	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {
-		std::cout << YELLOW << "Starting " << pkgtypelower
-			<< " package installation ... " << GREEN << TICK << RESET << std::endl;
+		DispColoredData( "Starting " + pkgtypelower + " package installation ...", TICK, FIRST_COL, GREEN, true );
 		if( !InstallDirectory( pkg ) ) {
-			std::cout << YELLOW << "Installation failed! " << RED << CROSS << RESET << std::endl;
+			DispColoredData( "Installation failed!", CROSS, FIRST_COL, RED, true );
 			return 1;
 		}
 	}
 
-	std::cout << YELLOW << "Finishing up ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Finishing up ... " );
 
 	RemoveTempFiles( pkg );
 
-	std::cout << BOLD_YELLOW << "Installation Successful! " << BOLD_GREEN << TICK << RESET << std::endl;
+	DispColoredData( "Installation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::app );
@@ -132,43 +126,42 @@ int PackageManager::UninstallPackage( std::string package )
 {
 	Package pkg;
 
-	std::cout << YELLOW << "Checking package exists ... " << RESET;
+	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << "Error: Package does not exist!" << std::endl
-			<< "Perhaps try to update package list using:" << std::endl
-			<< "\n\t" << args[ 0 ] << " pkg update\n" << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
+		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
 		return 1;
 	}
-	std::cout << GREEN << TICK << RESET << std::endl;
+	DispColoredData( TICK, GREEN, true );
 
 	std::string pkgtypelower = pkg.type;
 	StringToLower( pkgtypelower );
 
-	std::cout << YELLOW << "Checking if package is installed ... " << RESET;
+	DispColoredData( "Checking if package is installed ... " );
 	bool res = IsInstalled( package );
-	std::cout << GREEN << TICK << RESET << std::endl;
+	DispColoredData( TICK, GREEN, true );
+
 	if( !res ) {
-		std::cout << YELLOW << "Package not installed!\nNothing to remove! "
-			<< RED << CROSS << RESET << std::endl;
+		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
 
 	std::string pkgtolower = package;
 	StringToLower( pkgtolower );
 
-	std::cout << YELLOW << "Starting package " << pkgtolower
-		<< " uninstallation ... " << GREEN << TICK << RESET << std::endl;
+	DispColoredData( "Starting package " + pkgtolower + " uninstallation ...", TICK, FIRST_COL, GREEN, true );
 	if( !UninstallArchive( pkg, args ) ) {
-		std::cout << YELLOW << "Uninstallation failed! " << RED << CROSS << RESET << std::endl;
+		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
 
-	std::cout << YELLOW << "Removing all temporary files ... " << RESET;
-	std::cout.flush();
+	DispColoredData( "Removing all temporary files ... " );
+
 	RemoveTempFiles( pkg, true );
 
-	std::cout << YELLOW << "Removing installation entry ... " << RESET;
+	DispColoredData( "Removing installation entry ... " );
 	return ( int )!RemoveInstalledEntry( pkg );
 }
 
@@ -196,21 +189,21 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 	}
 
 	if( DispExecuteNoErr( rmcmd, false ) != 0 ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << RED << "Error: Unable to remove temporary files... Continuing..."
-			<< RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to remove temporary files... Continuing... ", RED, true );
 		return false;
 	}
 	else {
 		std::vector< DirFile > temp;
 		if( GetWildCardFilesInDir( PACKAGE_TMP + pkg.name, temp, "*" ) <= 0 ) {
-			std::cout << GREEN << TICK << RESET << std::endl;
-			std::cout << YELLOW << "Removing parent directory ... " << RESET;
-			std::cout.flush();
+
+			DispColoredData( TICK, GREEN, true );
+			DispColoredData( "Removing parent directory ... " );
+
 			if( DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
-				std::cout << RED << CROSS << RESET << std::endl;
-				std::cout << "Removing parent directory: " << GetPackageDir( pkg ) << " failed... "
-					<< "Continuing... " << std::endl;
+				DispColoredData( CROSS, RED, true );
+				DispColoredData( "Removing parent directory: " + GetPackageDir( pkg ) + " failed...",
+						"Continuing... ", FIRST_COL, FIRST_COL, true );
 			}
 		}
 		std::cout << GREEN << TICK << std::endl;
@@ -222,16 +215,16 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 {
 	if( !LocExists( INSTALLED_PKGS ) ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << RED << "Error: Installed package list does not exist!" << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Installed package list does not exist!", RED, true );
 		return false;
 	}
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::in );
 
 	if( !file ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << RED << "Error: Unable to open package list to read!" << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to open package list to read!", RED, true );
 		return false;
 	}
 
@@ -252,8 +245,8 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 	file.open( INSTALLED_PKGS, std::ios::out );
 
 	if( !file ) {
-		std::cout << RED << CROSS << RESET << std::endl;
-		std::cout << RED << "Error: Unable to open package list to write!" << RESET << std::endl;
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to open package list to write!", RED, true );
 		return false;
 	}
 
@@ -263,9 +256,8 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 	file.close();
 
-	std::cout << GREEN << TICK << RESET << std::endl;
-	std::cout << BOLD_YELLOW << "Uninstallation successful! " << BOLD_GREEN << TICK << RESET << std::endl;
-
+	DispColoredData( TICK, GREEN, true );
+	DispColoredData( "Uninstallation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 	return true;
 }
 
@@ -279,7 +271,7 @@ bool PackageManager::IsInstalled( std::string package )
 	Package pkg;
 
 	if( !PackageExists( package, pkg ) ) {
-		std::cout << RED << "Package " << CYAN << package << RED << " does not exist!" << RESET << std::endl;
+		DispColoredData( "Package", package, "does not exist!", RED, SECOND_COL, RED, true );
 		return false;
 	}
 
@@ -287,7 +279,7 @@ bool PackageManager::IsInstalled( std::string package )
 		std::fstream file;
 		file.open( INSTALLED_PKGS, std::ios::out );
 		if( !file ) {
-			std::cout << RED << "Error: Unable to create installed packages list!" << RESET << std::endl;
+			DispColoredData( "Error: Unable to create installed packages list!", RED, true );
 			return true;
 		}
 		file.close();
@@ -299,7 +291,7 @@ bool PackageManager::IsInstalled( std::string package )
 	file.open( INSTALLED_PKGS, std::ios::in );
 
 	if( !file ) {
-		std::cout << RED << "Error: Unable to open package list to read!" << RESET << std::endl;
+		DispColoredData( "Error: Unable to open package list to read!", RED, true );
 		return true;
 	}
 
