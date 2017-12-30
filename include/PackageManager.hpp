@@ -10,7 +10,7 @@ public:
 
 	int HandleCommand();
 
-	int InstallPackage( std::string package );
+	int InstallPackage( std::string package, bool forceinstall = false );
 
 	int UninstallPackage( std::string package );
 

@@ -39,7 +39,12 @@ int PackageManager::HandleCommand()
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-		return InstallPackage( args[ 3 ] );
+		bool forceinstall = false;
+		for( auto arg : args ) {
+			if( arg.find( "--force" ) != std::string::npos )
+				forceinstall = true;
+		}
+		return InstallPackage( args[ 3 ], forceinstall );
 	}
 
 	if( args[ 2 ] == "uninstall" ) {
@@ -54,7 +59,7 @@ int PackageManager::HandleCommand()
 	return 1;
 }
 
-int PackageManager::InstallPackage( std::string package )
+int PackageManager::InstallPackage( std::string package, bool forceinstall )
 {
 	Package pkg;
 
@@ -73,7 +78,9 @@ int PackageManager::InstallPackage( std::string package )
 
 	DispColoredData( "Checking already installed ... " );
 	int res = IsInstalled( package );
-	if( res == 0 || res == -1 ) {
+	if( forceinstall )
+		DispColoredData( "Forcing installationg! This may produce unintended results!" RED, true );
+	if( res == 0 || ( res == -1 && !forceinstall ) ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
