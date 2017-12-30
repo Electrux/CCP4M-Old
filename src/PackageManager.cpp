@@ -72,7 +72,7 @@ int PackageManager::InstallPackage( std::string package )
 	StringToLower( pkgtypelower );
 
 	DispColoredData( "Checking already installed ... " );
-	bool res = IsInstalled( package );
+	int res = IsInstalled( package );
 	if( res == 0 || res == -1 ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
