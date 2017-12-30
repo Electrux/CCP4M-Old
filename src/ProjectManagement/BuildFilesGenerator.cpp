@@ -85,7 +85,7 @@ int GenerateBuildFiles()
 
 			compilestr += " src/" + mainsrc;
 
-			if( !othersrc.empty() )
+			if( !commands.empty() )
 				DispColoredData( "", FIRST_COL, true );
 
 			DispColoredData( "[100%]\t", RESET, false );
