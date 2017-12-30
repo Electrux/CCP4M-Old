@@ -273,13 +273,6 @@ int PackageManager::IsInstalled( std::string package )
 		return 1;
 	}
 
-	if( !pkg.existfile.empty() ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
-		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
-		return -1;
-	}
-
 	if( !LocExists( INSTALLED_PKGS ) ) {
 		std::fstream file;
 		file.open( INSTALLED_PKGS, std::ios::out );
@@ -314,6 +307,13 @@ int PackageManager::IsInstalled( std::string package )
 	}
 
 	file.close();
+
+	if( !found && !pkg.existfile.empty() ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
+		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
+		return -1;
+	}
 
 	DispColoredData( TICK, GREEN, true );
 
