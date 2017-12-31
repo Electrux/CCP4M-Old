@@ -2,23 +2,21 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include "../include/CoreData.hpp"
 #include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
 
-std::string PACKAGE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
-std::string INSTALLED_PKGS = PACKAGE_DIR + "installed_pkgs.dat";
-std::string PACKAGE_TMP = PACKAGE_DIR + "tmp/";
+std::string PACKAGE_BASE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
+std::string PACKAGE_LIST_DIR = PACKAGE_BASE_DIR + "pkgs/";
+std::string INSTALLED_PKGS = PACKAGE_BASE_DIR + "installed_pkgs.dat";
+std::string PACKAGE_TMP = PACKAGE_BASE_DIR + "tmp/";
 
 std::string GetHomeDir()
 {
 	std::string homedir;
 
 	if( getuid() == 0) {
-#ifdef __linux__
-		homedir += "/home/";
-#elif __APPLE__
-		homedir += "/Users/";
-#endif
+		SetVarForArchitecture( homedir, { "/home/", "/Users/", "" } );
 		homedir += GetEnvVar( "SUDO_USER" );
 	}
 	else {

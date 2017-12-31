@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+#include "../include/CoreData.hpp"
 #include "../include/ColorDefs.hpp"
 #include "../include/UTFChars.hpp"
 #include "../include/Paths.hpp"
@@ -50,6 +51,15 @@ int PackageManager::HandleCommand()
 			return 1;
 		}
 		return UninstallPackage( args[ 3 ] );
+	}
+
+	if( args[ 2 ] == "info" ) {
+		if( args.size() < 4 ) {
+			DispColoredData( "Error: Use", args[ 0 ] + " pkg info < Package Name >",
+				FIRST_COL, SECOND_COL, true );
+			return 1;
+		}
+		return GetInfo( args[ 3 ] );
 	}
 
 	return 1;
@@ -214,8 +224,6 @@ int PackageManager::UninstallPackage( std::string package )
 	return ( int )!RemoveInstalledEntry( pkg );
 }
 
-//bool PackageManager::GetInfo( std::string package );
-
 //int Update();
 
 //int GetDependencyInfo( std::string package );
@@ -370,4 +378,57 @@ int PackageManager::IsInstalled( std::string package )
 	DispColoredData( TICK, GREEN, true );
 
 	return !found;
+}
+
+int PackageManager::GetInfo( std::string package )
+{
+	Package pkg;
+
+	if( !PackageConfig::GetPackage( package, pkg ) ) {
+		DispColoredData( "Error: No package by the name:", package, "exists!", FIRST_COL, SECOND_COL, THIRD_COL, true );
+		return 1;
+	}
+
+	DispColoredData( "Package:", pkg.name, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tDescription:", pkg.description, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLanguage:", ( pkg.lang == "c" ? "C" : "C++" ), FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tInstallation from:", pkg.type, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tVersion:", pkg.version, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tDependencies:", FIRST_COL, pkg.deplist.empty() );
+	for( auto dep : pkg.deplist ) {
+		DispColoredData( dep, ", ", SECOND_COL, FIRST_COL, false );
+	}
+	if( !pkg.deplist.empty() )
+		DispColoredData( "\b\b", FIRST_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tInclude directory:", pkg.incdir, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary directory:", pkg.libdir, FIRST_COL, SECOND_COL, true );
+
+	if( ARCH == MAC ) {
+		DispColoredData( "\tFrameworks directory:", "/Library/Frameworks", FIRST_COL, SECOND_COL, true );
+	}
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tLibrary flags:", pkg.libflags, FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tDownload URL:", pkg.url + pkg.file, FIRST_COL, SECOND_COL, true );
+
+	if( pkg.type == "Source" ) {
+		DispColoredData( "", FIRST_COL, true );
+		DispColoredData( "Build Commands:", FIRST_COL, pkg.buildcmds.empty() );
+		for( auto dep : pkg.deplist ) {
+			DispColoredData( dep, ", ", SECOND_COL, FIRST_COL, false );
+		}
+		if( !pkg.deplist.empty() )
+			DispColoredData( "\b\b", FIRST_COL, true );
+	}
+
+	return 0;
 }

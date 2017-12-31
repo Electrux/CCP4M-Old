@@ -18,8 +18,6 @@ public:
 
 	int UninstallPackage( std::string package );
 
-	int GetInfo( std::string package );
-
 	int Update();
 
 	int GetDependencyInfo( std::string package );
@@ -36,4 +34,6 @@ public:
 	// 1 - No!
 	// -1 - Unmanageable ( other )
 	int IsInstalled( std::string packge );
+
+	int GetInfo( std::string package );
 };

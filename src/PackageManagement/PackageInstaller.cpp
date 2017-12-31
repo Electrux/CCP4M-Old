@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 
+#include "../../include/CoreData.hpp"
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
 #include "../../include/Paths.hpp"
@@ -39,9 +40,8 @@ bool InstallDirectory( const Package & pkg )
 		}
 	}
 
-#ifndef __APPLE__
-	use_framework = false;
-#endif
+	if( ARCH != MAC )
+		use_framework = false;
 
 	std::string archivedir = GetPackageVersionDir( pkg );
 	std::string incdir = archivedir + "/include/";
@@ -173,11 +173,12 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 	if( LocExists( libdir ) ) {
 		GetWildCardFilesInDir( libdir, list[ "lib" ], "*.so*, *.l*, *.dyl*" );
 	}
-#ifdef __APPLE__
-	if( LocExists( fwdir ) && GetWildCardFilesInDir( fwdir, list[ "fw" ], "*" ) > 0 ) {
-		use_framework = true;
+
+	if( ARCH == MAC ) {
+		if( LocExists( fwdir ) && GetWildCardFilesInDir( fwdir, list[ "fw" ], "*" ) > 0 )
+			use_framework = true;
 	}
-#endif
+
 	return list;
 }
 
