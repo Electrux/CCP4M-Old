@@ -393,9 +393,12 @@ int PackageManager::GetInfo( std::string package )
 	DispColoredData( "", FIRST_COL, true );
 
 	DispColoredData( "\tDescription:", pkg.description, FIRST_COL, SECOND_COL, true );
-	DispColoredData( "\tLanguage:", ( pkg.lang == "c" ? "C" : "C++" ), FIRST_COL, SECOND_COL, true );
-	DispColoredData( "\tInstallation from:", pkg.type, FIRST_COL, SECOND_COL, true );
 	DispColoredData( "\tVersion:", pkg.version, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLanguage:", ( pkg.lang == "c" ? "C" : "C++" ), FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tInstallation from:", pkg.type, FIRST_COL, SECOND_COL, true );
 	DispColoredData( "\tDependencies:", FIRST_COL, pkg.deplist.empty() );
 	for( auto dep : pkg.deplist ) {
 		DispColoredData( dep, ", ", SECOND_COL, FIRST_COL, false );
