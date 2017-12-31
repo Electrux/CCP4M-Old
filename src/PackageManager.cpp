@@ -116,7 +116,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
 		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ], "pkg update", SECOND_COL, EXTRA_COL, true );
 		return 1;
 	}
 	DispColoredData( TICK, GREEN, true );
