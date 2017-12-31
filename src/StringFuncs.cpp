@@ -98,6 +98,33 @@ std::string GetStringAfterLastSlash( const std::string & str )
 	return temp;
 }
 
+std::string ReplaceInString( const std::string & str, char from, char to )
+{
+	std::string temp = str;
+
+	for( auto it = temp.begin(); it != temp.end(); ++it ) {
+		if( * it == from )
+			* it = to;
+	}
+
+	return temp;
+}
+
+std::string ReplaceInString( const std::string & str, std::string from, std::string to )
+{
+	std::string temp = str;
+
+	size_t n = 0;
+
+	while( ( n = temp.find( from, n ) ) != std::string::npos ) {
+		temp.replace( n, from.size(), to );
+
+		n += to.size();
+	}
+
+	return temp;
+}
+
 void StringToLower( std::string & str )
 {
 	std::transform( str.begin(), str.end(), str.begin(),

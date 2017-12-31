@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+#include "../include/CoreData.hpp"
 #include "../include/ColorDefs.hpp"
 #include "../include/UTFChars.hpp"
 #include "../include/Paths.hpp"
@@ -50,6 +51,15 @@ int PackageManager::HandleCommand()
 			return 1;
 		}
 		return UninstallPackage( args[ 3 ] );
+	}
+
+	if( args[ 2 ] == "info" ) {
+		if( args.size() < 4 ) {
+			DispColoredData( "Error: Use", args[ 0 ] + " pkg info < Package Name >",
+				FIRST_COL, SECOND_COL, true );
+			return 1;
+		}
+		return GetInfo( args[ 3 ] );
 	}
 
 	return 1;
@@ -103,10 +113,6 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
-		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
 		return 1;
 	}
 	DispColoredData( TICK, GREEN, true );
@@ -173,10 +179,6 @@ int PackageManager::UninstallPackage( std::string package )
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
-		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
 		return 1;
 	}
 	DispColoredData( TICK, GREEN, true );
@@ -199,8 +201,8 @@ int PackageManager::UninstallPackage( std::string package )
 	std::string pkgtolower = package;
 	StringToLower( pkgtolower );
 
-	DispColoredData( "Starting package ", pkgtolower, " uninstallation ...", FIRST_COL, SECOND_COL, THIRD_COL,
-			true );
+	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
+			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 	if( !UninstallArchive( pkg, args ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
@@ -213,8 +215,6 @@ int PackageManager::UninstallPackage( std::string package )
 	DispColoredData( "Removing installation entry ... " );
 	return ( int )!RemoveInstalledEntry( pkg );
 }
-
-//bool PackageManager::GetInfo( std::string package );
 
 //int Update();
 
@@ -312,7 +312,16 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 bool PackageManager::PackageExists( std::string package, Package & pkg )
 {
-	return PackageConfig::GetPackage( package, pkg );
+	bool exists = PackageConfig::GetPackage( package, pkg );
+
+	if( !exists ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
+		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ], "pkg update", SECOND_COL, EXTRA_COL, true );
+	}
+
+	return exists;
 }
 
 int PackageManager::IsInstalled( std::string package )
@@ -370,4 +379,74 @@ int PackageManager::IsInstalled( std::string package )
 	DispColoredData( TICK, GREEN, true );
 
 	return !found;
+}
+
+int PackageManager::GetInfo( std::string package )
+{
+	Package pkg;
+
+	if( !PackageConfig::GetPackage( package, pkg ) ) {
+		DispColoredData( "Error: No package by the name:", package, "exists!", FIRST_COL, SECOND_COL, THIRD_COL, true );
+		return 1;
+	}
+
+	DispColoredData( "Package:", pkg.name, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tDescription:", pkg.description, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tVersion:", pkg.version, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLanguage:", ( pkg.lang == "c" ? "C" : "C++" ), FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tInstallation from:", pkg.type, FIRST_COL, SECOND_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	if( !pkg.deplist.empty() ) {
+		DispColoredData( "\tDependencies: ", FIRST_COL, pkg.deplist.empty() );
+		for( auto dep : pkg.deplist )
+			DispColoredData( dep, "\b, ", SECOND_COL, FIRST_COL, false );
+
+		DispColoredData( "\b\b ", FIRST_COL, true );
+
+		DispColoredData( "", FIRST_COL, true );
+
+	}
+
+	DispColoredData( "\tInclude directory:", pkg.incdir, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary directory:", pkg.libdir, FIRST_COL, SECOND_COL, true );
+
+	if( ARCH == MAC ) {
+		DispColoredData( "\tFrameworks directory:", "/Library/Frameworks", FIRST_COL, SECOND_COL, true );
+	}
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tLibrary flags: ", FIRST_COL, pkg.libflags.empty() );
+
+	auto libflags = DelimStringToVector( pkg.libflags );
+	for( auto libf : libflags )
+		DispColoredData( libf, "\b, ", SECOND_COL, FIRST_COL, false );
+
+	if( !libflags.empty() )
+		DispColoredData( "\b\b ", FIRST_COL, true );
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tDownload URL:", pkg.url + pkg.file, FIRST_COL, SECOND_COL, true );
+
+	if( pkg.type == "Source" ) {
+		DispColoredData( "", FIRST_COL, true );
+		DispColoredData( "Build Commands: ", FIRST_COL, pkg.buildcmds.empty() );
+
+		auto buildcmds = DelimStringToVector( pkg.buildcmds );
+		for( auto cmd : buildcmds )
+			DispColoredData( cmd, "\b, ", SECOND_COL, FIRST_COL, false );
+
+		if( !buildcmds.empty() )
+			DispColoredData( "\b\b ", FIRST_COL, true );
+	}
+
+	return 0;
 }

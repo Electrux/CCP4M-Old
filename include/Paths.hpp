@@ -4,12 +4,13 @@
 #include <string>
 #include <vector>
 
-extern std::string PACKAGE_DIR;
-const std::string PACKAGE_EXT = ".pkgi";
-const std::string TMP_FILE = ".ccp4mtmp";
-
+extern std::string PACKAGE_BASE_DIR;
+extern std::string PACKAGE_LIST_DIR;
 extern std::string INSTALLED_PKGS;
 extern std::string PACKAGE_TMP;
+
+const std::string PACKAGE_EXT = ".pkgi";
+const std::string TMP_FILE = ".ccp4mtmp";
 
 std::string GetHomeDir();
 

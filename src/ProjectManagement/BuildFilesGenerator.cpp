@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <sys/stat.h>
 
+#include "../../include/CoreData.hpp"
 #include "../../include/StringFuncs.hpp"
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
@@ -32,11 +33,12 @@ int GenerateBuildFiles()
 		return 1;
 
 	std::string compiler;
-#ifdef __linux__
-	compiler = data.lang == "c" ? "gcc" : "g++";
-#elif __APPLE__
-	compiler = data.lang == "c" ? "clang" : "clang++";
-#endif
+
+	SetVarForArchitecture( compiler, {
+				data.lang == "c" ? "gcc" : "g++",
+				data.lang == "c" ? "clang" : "clang++",
+				""
+			} );
 
 	std::string langstr = data.lang == "c" ? "C" : "CXX";
 

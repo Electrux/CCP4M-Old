@@ -3,6 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+#include "../../include/CoreData.hpp"
 #include "../../include/Paths.hpp"
 #include "../../include/StringFuncs.hpp"
 #include "../../include/DisplayFuncs.hpp"
@@ -19,7 +20,7 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 
 	StringToLower( pkgname );
 
-	std::string file_name = PACKAGE_DIR + pkgname + PACKAGE_EXT;
+	std::string file_name = PACKAGE_LIST_DIR + pkgname + PACKAGE_EXT;
 
 	Electrux::INI_Parser parser;
 
@@ -32,11 +33,9 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	std::string existas;
 
 	std::string prefix;
-#ifdef __linux__
-	prefix = "Linux";
-#elif __APPLE__
-	prefix = "Mac";
-#endif
+
+	SetVarForArchitecture( prefix, { "Linux", "Mac", "" } );
+
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
 	parser.GetDataString( "Core", "Lang", pkg.lang );
@@ -91,13 +90,7 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 		}
 		// Library
 		else if( vec[ 0 ] == "Library" ) {
-#ifdef __linux__
-			file = vec[ 1 ];
-#elif __APPLE__
-			if( vec.size() <= 2 )
-				return "";
-			file = vec[ 2 ];
-#endif
+			SetVarForArchitecture( file, std::vector< std::string>( vec.begin() + 1, vec.end() ) );
 		}
 	}
 
@@ -123,11 +116,14 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 	}
 
 	return "";
- }
+}
 
 bool PackageConfig::HandlePkgDirs()
 {
-	if( !LocExists( PACKAGE_DIR ) && CreateDir( PACKAGE_DIR, false ) != 0 )
+	if( !LocExists( PACKAGE_BASE_DIR ) && CreateDir( PACKAGE_BASE_DIR, false ) != 0 )
+		return false;
+
+	if( !LocExists( PACKAGE_LIST_DIR ) && CreateDir( PACKAGE_LIST_DIR, false ) != 0 )
 		return false;
 
 	if( !LocExists( PACKAGE_TMP ) && CreateDir( PACKAGE_TMP, false ) != 0 )
@@ -138,11 +134,6 @@ bool PackageConfig::HandlePkgDirs()
 
 void PackageConfig::FetchDefaultIncLibDir( Package & pkg )
 {
-#ifdef __linux__
-	pkg.incdir = "/usr/include";
-	pkg.libdir = "/usr/lib";
-#elif __APPLE__
-	pkg.incdir = "/usr/local/include";
-	pkg.libdir = "/usr/local/lib";
-#endif
+	SetVarForArchitecture( pkg.incdir, { "/usr/include", "/usr/local/include", "" } );
+	SetVarForArchitecture( pkg.libdir, { "/usr/lib", "/usr/local/lib", "" } );
 }

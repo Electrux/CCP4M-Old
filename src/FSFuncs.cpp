@@ -349,7 +349,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 		it = data.erase( it );
 	}
 
-	std::string cpdatafile = PACKAGE_DIR + "." + pkg.name;
+	std::string cpdatafile = PACKAGE_BASE_DIR + "." + pkg.name;
 
 	if( LocExists( cpdatafile ) ) {
 
@@ -364,7 +364,7 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & copiedfiles )
 {
 	std::fstream installedfiles;
-	installedfiles.open( PACKAGE_DIR + "." + pkg.name, std::ios::out );
+	installedfiles.open( PACKAGE_BASE_DIR + "." + pkg.name, std::ios::out );
 	if( !installedfiles ) {
 		return false;
 	}
@@ -383,7 +383,7 @@ std::vector< std::string > GetCopiedData( const Package & pkg )
 	std::vector< std::string > data;
 
 	std::fstream file;
-	file.open( PACKAGE_DIR + "." + pkg.name, std::ios::in );
+	file.open( PACKAGE_BASE_DIR + "." + pkg.name, std::ios::in );
 
 	if( !file ) {
 		return data;
