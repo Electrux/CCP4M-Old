@@ -318,7 +318,7 @@ bool PackageManager::PackageExists( std::string package, Package & pkg )
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
 		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ], "pkg update", SECOND_COL, EXTRA_COL, true );
 	}
 
 	return exists;
