@@ -403,14 +403,16 @@ int PackageManager::GetInfo( std::string package )
 
 	DispColoredData( "", FIRST_COL, true );
 
-	DispColoredData( "\tDependencies: ", FIRST_COL, pkg.deplist.empty() );
-	for( auto dep : pkg.deplist )
-		DispColoredData( dep, "\b, ", SECOND_COL, FIRST_COL, false );
+	if( !pkg.deplist.empty() ) {
+		DispColoredData( "\tDependencies: ", FIRST_COL, pkg.deplist.empty() );
+		for( auto dep : pkg.deplist )
+			DispColoredData( dep, "\b, ", SECOND_COL, FIRST_COL, false );
 
-	if( !pkg.deplist.empty() )
 		DispColoredData( "\b\b ", FIRST_COL, true );
 
-	DispColoredData( "", FIRST_COL, true );
+		DispColoredData( "", FIRST_COL, true );
+
+	}
 
 	DispColoredData( "\tInclude directory:", pkg.incdir, FIRST_COL, SECOND_COL, true );
 	DispColoredData( "\tLibrary directory:", pkg.libdir, FIRST_COL, SECOND_COL, true );
