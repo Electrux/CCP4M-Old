@@ -417,7 +417,7 @@ int PackageManager::GetInfo( std::string package )
 
 	DispColoredData( "", FIRST_COL, true );
 
-	DispColoredData( "\tLibrary flags:", pkg.libflags, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary flags:", ReplaceInString( pkg.libflags, ",", ", " ), FIRST_COL, SECOND_COL, true );
 
 	DispColoredData( "", FIRST_COL, true );
 

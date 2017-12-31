@@ -14,6 +14,10 @@ std::string GetStringTillLastSlash( const std::string & str );
 
 std::string GetStringAfterLastSlash( const std::string & str );
 
+std::string ReplaceInString( const std::string & str, char from, char to );
+
+std::string ReplaceInString( const std::string & str, std::string from, std::string to );
+
 void StringToLower( std::string & str );
 
 void TrimString( std::string & str );
