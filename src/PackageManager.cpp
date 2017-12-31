@@ -113,10 +113,6 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
-		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ], "pkg update", SECOND_COL, EXTRA_COL, true );
 		return 1;
 	}
 	DispColoredData( TICK, GREEN, true );
@@ -183,10 +179,6 @@ int PackageManager::UninstallPackage( std::string package )
 
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
-		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
-		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
 		return 1;
 	}
 	DispColoredData( TICK, GREEN, true );
@@ -320,7 +312,16 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 bool PackageManager::PackageExists( std::string package, Package & pkg )
 {
-	return PackageConfig::GetPackage( package, pkg );
+	bool exists = PackageConfig::GetPackage( package, pkg );
+
+	if( !exists ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Package does not exist!", FIRST_COL, true );
+		DispColoredData( "Perhaps try to update package list using:", FIRST_COL, true );
+		DispColoredData( "\n\t" + args[ 0 ] + " pkg update", FIRST_COL, true );
+	}
+
+	return exists;
 }
 
 int PackageManager::IsInstalled( std::string package )
