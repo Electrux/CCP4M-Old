@@ -400,12 +400,15 @@ int PackageManager::GetInfo( std::string package )
 	DispColoredData( "", FIRST_COL, true );
 
 	DispColoredData( "\tInstallation from:", pkg.type, FIRST_COL, SECOND_COL, true );
-	DispColoredData( "\tDependencies:", FIRST_COL, pkg.deplist.empty() );
-	for( auto dep : pkg.deplist ) {
-		DispColoredData( dep, ", ", SECOND_COL, FIRST_COL, false );
-	}
+
+	DispColoredData( "", FIRST_COL, true );
+
+	DispColoredData( "\tDependencies: ", FIRST_COL, pkg.deplist.empty() );
+	for( auto dep : pkg.deplist )
+		DispColoredData( dep, "\b, ", SECOND_COL, FIRST_COL, false );
+
 	if( !pkg.deplist.empty() )
-		DispColoredData( "\b\b", FIRST_COL, true );
+		DispColoredData( "\b\b ", FIRST_COL, true );
 
 	DispColoredData( "", FIRST_COL, true );
 
@@ -418,7 +421,14 @@ int PackageManager::GetInfo( std::string package )
 
 	DispColoredData( "", FIRST_COL, true );
 
-	DispColoredData( "\tLibrary flags:", ReplaceInString( pkg.libflags, ",", ", " ), FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary flags: ", FIRST_COL, pkg.libflags.empty() );
+
+	auto libflags = DelimStringToVector( pkg.libflags );
+	for( auto libf : libflags )
+		DispColoredData( libf, "\b, ", SECOND_COL, FIRST_COL, false );
+
+	if( !libflags.empty() )
+		DispColoredData( "\b\b ", FIRST_COL, true );
 
 	DispColoredData( "", FIRST_COL, true );
 
@@ -426,12 +436,14 @@ int PackageManager::GetInfo( std::string package )
 
 	if( pkg.type == "Source" ) {
 		DispColoredData( "", FIRST_COL, true );
-		DispColoredData( "Build Commands:", FIRST_COL, pkg.buildcmds.empty() );
-		for( auto dep : pkg.deplist ) {
-			DispColoredData( dep, ", ", SECOND_COL, FIRST_COL, false );
-		}
-		if( !pkg.deplist.empty() )
-			DispColoredData( "\b\b", FIRST_COL, true );
+		DispColoredData( "Build Commands: ", FIRST_COL, pkg.buildcmds.empty() );
+
+		auto buildcmds = DelimStringToVector( pkg.buildcmds );
+		for( auto cmd : buildcmds )
+			DispColoredData( cmd, "\b, ", SECOND_COL, FIRST_COL, false );
+
+		if( !buildcmds.empty() )
+			DispColoredData( "\b\b ", FIRST_COL, true );
 	}
 
 	return 0;
