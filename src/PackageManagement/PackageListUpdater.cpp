@@ -20,10 +20,24 @@ int UpdatePackageList()
 		return 1;
 	}
 
+	std::string cwd = GetWorkingDir();
+
+	if( cwd.empty() ) {
+		DispColoredData( "Unable to get current working directory!", CROSS, FIRST_COL, RED, true );
+		return false;
+	}
+
+	if( !ChangeWorkingDir( PACKAGE_LIST_DIR ) ) {
+		DispColoredData( "Unable to change working directory to the package list directory!",
+				CROSS, FIRST_COL, RED, true );
+		return false;
+	}
+
 	std::string res;
 	if( !LocExistsInPath( GIT_CMD, res ) ) {
 		DispColoredData( GIT_CMD, "is not installed! Cannot continue!", CROSS,
 				SECOND_COL, FIRST_COL, RED, true );
+		ChangeWorkingDir( cwd );
 		return -1;
 	}
 
@@ -35,6 +49,7 @@ int UpdatePackageList()
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to clone repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
+			ChangeWorkingDir( cwd );
 			return 1;
 		}
 		else {
@@ -49,12 +64,15 @@ int UpdatePackageList()
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to pull repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
+			ChangeWorkingDir( cwd );
 			return 1;
 		}
 		else {
 			DispColoredData( TICK, GREEN, true );
 		}
 	}
+
+	ChangeWorkingDir( cwd );
 
 	return 0;
 }
