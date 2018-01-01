@@ -45,7 +45,7 @@ int UpdatePackageList()
 		DispColoredData( "Cloning list repository to:", PACKAGE_LIST_DIR, "... ",
 				FIRST_COL, SECOND_COL, THIRD_COL, false );
 
-		if( DispExecuteNoErr( GIT_CLONE_CMD, false ) != 0 ) {
+		if( DispExecuteNoErr( GIT_CLONE_CMD, true ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to clone repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
