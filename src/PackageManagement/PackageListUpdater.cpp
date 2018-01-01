@@ -46,7 +46,7 @@ int UpdatePackageList()
 				FIRST_COL, SECOND_COL, THIRD_COL, false );
 
 		std::string err;
-		if( DispExecute( GIT_CLONE_CMD, err, true ) != 0 ) {
+		if( DispExecute( "ls -la . 1>&2", err, true ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to clone repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
