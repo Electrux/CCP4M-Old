@@ -45,10 +45,15 @@ int UpdatePackageList()
 		DispColoredData( "Cloning list repository to:", PACKAGE_LIST_DIR, "... ",
 				FIRST_COL, SECOND_COL, THIRD_COL, false );
 
-		if( DispExecuteNoErr( GIT_CLONE_CMD, true ) != 0 ) {
+		std::string err;
+		if( DispExecute( GIT_CLONE_CMD, err, true ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to clone repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
+			if( !err.empty() ) {
+				DispColoredData( "Error:", FIRST_COL, true );
+				DispColoredData( err, RED, true );
+			}
 			ChangeWorkingDir( cwd );
 			return 1;
 		}
