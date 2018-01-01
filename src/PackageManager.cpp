@@ -225,7 +225,14 @@ int PackageManager::Update()
 {
 	DispColoredData( "Starting updation of package lists ... ", TICK, FIRST_COL, SECOND_COL, true );
 
-	return UpdatePackageList();
+	int res = UpdatePackageList();
+
+	if( res != 0 )
+		DispColoredData( "Package list updation failed! ", CROSS, FIRST_COL, RED, true );
+	else
+		DispColoredData( "Package updation successful!", TICK, FIRST_COL, GREEN, true );
+
+	return res;
 }
 
 //int GetDependencyInfo( std::string package );
