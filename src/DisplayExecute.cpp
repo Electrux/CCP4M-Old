@@ -34,8 +34,11 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 	std::string continuation = " ...";
 
 	winsize w;
-
 	int term_width;
+
+	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
+	// To accomodate \n, max column usable is ws_col - 1
+	term_width = w.ws_col - 1;
 
 	while( !feof( pipe ) ) {
 		if( fgets( opline_temp.data(), 10000, pipe ) != NULL && show_output ) {
@@ -43,11 +46,6 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 			std::string opline = std::string( opline_temp.data() );
 
 			TrimString( opline );
-
-			ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
-
-			// To accomodate \n, max column usable is ws_col - 1
-			term_width = w.ws_col - 1;
 
 			if( current_disp_len + brackets.size() + opline.size() >= term_width ) {
 				// the size to work with is:

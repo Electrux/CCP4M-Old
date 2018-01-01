@@ -2,6 +2,8 @@
 #include <string>
 #include <curl/curl.h>
 #include <cstdio>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
@@ -89,9 +91,37 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 	if( totdl <= 0.0 )
 		return 0;
 
+	winsize w;
+	int term_width;
+
+	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
+	// To accomodate \n, max column usable is ws_col - 1
+	term_width = w.ws_col - 1;
+
 	double percentdown = ( cdl / totdl ) * 100;
 
 	std::string percent = std::to_string( percentdown ) + "%";
+
+	int current_disp_len = GetLastDispLen();
+
+	std::string brackets = "[  ]";
+	std::string continuation = " ...";
+
+	if( current_disp_len + brackets.size() + percent.size() >= term_width ) {
+		// the size to work with is:
+		// term_width -> total size to work with
+		// - current_disp_len -> already used by previous displayed line
+		// - teststr.size() -> to account for the additional brackets put by DisplayOneLinerString()
+		// - 4 -> to account for adding 3 dots and a space to describe left out output.
+		if( term_width - current_disp_len - ( int )brackets.size() - ( int )continuation.size() < 0 )
+			return 0;
+
+		percent = percent.substr( 0, term_width - current_disp_len - brackets.size() - continuation.size() );
+		percent += continuation;
+	}
+
+	if( !percent.empty() && * percent.begin() == ' ' )
+		percent.erase( percent.begin() );
 
 	MoveOutputCursorBack( prevpercentsize );
 	prevpercentsize = DisplayOneLinerString( percent );
