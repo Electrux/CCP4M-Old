@@ -53,8 +53,6 @@ bool LocExists( const std::string & location )
 
 bool LocExistsInPath( const std::string & location, std::string & res )
 {
-	std::string res;
-
 	auto path = GetEnvPath();
 
 	for( auto p : path ) {
