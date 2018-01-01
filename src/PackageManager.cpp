@@ -21,6 +21,7 @@
 #include "../include/PackageManagement/PackageBuilder.hpp"
 #include "../include/PackageManagement/PackageInstaller.hpp"
 #include "../include/PackageManagement/PackageUninstaller.hpp"
+#include "../include/PackageManagement/PackageListUpdater.hpp"
 
 #include "../include/PackageManager.hpp"
 
@@ -51,6 +52,10 @@ int PackageManager::HandleCommand()
 			return 1;
 		}
 		return UninstallPackage( args[ 3 ] );
+	}
+
+	if( args[ 2 ] == "update" ) {
+		return Update();
 	}
 
 	if( args[ 2 ] == "info" ) {
@@ -216,7 +221,12 @@ int PackageManager::UninstallPackage( std::string package )
 	return ( int )!RemoveInstalledEntry( pkg );
 }
 
-//int Update();
+int PackageManager::Update()
+{
+	DispColoredData( "Starting updation of package lists ... ", TICK, FIRST_COL, SECOND_COL, true );
+
+	return UpdatePackageList();
+}
 
 //int GetDependencyInfo( std::string package );
 

@@ -16,6 +16,8 @@ void SetFolderPaths( std::string & directory,
 
 bool LocExists( const std::string & location );
 
+bool LocExistsInPath( const std::string & location, std::string & res );
+
 bool LocExistsAsWildCard( std::string dir, std::string wildcard );
 
 int CreateDir( const std::string & dir, bool verbose = true );
@@ -34,6 +36,8 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 
 int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 			std::vector< std::string > wildcard_vec, bool recursive = true, std::string tempdir = std::string() );
+
+bool IsDirEmpty( std::string dir );
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists = false );
 

@@ -98,13 +98,11 @@ std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
 		return "";
 
 	if( vec[ 0 ] == "Binary" ) {
-		auto path = GetEnvPath();
 
-		for( auto p : path ) {
-			if( LocExists( p + file ) ) {
-				return p + file;
-			}
-		}
+		std::string res;
+
+		if( LocExistsInPath( file, res ) )
+			return res;
 	}
 	else if( vec[ 0 ] == "Library" ) {
 		if( LocExists( "/usr/lib/" + file ) ) {
