@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Paths.hpp"
+
 enum Architecture
 {
 	LINUX,

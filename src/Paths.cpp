@@ -11,6 +11,9 @@ std::string PACKAGE_LIST_DIR = PACKAGE_BASE_DIR + "pkgs/";
 std::string INSTALLED_PKGS = PACKAGE_BASE_DIR + "installed_pkgs.dat";
 std::string PACKAGE_TMP = PACKAGE_BASE_DIR + "tmp/";
 
+const std::string GIT_CLONE_CMD = GIT_CMD + " clone https://github.com/Electrux/CCP4M-PKGI.git " + PACKAGE_LIST_DIR;
+const std::string GIT_PULL_CMD = GIT_CMD + " pull";
+
 std::string GetHomeDir()
 {
 	std::string homedir;

@@ -21,6 +21,7 @@
 #include "../include/PackageManagement/PackageBuilder.hpp"
 #include "../include/PackageManagement/PackageInstaller.hpp"
 #include "../include/PackageManagement/PackageUninstaller.hpp"
+#include "../include/PackageManagement/PackageListUpdater.hpp"
 
 #include "../include/PackageManager.hpp"
 
@@ -51,6 +52,10 @@ int PackageManager::HandleCommand()
 			return 1;
 		}
 		return UninstallPackage( args[ 3 ] );
+	}
+
+	if( args[ 2 ] == "update" ) {
+		return Update();
 	}
 
 	if( args[ 2 ] == "info" ) {
@@ -177,6 +182,13 @@ int PackageManager::UninstallPackage( std::string package )
 {
 	Package pkg;
 
+	std::string pkgtolower = package;
+
+	StringToLower( pkgtolower );
+
+	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
+			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
+
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
 		return 1;
@@ -198,11 +210,6 @@ int PackageManager::UninstallPackage( std::string package )
 		return 1;
 	}
 
-	std::string pkgtolower = package;
-	StringToLower( pkgtolower );
-
-	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
-			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 	if( !UninstallArchive( pkg, args ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
@@ -216,7 +223,19 @@ int PackageManager::UninstallPackage( std::string package )
 	return ( int )!RemoveInstalledEntry( pkg );
 }
 
-//int Update();
+int PackageManager::Update()
+{
+	DispColoredData( "Starting updation of package lists ... ", TICK, FIRST_COL, SECOND_COL, true );
+
+	int res = UpdatePackageList();
+
+	if( res != 0 )
+		DispColoredData( "Package list updation failed! ", CROSS, FIRST_COL, RED, true );
+	else
+		DispColoredData( "Package updation successful!", TICK, FIRST_COL, GREEN, true );
+
+	return res;
+}
 
 //int GetDependencyInfo( std::string package );
 

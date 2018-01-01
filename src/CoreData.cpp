@@ -3,6 +3,7 @@
 #include <climits>
 
 #include "../include/CoreData.hpp"
+#include "../include/Paths.hpp"
 
 Architecture ARCH =
 #ifdef __linux__

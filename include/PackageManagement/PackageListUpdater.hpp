@@ -1,0 +1,6 @@
+#ifndef PACKAGELISTUPDATER_HPP
+#define PACKAGELISTUPDATER_HPP
+
+int UpdatePackageList();
+
+#endif // PACKAGELISTUPDATER_HPP

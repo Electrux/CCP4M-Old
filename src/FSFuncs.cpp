@@ -51,6 +51,20 @@ bool LocExists( const std::string & location )
 	return false;
 }
 
+bool LocExistsInPath( const std::string & location, std::string & res )
+{
+	auto path = GetEnvPath();
+
+	for( auto p : path ) {
+		if( LocExists( p + location ) ) {
+			res = p + location;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool LocExistsAsWildCard( std::string dir, std::string wildcard, std::string & file )
 {
 	std::vector< DirFile > temp;
@@ -250,6 +264,12 @@ int GetWildCardFilesInDir( std::string dir, std::vector< DirFile > & temp,
 	}
 
 	return count;
+}
+
+bool IsDirEmpty( std::string dir )
+{
+	std::vector< DirFile > temp;
+	return !GetWildCardFilesInDir( dir, temp, "*" );
 }
 
 bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
