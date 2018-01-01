@@ -3,6 +3,10 @@
 #include <climits>
 
 #include "../include/CoreData.hpp"
+#include "../include/Paths.hpp"
+
+const std::string GIT_CLONE_CMD = GIT_CMD + " clone https://github.com/Electrux/CCP4M-PKGI.git " + PACKAGE_LIST_DIR;
+const std::string GIT_PULL_CMD = GIT_CMD + " pull " + PACKAGE_LIST_DIR;
 
 Architecture ARCH =
 #ifdef __linux__

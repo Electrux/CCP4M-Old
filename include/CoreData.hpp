@@ -14,8 +14,8 @@ enum Architecture
 };
 
 const std::string GIT_CMD = "git";
-const std::string GIT_CLONE_CMD = GIT_CMD + " clone https://github.com/Electrux/CCP4M-PKGI.git " + PACKAGE_LIST_DIR;
-const std::string GIT_PULL_CMD = GIT_CMD + " pull " + PACKAGE_LIST_DIR;
+extern const std::string GIT_CLONE_CMD;
+extern const std::string GIT_PULL_CMD;
 
 extern Architecture ARCH;
 
