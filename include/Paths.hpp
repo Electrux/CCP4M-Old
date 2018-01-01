@@ -12,6 +12,10 @@ extern std::string PACKAGE_TMP;
 const std::string PACKAGE_EXT = ".pkgi";
 const std::string TMP_FILE = ".ccp4mtmp";
 
+const std::string GIT_CMD = "git";
+extern const std::string GIT_CLONE_CMD;
+extern const std::string GIT_PULL_CMD;
+
 std::string GetHomeDir();
 
 std::string GetEnvVar( std::string key );

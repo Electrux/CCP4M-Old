@@ -13,10 +13,6 @@ enum Architecture
 	OTHER
 };
 
-const std::string GIT_CMD = "git";
-extern const std::string GIT_CLONE_CMD;
-extern const std::string GIT_PULL_CMD;
-
 extern Architecture ARCH;
 
 void SetVarForArchitecture( std::string & var, std::vector< std::string > options );
