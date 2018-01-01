@@ -4,10 +4,8 @@
 #include <string>
 #include <vector>
 
-int DispExecute( std::string cmd, std::string & err, bool show_output = true );
+int DispExecute( std::string cmd, std::string & err, bool show_output = true, bool create_temp_file = true );
 
-int SimpleExecuteGetOutput( std::string cmd, std::string & op );
-
-int DispExecuteNoErr( std::string cmd, bool show_output = true );
+int DispExecuteNoErr( std::string cmd, bool show_output = true, bool create_temp_file = false );
 
 #endif // ASYNCEXECUTE_HPP

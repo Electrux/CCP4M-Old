@@ -15,7 +15,7 @@
 
 #include "../include/DisplayExecute.hpp"
 
-int DispExecute( std::string cmd, std::string & err, bool show_output )
+int DispExecute( std::string cmd, std::string & err, bool show_output, bool create_temp_file )
 {
 	std::string finalcmd = cmd + " 2>" + TMP_FILE;
 
@@ -71,26 +71,28 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 
 	MoveOutputCursorBack( prevdisp );
 
-	err = "";
+	if( create_temp_file ) {
+		err = "";
 
-	bool iserrfile = false;
-	std::fstream errfile;
-	errfile.open( TMP_FILE, std::ios::in );
-	if( errfile ) {
-		iserrfile = true;
-		std::string line;
-		while( std::getline( errfile, line ) )
-			err += line;
+		bool iserrfile = false;
+		std::fstream errfile;
+		errfile.open( TMP_FILE, std::ios::in );
+		if( errfile ) {
+			iserrfile = true;
+			std::string line;
+			while( std::getline( errfile, line ) )
+				err += line;
+		}
+		errfile.close();
+
+		if( iserrfile )
+			std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 	}
-	errfile.close();
-
-	if( iserrfile )
-		std::system( ( "rm -rf " + TMP_FILE ).c_str() );
 
 	return pclose( pipe );
 }
 
-int DispExecuteNoErr( std::string cmd, bool show_output )
+int DispExecuteNoErr( std::string cmd, bool show_output, bool create_temp_file )
 {
 	std::string temperr;
 
