@@ -96,5 +96,5 @@ int DispExecuteNoErr( std::string cmd, bool show_output, bool create_temp_file )
 {
 	std::string temperr;
 
-	return DispExecute( cmd, temperr, show_output );
+	return DispExecute( cmd, temperr, show_output, create_temp_file );
 }

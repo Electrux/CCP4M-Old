@@ -60,7 +60,7 @@ int UpdatePackageList()
 		DispColoredData( "Pulling list repository to:", PACKAGE_LIST_DIR, "... ",
 				FIRST_COL, SECOND_COL, THIRD_COL, false );
 
-		if( DispExecuteNoErr( GIT_PULL_CMD, false ) != 0 ) {
+		if( DispExecuteNoErr( GIT_PULL_CMD, false, false ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Unable to pull repository! Cannot continue!", CROSS,
 					FIRST_COL, RED, true );
