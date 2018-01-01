@@ -52,6 +52,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output )
 				// - current_disp_len -> already used by previous displayed line
 				// - teststr.size() -> to account for the additional brackets put by DisplayOneLinerString()
 				// - 4 -> to account for adding 3 dots and a space to describe left out output.
+				std::cout << term_width - current_disp_len - brackets.size() - continuation.size() << std::endl;
 				if( term_width - current_disp_len - brackets.size() - continuation.size() <= 0 )
 					continue;
 
