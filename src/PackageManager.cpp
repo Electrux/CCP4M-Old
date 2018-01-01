@@ -182,6 +182,9 @@ int PackageManager::UninstallPackage( std::string package )
 {
 	Package pkg;
 
+	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
+			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
+
 	DispColoredData( "Checking package exists ... " );
 	if( !PackageExists( package, pkg ) ) {
 		return 1;
@@ -206,8 +209,6 @@ int PackageManager::UninstallPackage( std::string package )
 	std::string pkgtolower = package;
 	StringToLower( pkgtolower );
 
-	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
-			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 	if( !UninstallArchive( pkg, args ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
