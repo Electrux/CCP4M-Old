@@ -20,6 +20,8 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 	std::string finalcmd = cmd;
 	if( create_temp_file )
 		finalcmd += " 2>" + TMP_FILE;
+	else
+		finalcmd += " 2>&1";
 
 	FILE * pipe = popen( finalcmd.c_str(), "r" );
 
