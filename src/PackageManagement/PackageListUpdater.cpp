@@ -15,13 +15,29 @@
 int UpdatePackageList()
 {
 	if( !PackageConfig::HandlePkgDirs() ) {
-		DispColoredData( "Unable to create/manipulate the configuration directories! Check permissions!", RED, true );
+		DispColoredData( "Unable to create/manipulate the configuration directories! Check permissions!",
+				CROSS, FIRST_COL, RED, true );
 		return 1;
+	}
+
+	std::string cwd = GetWorkingDir();
+
+	if( cwd.empty() ) {
+		DispColoredData( "Unable to get current working directory!", CROSS, FIRST_COL, RED, true );
+		return false;
+	}
+
+	if( !ChangeWorkingDir( PACKAGE_LIST_DIR ) ) {
+		DispColoredData( "Unable to change working directory to the package list directory!",
+				CROSS, FIRST_COL, RED, true );
+		return false;
 	}
 
 	std::string res;
 	if( !LocExistsInPath( GIT_CMD, res ) ) {
-		DispColoredData( GIT_CMD, "is not installed! Cannot continue!", SECOND_COL, RED, true );
+		DispColoredData( GIT_CMD, "is not installed! Cannot continue!", CROSS,
+				SECOND_COL, FIRST_COL, RED, true );
+		ChangeWorkingDir( cwd );
 		return -1;
 	}
 
@@ -31,7 +47,9 @@ int UpdatePackageList()
 
 		if( DispExecuteNoErr( GIT_CLONE_CMD, false ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
-			DispColoredData( "Unable to clone repository! Cannot continue!", RED, true );
+			DispColoredData( "Unable to clone repository! Cannot continue!", CROSS,
+					FIRST_COL, RED, true );
+			ChangeWorkingDir( cwd );
 			return 1;
 		}
 		else {
@@ -44,13 +62,17 @@ int UpdatePackageList()
 
 		if( DispExecuteNoErr( GIT_PULL_CMD, false ) != 0 ) {
 			DispColoredData( CROSS, RED, true );
-			DispColoredData( "Unable to pull repository! Cannot continue!", RED, true );
+			DispColoredData( "Unable to pull repository! Cannot continue!", CROSS,
+					FIRST_COL, RED, true );
+			ChangeWorkingDir( cwd );
 			return 1;
 		}
 		else {
 			DispColoredData( TICK, GREEN, true );
 		}
 	}
+
+	ChangeWorkingDir( cwd );
 
 	return 0;
 }

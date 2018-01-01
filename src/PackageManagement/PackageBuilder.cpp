@@ -25,7 +25,7 @@ bool BuildDirectory( const Package & pkg )
 	std::string cwd = GetWorkingDir();
 
 	if( cwd.empty() ) {
-		DispColoredData( "Unable to get working directory!", CROSS, FIRST_COL, RED, true );
+		DispColoredData( "Unable to get current working directory!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
 
