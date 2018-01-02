@@ -12,11 +12,11 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 {
 	ProjectData data;
 
-	bool invalidformat = false;
-	bool founddir = false;
-	bool founddeps = false;
-	bool foundname = false;
-	bool foundlang = false;
+	bool invalidformat = true;
+	bool founddir = true;
+	bool founddeps = true;
+	bool foundname = true;
+	bool foundlang = true;
 
 	for( auto arg = args.begin() + 3; arg != args.end(); ++arg ) {
 
@@ -28,7 +28,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				DispColoredData( "Error: Invalid format!", RED, true );
 				DispColoredData( "Please use:", FIRST_COL, true );
 				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
-				DispColoredData( "for more information.", FIRST_COL, false );
+				DispColoredData( "for more information.", FIRST_COL, true );
 				invalidformat = true;
 				break;
 			}
@@ -46,7 +46,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 
 				if( data.deps.empty() ) {
 					DispColoredData( "Error: No dependencies specified, however the", "--deps", "flag was used!",
-							RED, SECOND_COL, RED, false );
+							RED, SECOND_COL, RED, true );
 					invalidformat = true;
 					break;
 				}
@@ -60,7 +60,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				DispColoredData( "Error: Invalid flag or repetiton occurred.", RED, true );
 				DispColoredData( "Please use:", FIRST_COL, true );
 				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
-				DispColoredData( "for more information.", FIRST_COL, false );
+				DispColoredData( "for more information.", FIRST_COL, true );
 				invalidformat = true;
 				break;
 			}
@@ -70,7 +70,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				DispColoredData( "Error: Invalid flag or repetiton occurred.", RED, true );
 				DispColoredData( "Please use:", FIRST_COL, true );
 				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
-				DispColoredData( "for more information.", FIRST_COL, false );
+				DispColoredData( "for more information.", FIRST_COL, true );
 				invalidformat = true;
 				break;
 			}
@@ -89,7 +89,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 	if( invalidformat ) {
 
 		if( data.name.empty() ) {
-			DispColoredData( "Error: Cannot have unnamed project!", RED, false );
+			DispColoredData( "Error: Cannot have unnamed project!", RED, true );
 		}
 		data.name.clear();
 		data.deps.clear();
