@@ -6,9 +6,15 @@
 
 #include "CompileCommandData.hpp"
 
-int ExecuteCommand( std::string command );
+struct Result
+{
+	int res;
+	std::string err;
+};
 
-void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, int percent );
+Result ExecuteCommand( const std::string & command );
+
+void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, const std::string & err, int percent );
 
 int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & langstr, int count );
 
