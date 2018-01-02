@@ -10,6 +10,8 @@ Architecture ARCH =
 	LINUX
 #elif __APPLE__
 	MAC
+#elif __FreeBSD__
+	MAC
 #else
 	OTHER
 #endif
