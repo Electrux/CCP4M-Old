@@ -12,11 +12,11 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 {
 	ProjectData data;
 
-	bool invalidformat = true;
-	bool founddir = true;
-	bool founddeps = true;
-	bool foundname = true;
-	bool foundlang = true;
+	bool invalidformat = false;
+	bool founddir = false;
+	bool founddeps = false;
+	bool foundname = false;
+	bool foundlang = false;
 
 	for( auto arg = args.begin() + 3; arg != args.end(); ++arg ) {
 
