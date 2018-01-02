@@ -70,8 +70,11 @@ int GenerateBuildFiles()
 
 		auto mainmodtime = GetLastModifiedTime( "src/" + mainsrc );
 		auto buildfilemodtime = GetLastModifiedTime( "build/" + data.name );
+		auto configmodtime = GetLastModifiedTime( "ccp4m.ini" );
 
-		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime && filecount == 1) {
+		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime
+			&& configmodtime >= 0 && configmodtime <= buildfilemodtime
+			&& filecount == 1 ) {
 			DispColoredData( "Project up to date!", BOLD_GREEN, true );
 		}
 		else {
