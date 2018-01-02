@@ -25,6 +25,10 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 			if( ( arg + 1 ) == args.end() ||
 			    ( arg + 1 )->find( "--" ) != std::string::npos ) {
 
+				DispColoredData( "Error: Invalid format!", RED, true );
+				DispColoredData( "Please use:", FIRST_COL, true );
+				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
+				DispColoredData( "for more information.", FIRST_COL, true );
 				invalidformat = true;
 				break;
 			}
@@ -41,11 +45,9 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				data.deps = DelimStringToVector( * arg, ',' );
 
 				if( data.deps.empty() ) {
-					invalidformat = true;
-
 					DispColoredData( "Error: No dependencies specified, however the", "--deps", "flag was used!",
 							RED, SECOND_COL, RED, true );
-
+					invalidformat = true;
 					break;
 				}
 			}
@@ -59,9 +61,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				DispColoredData( "Please use:", FIRST_COL, true );
 				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
 				DispColoredData( "for more information.", FIRST_COL, true );
-
 				invalidformat = true;
-
 				break;
 			}
 		}
@@ -71,9 +71,7 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 				DispColoredData( "Please use:", FIRST_COL, true );
 				DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
 				DispColoredData( "for more information.", FIRST_COL, true );
-
 				invalidformat = true;
-
 				break;
 			}
 

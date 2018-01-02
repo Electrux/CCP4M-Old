@@ -10,6 +10,7 @@ enum Architecture
 {
 	LINUX,
 	MAC,
+	BSD,
 	OTHER
 };
 

@@ -34,9 +34,6 @@ int CreateProject( std::vector< std::string > & args )
 	ProjectData data = GetProjectData( args );
 
 	if( data.name.empty() ) {
-		DispColoredData( "Invalid parameter combination. Please use:", FIRST_COL, true );
-		DispColoredData( "\t", args[ 0 ] + "project new help", FIRST_COL, SECOND_COL, true );
-		DispColoredData( "for more information.", FIRST_COL, true );
 		return 1;
 	}
 

@@ -85,7 +85,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 			iserrfile = true;
 			std::string line;
 			while( std::getline( errfile, line ) )
-				err += line;
+				err += line + "\n";
 		}
 		errfile.close();
 

@@ -27,16 +27,17 @@ int main( int argc, char ** argv )
 	else if( args[ 1 ] == "pkg" ) {
 		PackageManager pkgmgr( args );
 		retval = pkgmgr.HandleCommand();
+		DispColoredData( "", FIRST_COL, true );
 	}
 	else if( args[ 1 ] == "help" ) {
 		ShowMainHelp( args );
+		DispColoredData( "", FIRST_COL, true );
 	}
 	else {
 		DispColoredData( "Invalid parameter. Possible options are: help, project, pkg", RED, true );
 		retval = 1;
+		DispColoredData( "", FIRST_COL, true );
 	}
-
-	DispColoredData( "", FIRST_COL, true );
 
 	return retval;
 }

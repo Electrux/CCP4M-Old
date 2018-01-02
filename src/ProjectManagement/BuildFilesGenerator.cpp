@@ -70,8 +70,11 @@ int GenerateBuildFiles()
 
 		auto mainmodtime = GetLastModifiedTime( "src/" + mainsrc );
 		auto buildfilemodtime = GetLastModifiedTime( "build/" + data.name );
+		auto configmodtime = GetLastModifiedTime( "ccp4m.ini" );
 
-		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime && filecount == 1) {
+		if( buildfilemodtime >= 0 && mainmodtime <= buildfilemodtime
+			&& configmodtime >= 0 && configmodtime <= buildfilemodtime
+			&& filecount == 1 ) {
 			DispColoredData( "Project up to date!", BOLD_GREEN, true );
 		}
 		else {
@@ -91,15 +94,20 @@ int GenerateBuildFiles()
 			DispColoredData( "Building and Linking " + langstr + " executable:", "build/" + data.name, "... ",
 					BOLD_YELLOW, BOLD_GREEN, RESET, false );
 
-			int res = ExecuteCommand( compilestr );
+			Result retval = ExecuteCommand( compilestr );
 
-			if( res == 0 )
+			if( retval.res == 0 ) {
 				DispColoredData( TICK, GREEN, true );
-			else
+			}
+			else {
 				DispColoredData( CROSS, RED, true );
+				DispColoredData( "Errors:", RED, true );
+				DispColoredData( "", FIRST_COL, true );
+				DispColoredData( retval.err, RESET, true );
+			}
 
-			if( res != 0 )
-				return res;
+			if( retval.res != 0 )
+				return retval.res;
 		}
 	}
 
