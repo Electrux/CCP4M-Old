@@ -102,6 +102,7 @@ int GenerateBuildFiles()
 			else {
 				DispColoredData( CROSS, RED, true );
 				DispColoredData( "Errors:", RED, true );
+				DispColoredData( "", FIRST_COL, true );
 				DispColoredData( retval.err, RESET, true );
 			}
 
