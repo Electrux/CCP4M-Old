@@ -16,7 +16,7 @@ int ExecuteCommand( std::string command )
 {
 	int i = std::system( command.c_str() );
 
-	return WEXITSTATUS( i );
+	return i;
 }
 
 void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, int percent )
