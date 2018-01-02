@@ -186,7 +186,7 @@ int PackageManager::UninstallPackage( std::string package )
 
 	StringToLower( pkgtolower );
 
-	DispColoredData( "Starting package", pkgtolower, "uninstallation ...",
+	DispColoredData( "Starting package", pkgtolower, "uninstallation ...\n",
 			BOLD_BLUE, BOLD_MAGENTA, BOLD_BLUE, true );
 
 	DispColoredData( "Checking package exists ... " );
