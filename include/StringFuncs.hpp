@@ -23,11 +23,11 @@ std::string GetStringTillLastSlash( const std::string & str );
 std::string GetStringAfterLastSlash( const std::string & str );
 
 // Replace all occurrences of "from" to "to" in string and return it.
-std::string ReplaceInString( const std::string & str, char from, char to );
+void ReplaceInString( std::string & str, const char from, const char to );
 
 // Replace all occurrences of "from" to "to" in string and return it,
 // but from and to are strings themselves here.
-std::string ReplaceInString( const std::string & str, std::string from, std::string to );
+void ReplaceInString( std::string & str, const std::string from, const std::string to );
 
 // Convert string to lowercase.
 void StringToLower( std::string & str );

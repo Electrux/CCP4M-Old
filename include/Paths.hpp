@@ -14,6 +14,14 @@ extern const std::string PACKAGE_LIST_DIR;
 extern const std::string INSTALLED_PKGS;
 extern const std::string PACKAGE_TMP;
 
+// These constants are generic replacements for Includes and Libraries
+// in project configurations.
+// Basically, these are replaced by the PACKAGE_XX_INSTALL_DIR ( below )
+// since that is dependent on the program user.
+const std::string INC_DIR_REPLACEMENT = "CCP4M_INC_DIR";
+const std::string LIB_DIR_REPLACEMENT = "CCP4M_LIB_DIR";
+const std::string FW_DIR_REPLACEMENT = "CCP4M_FW_DIR";
+
 // Directories where libraries are installed.
 // This is done to remove the need for sudo.
 extern const std::string PACKAGE_INSTALL_DIR;

@@ -57,7 +57,7 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 			continue;
 
 		parser.CreateSection( lib );
-		parser.SetDataString( lib, "IncFlags", PACKAGE_INCLUDE_INSTALL_DIR );
+		parser.SetDataString( lib, "IncFlags", "-I" + INC_DIR_REPLACEMENT );
 		parser.SetDataString( lib, "LibFlags", GetLibraryFlags( lib ) );
 		parser.SetDataString( lib, "Version", GetLibraryVersion( lib ) );
 	}
@@ -114,7 +114,7 @@ std::string ConfigMgr::GetLibraryFlags( std::string lib )
 
 	std::string flags;
 
-	flags = PACKAGE_LIBRARY_INSTALL_DIR + "," + pkg.libflags;
+	flags = "-L" + LIB_DIR_REPLACEMENT + ", " + pkg.libflags;
 
 	return flags;
 }
