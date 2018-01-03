@@ -30,6 +30,7 @@ bool FetchPackage( const Package & pkg )
 	std::FILE * file;
 
 	std::string archive = PACKAGE_TMP + pkg.file;
+	std::cout << archive << std::endl;
 
 	if( LocExists( archive ) && DispExecuteNoErr( "touch " + archive, false ) != 0 ) {
 		DispColoredData( CROSS, RED, true );
