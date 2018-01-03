@@ -37,6 +37,7 @@ int GenerateBuildFiles()
 	SetVarForArchitecture( compiler, {
 				data.lang == "c" ? "gcc" : "g++",
 				data.lang == "c" ? "clang" : "clang++",
+				data.lang == "c" ? "clang" : "clang++",
 				""
 			} );
 

@@ -36,7 +36,7 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 
 	std::string prefix;
 
-	SetVarForArchitecture( prefix, { "Linux", "Mac", "" } );
+	SetVarForArchitecture( prefix, { "Linux", "Mac", "BSD", "" } );
 
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
@@ -49,10 +49,13 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
 	parser.GetDataString( pkg.type, "URL", pkg.url );
-	parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 
 	if( pkg.type == "Source" ) {
+		parser.GetDataString( pkg.type, "File", pkg.file );
 		parser.GetDataString( pkg.type, "BuildMode", pkg.buildmode );
+	}
+	else if( pkg.type == "Binary" ) {
+		parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 	}
 
 	return true;

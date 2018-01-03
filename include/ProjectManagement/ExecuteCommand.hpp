@@ -18,7 +18,12 @@ struct Result
 };
 
 // This function executes a command and returns Result on the callee.
-Result ExecuteCommand( const std::string & command );
+// It also takes ctr because:
+// The DispExecute command produces error in a temp file but that file can
+// be weirdly overwritten by multiple threads of ExecuteCommand spawned by ExecuteAllCommands.
+// Therefore, ctr is a variable which will be unique for all the threads, hence
+// it is concatenated to the temporary file, thereby removing the problem.
+Result ExecuteCommand( const std::string & command, std::string ctr = "" );
 
 // This function displays the "building and linking" lines and shows errors
 // if they are encountered.

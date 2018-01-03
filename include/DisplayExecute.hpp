@@ -13,7 +13,13 @@
 // stdout of the running command.
 // create_temp_file, if true will create the temporary file to fetch the stderr of
 // the command. If it is false, the stderr of the command will be redirected to stdout.
-int DispExecute( std::string cmd, std::string & err, bool show_output = true, bool create_temp_file = true );
+// Also takes a tmp_file_thread_extension so that if multiple threads call this function,
+// they can append distinct string ( such as a counter ) to the TMP_FILE to avoid its
+// corruption.
+int DispExecute( std::string cmd, std::string & err,
+		bool show_output = true,
+		bool create_temp_file = true,
+		std::string tmp_file_thread_extension = "" );
 
 // Same as above, except this one won't contain any stderr support ( since no err variable ).
 // No temporary file will be created by default as well.
