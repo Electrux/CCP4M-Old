@@ -35,8 +35,6 @@ bool ExtractArchive( const Package & pkg )
 
 	std::string cmd = "tar --strip 1 " + taroptions + " " + archive + " -C " + archivedir;
 
-	std::cout << cmd << std::endl;
-
 	if( DispExecuteNoErr( cmd, false ) != 0 ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Unable to extract archive! Exiting!", RED, true );
