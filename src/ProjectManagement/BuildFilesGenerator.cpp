@@ -28,8 +28,6 @@ int GenerateBuildFiles()
 
 	if( GetBuildData( config, data, mainsrc, incdirs, flags, libs, othersrc ) != 0 )
 		return 1;
-	
-	std::cout << incdirs << "\n" << libs << std::endl;
 
 	if( CreateBuildDirectories( othersrc ) != 0 )
 		return 1;
