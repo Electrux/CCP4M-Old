@@ -20,8 +20,6 @@ struct Package
 
 	std::string libflags;
 
-	std::string existfile;
-
 	std::string url;
 	std::string file;
 

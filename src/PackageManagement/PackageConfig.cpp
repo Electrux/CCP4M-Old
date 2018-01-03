@@ -48,8 +48,6 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
-	pkg.existfile = FetchExistFile( parser );
-
 	parser.GetDataString( pkg.type, "URL", pkg.url );
 	parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 
@@ -58,52 +56,6 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	}
 
 	return true;
-}
-
-std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
-{
-	std::string existas;
-
-	parser.GetDataString( "Core", "ExistsAs", existas );
-
-	std::string file;
-	std::vector< std::string > vec;
-	if( !existas.empty() ) {
-		vec = DelimStringToVector( existas, ':' );
-
-		if( vec.size() <= 1 )
-			return "";
-
-		// Binary
-		if( vec[ 0 ] == "Binary" ) {
-			file = vec[ 1 ];
-		}
-		// Library
-		else if( vec[ 0 ] == "Library" ) {
-			SetVarForArchitecture( file, std::vector< std::string>( vec.begin() + 1, vec.end() ) );
-		}
-	}
-
-	if( file.empty() )
-		return "";
-
-	if( vec[ 0 ] == "Binary" ) {
-
-		std::string res;
-
-		if( LocExistsInPath( file, res ) )
-			return res;
-	}
-	else if( vec[ 0 ] == "Library" ) {
-		if( LocExists( "/usr/lib/" + file ) ) {
-			return "/usr/lib/" + file;
-		}
-		else if( LocExists( "/usr/local/lib/" + file ) ) {
-			return "/usr/local/lib/" + file;
-		}
-	}
-
-	return "";
 }
 
 bool PackageConfig::HandlePkgDirs()

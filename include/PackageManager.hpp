@@ -61,6 +61,9 @@ public:
 	// Returns true on success, false if not.
 	bool RemoveTempFiles( const Package & pkg, bool allfiles = false );
 
+	// Checks if there is an installed entry of a package in INSTALLED_PKGS file.
+	bool InstallEntryExists( const Package & pkg );
+
 	// Removes the installed entry of a package from INSTALLED_PKGS file.
 	// Returns true on success, false if not.
 	bool RemoveInstalledEntry( const Package & pkg );

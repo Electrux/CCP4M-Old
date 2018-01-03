@@ -130,7 +130,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	if( forceinstall ) {
 		DispColoredData( "Forcing installation! This may produce unintended results!", TICK, RED, RED, true );
 	}
-	else if( res == 0 || ( res == -1 && !forceinstall ) ) {
+	else if( res == 0 ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
@@ -165,14 +165,16 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	RemoveTempFiles( pkg );
 
+	if( !InstallEntryExists( pkg ) ) {
+		std::fstream file;
+		file.open( INSTALLED_PKGS, std::ios::app );
+
+		file << package << std::endl;
+
+		file.close();
+	}
+
 	DispColoredData( "Installation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
-
-	std::fstream file;
-	file.open( INSTALLED_PKGS, std::ios::app );
-
-	file << package << std::endl;
-
-	file.close();
 
 	return 0;
 }
@@ -201,11 +203,6 @@ int PackageManager::UninstallPackage( std::string package )
 	int res = IsInstalled( package );
 	if( res == 1 ) {
 		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
-		return 1;
-	}
-	if( res == -1 ) {
-		DispColoredData( "Package not installed by", args[ 0 ], "!\nNothing to remove!", FIRST_COL, SECOND_COL, THIRD_COL );
-		DispColoredData( " " + CROSS, RED, true );
 		return 1;
 	}
 
@@ -279,6 +276,37 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 	return true;
 }
 
+bool PackageManager::InstallEntryExists( const Package & pkg )
+{
+	if( !LocExists( INSTALLED_PKGS ) ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Installed package list does not exist!", RED, true );
+		return false;
+	}
+	std::fstream file;
+	file.open( INSTALLED_PKGS, std::ios::in );
+
+	if( !file ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to open package list to read!", RED, true );
+		return false;
+	}
+
+	std::string line;
+
+	while( std::getline( file, line ) ) {
+		TrimString( line );
+		if( line == pkg.name ) {
+			file.close();
+			return true;
+		}
+	}
+
+	file.close();
+
+	return false;
+}
+
 bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 {
 	if( !LocExists( INSTALLED_PKGS ) ) {
@@ -301,7 +329,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 	while( std::getline( file, line ) ) {
 		TrimString( line );
-		if( line.find( pkg.name ) != std::string::npos || line.empty() || line == "\n" ) {
+		if( line != pkg.name || line.empty() || line == "\n" ) {
 			continue;
 		}
 		output.push_back( line );
@@ -386,13 +414,6 @@ int PackageManager::IsInstalled( std::string package )
 	}
 
 	file.close();
-
-	if( !found && !pkg.existfile.empty() ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
-		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
-		return -1;
-	}
 
 	DispColoredData( TICK, GREEN, true );
 
