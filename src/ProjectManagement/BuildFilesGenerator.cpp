@@ -172,7 +172,8 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 		std::vector< std::string > & othersrc )
 {
 	if( config.RetrieveConfig( "." ) != 0 ) {
-		std::cerr << "Error: No project ini file detected in current directory!" << std::endl;
+		DispColoredData( "Error: No project configuration file ( ccp4m.ini ) detected in current directory!",
+				RED, true );
 		return 1;
 	}
 

@@ -5,7 +5,7 @@
 
 #include "../include/StringFuncs.hpp"
 
-std::vector< std::string > ToVector( int argc, char ** argv )
+std::vector< std::string > ArgToVector( int argc, char ** argv )
 {
 	std::vector< std::string > temp;
 

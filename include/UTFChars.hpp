@@ -3,6 +3,7 @@
 
 #include <string>
 
+// UTF characters of Tick and Cross
 const std::string CROSS = "✗";
 const std::string TICK = "✓";
 

@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 
+// This file contains structures related to data of/used by packages.
+
+// Package structure contains all the information of any package. It is fetched
+// using the PackageConfig class. The actual package config file is manually written
+// by those wanting to put new libraries in the available libraries.
 struct Package
 {
 	std::string name;
@@ -25,6 +30,8 @@ struct Package
 	std::string buildcmds;
 };
 
+// Also, DirFile is used in FSFuncs to fetch the directory and file which resides
+// in that directory.
 struct DirFile
 {
 	std::string dir;

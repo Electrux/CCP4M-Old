@@ -13,10 +13,12 @@
 
 #include "../../include/PackageManagement/PackageConfig.hpp"
 
-bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
+bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 {
 	if( !HandlePkgDirs() )
 		return false;
+	
+	std::string pkgname = packagename;
 
 	StringToLower( pkgname );
 

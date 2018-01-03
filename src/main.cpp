@@ -10,7 +10,7 @@ void ShowMainHelp( std::vector< std::string > & args );
 
 int main( int argc, char ** argv )
 {
-	auto args = ToVector( argc, argv );
+	auto args = ArgToVector( argc, argv );
 
 	if( args.size() < 2 ) {
 		DispColoredData( "Usage:", args[ 0 ] + " [ help/project/pkg ]", FIRST_COL, SECOND_COL, true );
