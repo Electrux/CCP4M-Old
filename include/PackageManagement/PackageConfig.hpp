@@ -23,16 +23,6 @@ public:
 	// the information of that package.
 	static bool GetPackage( const std::string & packagename, Package & pkg );
 
-	// Fetches the location of existsfile if it exists on the system.
-	// Otherwise, it returns an empty string.
-	static std::string FetchExistFile( Electrux::INI_Parser & parser );
-
-	// Fetches the default include and library directories based
-	// on the system architecture ( see CoreData.hpp ).
-	// This function is called if there are no Include and Library installation directories
-	// specified in the package configuration file.
-	static void FetchDefaultIncLibDir( Package & pkg );
-
 	// Creates relevant directories for the package manager, in $HOME.
 	static bool HandlePkgDirs();
 };
