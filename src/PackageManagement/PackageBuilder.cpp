@@ -35,11 +35,11 @@ bool BuildDirectory( const Package & pkg )
 	std::string create;
 
 	if( pkg.buildmode.find( "configure" ) != std::string::npos ) {
-		DispColoredData( "Creating makefile using configure ... " );
+		DispColoredData( " =>", "Creating makefile using configure ... ", SECOND_COL, FIRST_COL, false );
 		create = "./configure --prefix=" + PACKAGE_INSTALL_DIR;
 	}
 	else if( pkg.buildmode.find( "cmake" ) != std::string::npos ) {
-		DispColoredData( "Creating makefile using CMake ... " );
+		DispColoredData( " =>", "Creating makefile using CMake ... ", SECOND_COL, FIRST_COL, false );
 		create = "cmake -DCMAKE_INSTALL_PREFIX:PATH=" + PACKAGE_INSTALL_DIR + " .";
 	}
 
@@ -62,7 +62,7 @@ bool BuildDirectory( const Package & pkg )
 		DispColoredData( TICK, GREEN, true );
 	}
 
-	DispColoredData( "Using make install ... " );
+	DispColoredData( " =>", "Using make install ... ", SECOND_COL, FIRST_COL, false );
 
 	res = DispExecute( "make install", errors );
 
