@@ -29,22 +29,28 @@ bool FetchPackage( const Package & pkg )
 
 	std::FILE * file;
 
-	std::string archive = PACKAGE_TMP + pkg.file;
-
-	std::string dispexectemp;
-
-	if( LocExists( archive ) && DispExecute( "touch " + archive, dispexectemp, false ) != 0 ) {
+	if( pkg.file.empty() ) {
 		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: You do not have correct permissions!", RED, true );
+		DispColoredData( "Error: No package file exists for the current architecture!", CROSS, RED, RED, true );
 		return false;
 	}
+
+	std::string archive = PACKAGE_TMP + pkg.file;
+
+	if( LocExists( archive ) && DispExecuteNoErr( "touch " + archive, false ) != 0 ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: You do not have correct permissions!", CROSS, RED, RED, true );
+		return false;
+	}
+
+	DispExecuteNoErr( "rm " + archive, false );
 
 	hnd = curl_easy_init();
 	if( !hnd )
 		return false;
 
 	curl_easy_setopt( hnd, CURLOPT_URL, ( pkg.url + pkg.file ).c_str() );
-	file = std::fopen( ( PACKAGE_TMP + pkg.file ).c_str(), "w" );
+	file = std::fopen( archive.c_str(), "w" );
 
 	curl_easy_setopt( hnd, CURLOPT_WRITEDATA, file );
 	curl_easy_setopt( hnd, CURLOPT_WRITEFUNCTION, curl_write_func );

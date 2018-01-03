@@ -15,11 +15,11 @@
 
 #include "../include/DisplayExecute.hpp"
 
-int DispExecute( std::string cmd, std::string & err, bool show_output, bool create_temp_file )
+int DispExecute( std::string cmd, std::string & err, bool show_output, bool create_temp_file, std::string tmp_file_thread_extension )
 {
 	std::string finalcmd = cmd;
 	if( create_temp_file )
-		finalcmd += " 2>" + TMP_FILE;
+		finalcmd += " 2>" + TMP_FILE + tmp_file_thread_extension;
 	else
 		finalcmd += " 2>&1";
 
@@ -80,7 +80,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 
 		bool iserrfile = false;
 		std::fstream errfile;
-		errfile.open( TMP_FILE, std::ios::in );
+		errfile.open( TMP_FILE + tmp_file_thread_extension, std::ios::in );
 		if( errfile ) {
 			iserrfile = true;
 			std::string line;
@@ -90,7 +90,7 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 		errfile.close();
 
 		if( iserrfile )
-			std::system( ( "rm -rf " + TMP_FILE ).c_str() );
+			std::system( ( "rm -rf " + TMP_FILE + tmp_file_thread_extension ).c_str() );
 	}
 
 	return pclose( pipe );

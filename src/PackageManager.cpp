@@ -130,7 +130,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	if( forceinstall ) {
 		DispColoredData( "Forcing installation! This may produce unintended results!", TICK, RED, RED, true );
 	}
-	else if( res == 0 || ( res == -1 && !forceinstall ) ) {
+	else if( res == 0 ) {
 		DispColoredData( "Package already installed!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 		return 0;
 	}
@@ -147,14 +147,13 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	}
 
 	if( pkg.type == "Source" ) {
-		DispColoredData( "Building package from source ...", TICK, FIRST_COL, GREEN, true );
+		DispColoredData( "Building and installing package from source ...", TICK, FIRST_COL, GREEN, true );
 		if( !BuildDirectory( pkg ) ) {
 			DispColoredData( "Build failed!", CROSS, FIRST_COL, RED, true );
 			return 1;
 		}
 	}
-
-	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {
+	else if( pkg.type == "Binary" ) {
 		DispColoredData( "Starting " + pkgtypelower + " package installation ...", TICK, FIRST_COL, GREEN, true );
 		if( !InstallDirectory( pkg ) ) {
 			DispColoredData( "Installation failed!", CROSS, FIRST_COL, RED, true );
@@ -166,14 +165,16 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	RemoveTempFiles( pkg );
 
+	if( !InstallEntryExists( pkg ) ) {
+		std::fstream file;
+		file.open( INSTALLED_PKGS, std::ios::app );
+
+		file << package << std::endl;
+
+		file.close();
+	}
+
 	DispColoredData( "Installation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
-
-	std::fstream file;
-	file.open( INSTALLED_PKGS, std::ios::app );
-
-	file << package << std::endl;
-
-	file.close();
 
 	return 0;
 }
@@ -202,11 +203,6 @@ int PackageManager::UninstallPackage( std::string package )
 	int res = IsInstalled( package );
 	if( res == 1 ) {
 		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
-		return 1;
-	}
-	if( res == -1 ) {
-		DispColoredData( "Package not installed by", args[ 0 ], "!\nNothing to remove!", FIRST_COL, SECOND_COL, THIRD_COL );
-		DispColoredData( " " + CROSS, RED, true );
 		return 1;
 	}
 
@@ -247,9 +243,9 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 
 	std::string toremdir;
 
-	// By default, this is true only for source packages since
-	// buildcmds has some value in source packages only.
-	if( pkg.buildcmds.find( "uninstall" ) == std::string::npos || allfiles ) {
+	// Remove all files if package is binary since their installation information
+	// has already been stored in the saved file.
+	if( pkg.type == "Binary" || allfiles ) {
 		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetPackageVersionDir( pkg );
 	}
 	else {
@@ -280,6 +276,37 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 	return true;
 }
 
+bool PackageManager::InstallEntryExists( const Package & pkg )
+{
+	if( !LocExists( INSTALLED_PKGS ) ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Installed package list does not exist!", RED, true );
+		return false;
+	}
+	std::fstream file;
+	file.open( INSTALLED_PKGS, std::ios::in );
+
+	if( !file ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: Unable to open package list to read!", RED, true );
+		return false;
+	}
+
+	std::string line;
+
+	while( std::getline( file, line ) ) {
+		TrimString( line );
+		if( line == pkg.name ) {
+			file.close();
+			return true;
+		}
+	}
+
+	file.close();
+
+	return false;
+}
+
 bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 {
 	if( !LocExists( INSTALLED_PKGS ) ) {
@@ -302,7 +329,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 	while( std::getline( file, line ) ) {
 		TrimString( line );
-		if( line.find( pkg.name ) != std::string::npos || line.empty() || line == "\n" ) {
+		if( line != pkg.name || line.empty() || line == "\n" ) {
 			continue;
 		}
 		output.push_back( line );
@@ -388,13 +415,6 @@ int PackageManager::IsInstalled( std::string package )
 
 	file.close();
 
-	if( !found && !pkg.existfile.empty() ) {
-		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Package", package, "is installed but unmanageable by ", FIRST_COL, SECOND_COL, THIRD_COL, false );
-		DispColoredData( args[ 0 ], "because it was not installed by it.", SECOND_COL, THIRD_COL, true );
-		return -1;
-	}
-
 	DispColoredData( TICK, GREEN, true );
 
 	return !found;
@@ -433,11 +453,11 @@ int PackageManager::GetInfo( std::string package )
 
 	}
 
-	DispColoredData( "\tInclude directory:", pkg.incdir, FIRST_COL, SECOND_COL, true );
-	DispColoredData( "\tLibrary directory:", pkg.libdir, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tInclude directory:", PACKAGE_INCLUDE_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary directory:", PACKAGE_LIBRARY_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
 
 	if( ARCH == MAC ) {
-		DispColoredData( "\tFrameworks directory:", "/Library/Frameworks", FIRST_COL, SECOND_COL, true );
+		DispColoredData( "\tFrameworks directory:", PACKAGE_LIBRARY_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
 	}
 
 	DispColoredData( "", FIRST_COL, true );
@@ -457,14 +477,7 @@ int PackageManager::GetInfo( std::string package )
 
 	if( pkg.type == "Source" ) {
 		DispColoredData( "", FIRST_COL, true );
-		DispColoredData( "Build Commands: ", FIRST_COL, pkg.buildcmds.empty() );
-
-		auto buildcmds = DelimStringToVector( pkg.buildcmds );
-		for( auto cmd : buildcmds )
-			DispColoredData( cmd, "\b, ", SECOND_COL, FIRST_COL, false );
-
-		if( !buildcmds.empty() )
-			DispColoredData( "\b\b ", FIRST_COL, true );
+		DispColoredData( "Build Mode:", pkg.buildmode, FIRST_COL, SECOND_COL, true );
 	}
 
 	return 0;

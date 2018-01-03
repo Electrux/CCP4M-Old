@@ -59,6 +59,4 @@ void ShowProjectHelp( std::vector< std::string > & args )
 	DispColoredData( "\nYou can get more information from the categorized help of ", FIRST_COL, false );
 	DispColoredData( "each parameter. To do that, here is an example:", FIRST_COL, true );
 	DispColoredData( "\t", args[ 0 ] + " project new help", FIRST_COL, SECOND_COL, true );
-
-	DispColoredData( "", FIRST_COL, true );
 }

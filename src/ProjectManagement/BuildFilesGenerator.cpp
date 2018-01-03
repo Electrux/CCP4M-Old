@@ -37,6 +37,7 @@ int GenerateBuildFiles()
 	SetVarForArchitecture( compiler, {
 				data.lang == "c" ? "gcc" : "g++",
 				data.lang == "c" ? "clang" : "clang++",
+				data.lang == "c" ? "clang" : "clang++",
 				""
 			} );
 
@@ -172,7 +173,8 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 		std::vector< std::string > & othersrc )
 {
 	if( config.RetrieveConfig( "." ) != 0 ) {
-		std::cerr << "Error: No project ini file detected in current directory!" << std::endl;
+		DispColoredData( "Error: No project configuration file ( ccp4m.ini ) detected in current directory!",
+				RED, true );
 		return 1;
 	}
 
@@ -203,6 +205,7 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 		auto incflagvecstr = config.GetDataString( lb, "IncFlags" );
 
 		std::replace( incflagvecstr.begin(), incflagvecstr.end(), ',', ' ' );
+		ReplaceInString( incflagvecstr, INC_DIR_REPLACEMENT, PACKAGE_INCLUDE_INSTALL_DIR );
 
 		if( !incflagvecstr.empty() ) {
 			incdirs += incflagvecstr;
@@ -216,6 +219,7 @@ int GetBuildData( ConfigMgr & config, ProjectData & data, std::string & mainsrc,
 		auto libflagvecstr = config.GetDataString( lb, "LibFlags" );
 
 		std::replace( libflagvecstr.begin(), libflagvecstr.end(), ',', ' ' );
+		ReplaceInString( libflagvecstr, LIB_DIR_REPLACEMENT, PACKAGE_LIBRARY_INSTALL_DIR );
 
 		if( !libflagvecstr.empty() ) {
 			libs += libflagvecstr;

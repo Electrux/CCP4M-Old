@@ -1,6 +1,9 @@
 # Build files #
 ###############
 build/
+# Build file on BSD #
+#####################
+*.core
 
 # Compiled source #
 ###################

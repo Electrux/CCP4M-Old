@@ -13,10 +13,10 @@
 #include "../../include/ProjectManagement/ExecuteCommand.hpp"
 #include "../../include/ProjectManagement/CompileCommandData.hpp"
 
-Result ExecuteCommand( const std::string & command )
+Result ExecuteCommand( const std::string & command, std::string ctr )
 {
 	std::string err;
-	int res = DispExecute( command, err, false );
+	int res = DispExecute( command, err, false, true, ctr );
 
 	return { res, err };
 }
@@ -57,7 +57,7 @@ int ExecuteAllCommands( std::vector< CCData > & commands, const std::string & la
 
 		results.push_back( std::async( std::launch::async,
 					       ExecuteCommand,
-					       commands[ i ].command ) );
+					       commands[ i ].command, std::to_string( i ) ) );
 
 		if( ( i + 1 ) % cores == 0 || i == ( int )commands.size() - 1 ) {
 

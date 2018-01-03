@@ -13,10 +13,12 @@
 
 #include "../../include/PackageManagement/PackageConfig.hpp"
 
-bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
+bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 {
 	if( !HandlePkgDirs() )
 		return false;
+	
+	std::string pkgname = packagename;
 
 	StringToLower( pkgname );
 
@@ -34,7 +36,7 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 
 	std::string prefix;
 
-	SetVarForArchitecture( prefix, { "Linux", "Mac", "" } );
+	SetVarForArchitecture( prefix, { "Linux", "Mac", "BSD", "" } );
 
 	parser.GetDataString( "Core", "Name", pkg.name );
 	parser.GetDataString( "Core", "Description", pkg.description );
@@ -44,76 +46,19 @@ bool PackageConfig::GetPackage( std::string pkgname, Package & pkg )
 	parser.GetDataString( "Core", "Deps", deps );
 	pkg.deplist = DelimStringToVector( deps );
 
-	parser.GetDataString( "Core", prefix + "IncludeDir", pkg.incdir );
-	parser.GetDataString( "Core", prefix + "LibraryDir", pkg.libdir );
-
-	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
-		parser.GetDataString( "Core", "IncludeDir", pkg.incdir );
-		parser.GetDataString( "Core", "LibraryDir", pkg.libdir );
-	}
-
-	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
-		FetchDefaultIncLibDir( pkg );
-	}
-
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
-	pkg.existfile = FetchExistFile( parser );
-
 	parser.GetDataString( pkg.type, "URL", pkg.url );
-	parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 
 	if( pkg.type == "Source" ) {
-		parser.GetDataString( pkg.type, "BuildCommands", pkg.buildcmds );
+		parser.GetDataString( pkg.type, "File", pkg.file );
+		parser.GetDataString( pkg.type, "BuildMode", pkg.buildmode );
+	}
+	else if( pkg.type == "Binary" ) {
+		parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 	}
 
 	return true;
-}
-
-std::string PackageConfig::FetchExistFile( Electrux::INI_Parser & parser )
-{
-	std::string existas;
-
-	parser.GetDataString( "Core", "ExistsAs", existas );
-
-	std::string file;
-	std::vector< std::string > vec;
-	if( !existas.empty() ) {
-		vec = DelimStringToVector( existas, ':' );
-
-		if( vec.size() <= 1 )
-			return "";
-
-		// Binary
-		if( vec[ 0 ] == "Binary" ) {
-			file = vec[ 1 ];
-		}
-		// Library
-		else if( vec[ 0 ] == "Library" ) {
-			SetVarForArchitecture( file, std::vector< std::string>( vec.begin() + 1, vec.end() ) );
-		}
-	}
-
-	if( file.empty() )
-		return "";
-
-	if( vec[ 0 ] == "Binary" ) {
-
-		std::string res;
-
-		if( LocExistsInPath( file, res ) )
-			return res;
-	}
-	else if( vec[ 0 ] == "Library" ) {
-		if( LocExists( "/usr/lib/" + file ) ) {
-			return "/usr/lib/" + file;
-		}
-		else if( LocExists( "/usr/local/lib/" + file ) ) {
-			return "/usr/local/lib/" + file;
-		}
-	}
-
-	return "";
 }
 
 bool PackageConfig::HandlePkgDirs()
@@ -126,12 +71,18 @@ bool PackageConfig::HandlePkgDirs()
 
 	if( !LocExists( PACKAGE_TMP ) && CreateDir( PACKAGE_TMP, false ) != 0 )
 		return false;
+	
+	if( !LocExists( PACKAGE_INSTALL_DIR ) && CreateDir( PACKAGE_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( !LocExists( PACKAGE_INCLUDE_INSTALL_DIR ) && CreateDir( PACKAGE_INCLUDE_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( !LocExists( PACKAGE_LIBRARY_INSTALL_DIR ) && CreateDir( PACKAGE_LIBRARY_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( ARCH == MAC && !LocExists( PACKAGE_FRAMEWORKS_INSTALL_DIR ) && CreateDir( PACKAGE_FRAMEWORKS_INSTALL_DIR, false ) != 0 )
+		return false;
 
 	return true;
-}
-
-void PackageConfig::FetchDefaultIncLibDir( Package & pkg )
-{
-	SetVarForArchitecture( pkg.incdir, { "/usr/include", "/usr/local/include", "" } );
-	SetVarForArchitecture( pkg.libdir, { "/usr/lib", "/usr/local/lib", "" } );
 }

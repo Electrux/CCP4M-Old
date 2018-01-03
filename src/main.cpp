@@ -10,7 +10,7 @@ void ShowMainHelp( std::vector< std::string > & args );
 
 int main( int argc, char ** argv )
 {
-	auto args = ToVector( argc, argv );
+	auto args = ArgToVector( argc, argv );
 
 	if( args.size() < 2 ) {
 		DispColoredData( "Usage:", args[ 0 ] + " [ help/project/pkg ]", FIRST_COL, SECOND_COL, true );
@@ -27,17 +27,16 @@ int main( int argc, char ** argv )
 	else if( args[ 1 ] == "pkg" ) {
 		PackageManager pkgmgr( args );
 		retval = pkgmgr.HandleCommand();
-		DispColoredData( "", FIRST_COL, true );
 	}
 	else if( args[ 1 ] == "help" ) {
 		ShowMainHelp( args );
-		DispColoredData( "", FIRST_COL, true );
 	}
 	else {
 		DispColoredData( "Invalid parameter. Possible options are: help, project, pkg", RED, true );
 		retval = 1;
-		DispColoredData( "", FIRST_COL, true );
 	}
+
+	DispColoredData( "", FIRST_COL, true );
 
 	return retval;
 }
