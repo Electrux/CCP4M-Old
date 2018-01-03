@@ -77,7 +77,6 @@ int CreateDir( const std::string & dir, bool verbose )
 	for( auto ch : dir ) {
 
 		if( ch == '/' && !temp.empty() ) {
-
 			dirs.push_back( temp );
 			temp.clear();
 		}
@@ -268,18 +267,18 @@ bool CheckNecessaryPermissions( const Package & pkg, bool framework_exists )
 {
 	int ret = 0;
 
-	if( DispExecuteNoErr( "touch " + pkg.incdir + "/pkgtest", false ) != 0 )
+	if( DispExecuteNoErr( "touch " + PACKAGE_INCLUDE_INSTALL_DIR + "pkgtest", false ) != 0 )
 		return false;
-	DispExecuteNoErr( "rm -rf " + pkg.incdir + "/pkgtest", false );
+	DispExecuteNoErr( "rm -rf " + PACKAGE_INCLUDE_INSTALL_DIR + "pkgtest", false );
 
-	if( DispExecuteNoErr( "touch " + pkg.libdir + "/pkgtest", false ) != 0 )
+	if( DispExecuteNoErr( "touch " + PACKAGE_LIBRARY_INSTALL_DIR + "pkgtest", false ) != 0 )
 		return false;
-	DispExecuteNoErr( "rm -rf " + pkg.libdir + "/pkgtest", false );
+	DispExecuteNoErr( "rm -rf " + PACKAGE_LIBRARY_INSTALL_DIR + "pkgtest", false );
 
 	if( framework_exists ) {
-		if( DispExecuteNoErr( "touch /Library/Frameworks/pkgtest", false ) != 0 )
+		if( DispExecuteNoErr( "touch " + PACKAGE_FRAMEWORKS_INSTALL_DIR + "pkgtest", false ) != 0 )
 			return false;
-		DispExecuteNoErr( "rm -rf /Library/Frameworks/pkgtest", false );
+		DispExecuteNoErr( "rm -rf " + PACKAGE_FRAMEWORKS_INSTALL_DIR + "pkgtest", false );
 	}
 	return !( bool )ret;
 }
@@ -318,28 +317,27 @@ void FetchExtraDirs( const Package & pkg,
 	for( auto type : copyfiles ) {
 		std::string prefix;
 		if( type.first == "inc" ) {
-			prefix = pkg.incdir + "/";
+			prefix = PACKAGE_INCLUDE_INSTALL_DIR;
 		}
 		if( type.first == "lib" ) {
-			prefix = pkg.libdir + "/";
+			prefix = PACKAGE_LIBRARY_INSTALL_DIR;
 		}
 		if( type.first == "fw" ) {
-			prefix = pkg.incdir + "/Library/Frameworks/";
+			prefix = PACKAGE_FRAMEWORKS_INSTALL_DIR;
 		}
 		for( auto data : type.second ) {
 			std::string dir = prefix + data.dir;
 			if( dir.empty() )
 				continue;
-			
-			if( * ( dir.end() - 1 ) == '/' )
-				dir.erase( dir.end() - 1 );
-			
+
 			if( std::find( fileanddir.begin(), fileanddir.end(), dir ) != fileanddir.end() )
 				continue;
 
-			if( dir == pkg.incdir || dir == pkg.libdir || dir == "/Library/Frameworks" )
+			if( dir == PACKAGE_INCLUDE_INSTALL_DIR ||
+				dir == PACKAGE_LIBRARY_INSTALL_DIR ||
+				dir == PACKAGE_FRAMEWORKS_INSTALL_DIR )
 				continue;
-			
+
 			fileanddir.push_back( dir );
 		}
 	}

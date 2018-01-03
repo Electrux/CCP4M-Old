@@ -8,6 +8,7 @@
 #include "../../include/ProjectManagement/ProjectData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 
+#include "../../include/Paths.hpp"
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/PackageManagement/PackageConfig.hpp"
 
@@ -56,7 +57,7 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 			continue;
 
 		parser.CreateSection( lib );
-		parser.SetDataString( lib, "IncFlags", GetIncludeFlags( lib ) );
+		parser.SetDataString( lib, "IncFlags", PACKAGE_INCLUDE_INSTALL_DIR );
 		parser.SetDataString( lib, "LibFlags", GetLibraryFlags( lib ) );
 		parser.SetDataString( lib, "Version", GetLibraryVersion( lib ) );
 	}
@@ -100,30 +101,6 @@ std::string ConfigMgr::GetLibraryLang( std::string lib )
 	return pkg.lang;
 }
 
-std::string ConfigMgr::GetIncludeFlags( std::string lib )
-{
-	Package pkg;
-
-	if( !PackageConfig::GetPackage( lib, pkg ) ) {
-		DispColoredData( "Package:", lib, "does not exist!",
-				FIRST_COL, SECOND_COL, THIRD_COL, true );
-		DispColoredData( "You must enter the flags for it if there are.", FIRST_COL, true );
-		return "";
-	}
-
-	std::vector< std::string > incdirs = DelimStringToVector( pkg.incdir );
-
-	std::string incflag;
-	for( auto incdir : incdirs ) {
-		incflag += "-I" + incdir + ",";
-	}
-
-	if( !incflag.empty() )
-		incflag.erase( incflag.end() - 1 );
-
-	return incflag;
-}
-
 std::string ConfigMgr::GetLibraryFlags( std::string lib )
 {
 	Package pkg;
@@ -137,14 +114,7 @@ std::string ConfigMgr::GetLibraryFlags( std::string lib )
 
 	std::string flags;
 
-	std::vector< std::string > libdirs = DelimStringToVector( pkg.libdir );
-
-	std::string libflag;
-	for( auto incdir : libdirs ) {
-		libflag += "-L" + incdir + ",";
-	}
-
-	flags = libflag + pkg.libflags;
+	flags = PACKAGE_LIBRARY_INSTALL_DIR + "," + pkg.libflags;
 
 	return flags;
 }

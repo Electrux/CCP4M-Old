@@ -50,7 +50,6 @@ public:
 	// function for specific cases.
 	// Returns the value on success, empty string on failure.
 	std::string GetLibraryLang( std::string lib );
-	std::string GetIncludeFlags( std::string lib );
 	std::string GetLibraryFlags( std::string lib );
 	std::string GetLibraryVersion( std::string lib );
 

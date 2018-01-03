@@ -147,14 +147,13 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	}
 
 	if( pkg.type == "Source" ) {
-		DispColoredData( "Building package from source ...", TICK, FIRST_COL, GREEN, true );
+		DispColoredData( "Building and installing package from source ...", TICK, FIRST_COL, GREEN, true );
 		if( !BuildDirectory( pkg ) ) {
 			DispColoredData( "Build failed!", CROSS, FIRST_COL, RED, true );
 			return 1;
 		}
 	}
-
-	if( pkg.buildcmds.find( "install" ) == std::string::npos ) {
+	else if( pkg.type == "Binary" ) {
 		DispColoredData( "Starting " + pkgtypelower + " package installation ...", TICK, FIRST_COL, GREEN, true );
 		if( !InstallDirectory( pkg ) ) {
 			DispColoredData( "Installation failed!", CROSS, FIRST_COL, RED, true );
@@ -247,9 +246,9 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 
 	std::string toremdir;
 
-	// By default, this is true only for source packages since
-	// buildcmds has some value in source packages only.
-	if( pkg.buildcmds.find( "uninstall" ) == std::string::npos || allfiles ) {
+	// Remove all files if package is binary since their installation information
+	// has already been stored in the saved file.
+	if( pkg.type == "Binary" || allfiles ) {
 		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetPackageVersionDir( pkg );
 	}
 	else {
@@ -433,11 +432,11 @@ int PackageManager::GetInfo( std::string package )
 
 	}
 
-	DispColoredData( "\tInclude directory:", pkg.incdir, FIRST_COL, SECOND_COL, true );
-	DispColoredData( "\tLibrary directory:", pkg.libdir, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tInclude directory:", PACKAGE_INCLUDE_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "\tLibrary directory:", PACKAGE_LIBRARY_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
 
 	if( ARCH == MAC ) {
-		DispColoredData( "\tFrameworks directory:", "/Library/Frameworks", FIRST_COL, SECOND_COL, true );
+		DispColoredData( "\tFrameworks directory:", PACKAGE_LIBRARY_INSTALL_DIR, FIRST_COL, SECOND_COL, true );
 	}
 
 	DispColoredData( "", FIRST_COL, true );
@@ -457,14 +456,7 @@ int PackageManager::GetInfo( std::string package )
 
 	if( pkg.type == "Source" ) {
 		DispColoredData( "", FIRST_COL, true );
-		DispColoredData( "Build Commands: ", FIRST_COL, pkg.buildcmds.empty() );
-
-		auto buildcmds = DelimStringToVector( pkg.buildcmds );
-		for( auto cmd : buildcmds )
-			DispColoredData( cmd, "\b, ", SECOND_COL, FIRST_COL, false );
-
-		if( !buildcmds.empty() )
-			DispColoredData( "\b\b ", FIRST_COL, true );
+		DispColoredData( "Build Mode:", pkg.buildmode, FIRST_COL, SECOND_COL, true );
 	}
 
 	return 0;

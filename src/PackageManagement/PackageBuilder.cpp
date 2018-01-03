@@ -14,10 +14,7 @@
 
 bool BuildDirectory( const Package & pkg )
 {
-	std::vector< std::string > buildcmds =
-		DelimStringToVector( pkg.buildcmds );
-
-	if( buildcmds.empty() ) {
+	if( pkg.buildmode.empty() ) {
 		DispColoredData( "Nothing to build! Exiting!", CROSS, FIRST_COL, RED, true );
 		return false;
 	}
@@ -35,20 +32,15 @@ bool BuildDirectory( const Package & pkg )
 		return false;
 	}
 
-	std::string create, make, install;
+	std::string create;
 
-	create = buildcmds[ 0 ];
-	make = buildcmds[ 1 ];
-
-	if( buildcmds.size() >= 3 ) {
-		install = buildcmds[ 2 ];
-	}
-
-	if( create.find( "configure" ) != std::string::npos ) {
+	if( pkg.buildmode.find( "configure" ) != std::string::npos ) {
 		DispColoredData( "Creating makefile using configure ... " );
+		create = "./configure --prefix=" + PACKAGE_INSTALL_DIR;
 	}
-	else if( create.find( "cmake" ) != std::string::npos ) {
+	else if( pkg.buildmode.find( "cmake" ) != std::string::npos ) {
 		DispColoredData( "Creating makefile using CMake ... " );
+		create = "cmake -DCMAKE_INSTALL_PREFIX:PATH=" + PACKAGE_INSTALL_DIR + " .";
 	}
 
 	int res;
@@ -70,13 +62,13 @@ bool BuildDirectory( const Package & pkg )
 		DispColoredData( TICK, GREEN, true );
 	}
 
-	DispColoredData( "Using make ... " );
+	DispColoredData( "Using make install ... " );
 
-	res = DispExecute( make, errors );
+	res = DispExecute( "make install", errors );
 
 	if( res != 0 ) {
 		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Unable to make the package!", CROSS, FIRST_COL, RED, true );
+		DispColoredData( "Unable to make install the package!", CROSS, FIRST_COL, RED, true );
 		if( !errors.empty() ) {
 			DispColoredData( "Errors:", RED, true );
 			DispColoredData( errors, CYAN, true );
@@ -88,27 +80,6 @@ bool BuildDirectory( const Package & pkg )
 		DispColoredData( TICK, GREEN, true );
 	}
 
-	if( !install.empty() ) {
-		DispColoredData( "Installing using make install ... " );
-
-		res = DispExecute( install, errors );
-
-		if( res != 0 ) {
-			DispColoredData( CROSS, RED, true );
-			DispColoredData( "Unable to install using make install!", CROSS, FIRST_COL, RED, true );
-			if( !errors.empty() ) {
-				DispColoredData( "Errors:", RED, true );
-				DispColoredData( errors, CYAN, true );
-			}
-			ChangeWorkingDir( cwd );
-			return false;
-		}
-		else {
-			DispColoredData( TICK, GREEN, true );
-		}
-	}
-
 	ChangeWorkingDir( cwd );
-
 	return true;
 }

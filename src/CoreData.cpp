@@ -11,7 +11,7 @@ Architecture ARCH =
 #elif __APPLE__
 	MAC
 #elif __FreeBSD__
-	MAC
+	BSD
 #else
 	OTHER
 #endif

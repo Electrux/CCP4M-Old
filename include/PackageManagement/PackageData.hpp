@@ -18,8 +18,6 @@ struct Package
 	std::string version;
 	std::vector< std::string > deplist;
 
-	std::string incdir;
-	std::string libdir;
 	std::string libflags;
 
 	std::string existfile;
@@ -27,7 +25,7 @@ struct Package
 	std::string url;
 	std::string file;
 
-	std::string buildcmds;
+	std::string buildmode;
 };
 
 // Also, DirFile is used in FSFuncs to fetch the directory and file which resides

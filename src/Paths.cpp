@@ -6,10 +6,15 @@
 #include "../include/StringFuncs.hpp"
 #include "../include/Paths.hpp"
 
-std::string PACKAGE_BASE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
-std::string PACKAGE_LIST_DIR = PACKAGE_BASE_DIR + "pkgs/";
-std::string INSTALLED_PKGS = PACKAGE_BASE_DIR + "installed_pkgs.dat";
-std::string PACKAGE_TMP = PACKAGE_BASE_DIR + "tmp/";
+const std::string PACKAGE_BASE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
+const std::string PACKAGE_LIST_DIR = PACKAGE_BASE_DIR + "pkgs/";
+const std::string INSTALLED_PKGS = PACKAGE_BASE_DIR + "installed_pkgs.dat";
+const std::string PACKAGE_TMP = PACKAGE_BASE_DIR + "tmp/";
+
+const std::string PACKAGE_INSTALL_DIR = PACKAGE_BASE_DIR + "installed/";
+const std::string PACKAGE_INCLUDE_INSTALL_DIR = PACKAGE_INSTALL_DIR + "include/";
+const std::string PACKAGE_LIBRARY_INSTALL_DIR = PACKAGE_INSTALL_DIR + "lib/";
+const std::string PACKAGE_FRAMEWORKS_INSTALL_DIR = PACKAGE_INSTALL_DIR + "frameworks/";
 
 const std::string GIT_CLONE_CMD = GIT_CMD + " clone https://github.com/Electrux/CCP4M-PKGI.git " + PACKAGE_LIST_DIR;
 const std::string GIT_PULL_CMD = GIT_CMD + " pull";

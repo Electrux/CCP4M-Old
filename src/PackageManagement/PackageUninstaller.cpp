@@ -14,16 +14,14 @@
 
 bool UninstallArchive( const Package & pkg, const std::vector< std::string > & args )
 {
-	std::vector< std::string > buildcmds = DelimStringToVector( pkg.buildcmds );
-
 	bool usecustomuninstaller = false;
 
-	if( pkg.type == "Binary" || buildcmds.size() < 4 ) {
+	if( pkg.type == "Binary" || pkg.buildmode.empty() ) {
 		DispColoredData( "Using auto generated uninstaller file ...", TICK, FIRST_COL, GREEN, true );
 		usecustomuninstaller = true;
 	}
 	else {
-		DispColoredData( "Using uninstall command from library config ...", TICK, FIRST_COL, GREEN, true );
+		DispColoredData( "Using make uninstall command ...", TICK, FIRST_COL, GREEN, true );
 	}
 
 	if( usecustomuninstaller ) {
@@ -52,14 +50,12 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 		return false;
 	}
 
-	std::string makeuninstall = buildcmds[ 3 ];
-
 	DispColoredData( "Uninstalling using make uninstall ... " );
 
 	int res;
 	std::string errors;
 
-	res = DispExecute( makeuninstall, errors );
+	res = DispExecute( "make uninstall", errors );
 
 	if( res != 0 ) {
 		DispColoredData( CROSS, RED, true );
@@ -76,6 +72,5 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	}
 
 	ChangeWorkingDir( cwd );
-
 	return true;
 }

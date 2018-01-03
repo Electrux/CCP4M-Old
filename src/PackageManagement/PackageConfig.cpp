@@ -46,18 +46,6 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	parser.GetDataString( "Core", "Deps", deps );
 	pkg.deplist = DelimStringToVector( deps );
 
-	parser.GetDataString( "Core", prefix + "IncludeDir", pkg.incdir );
-	parser.GetDataString( "Core", prefix + "LibraryDir", pkg.libdir );
-
-	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
-		parser.GetDataString( "Core", "IncludeDir", pkg.incdir );
-		parser.GetDataString( "Core", "LibraryDir", pkg.libdir );
-	}
-
-	if( pkg.incdir.empty() || pkg.libdir.empty() ) {
-		FetchDefaultIncLibDir( pkg );
-	}
-
 	parser.GetDataString( "Core", "LibraryFlags", pkg.libflags );
 
 	pkg.existfile = FetchExistFile( parser );
@@ -66,7 +54,7 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	parser.GetDataString( pkg.type, prefix + "File", pkg.file );
 
 	if( pkg.type == "Source" ) {
-		parser.GetDataString( pkg.type, "BuildCommands", pkg.buildcmds );
+		parser.GetDataString( pkg.type, "BuildMode", pkg.buildmode );
 	}
 
 	return true;
@@ -128,12 +116,18 @@ bool PackageConfig::HandlePkgDirs()
 
 	if( !LocExists( PACKAGE_TMP ) && CreateDir( PACKAGE_TMP, false ) != 0 )
 		return false;
+	
+	if( !LocExists( PACKAGE_INSTALL_DIR ) && CreateDir( PACKAGE_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( !LocExists( PACKAGE_INCLUDE_INSTALL_DIR ) && CreateDir( PACKAGE_INCLUDE_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( !LocExists( PACKAGE_LIBRARY_INSTALL_DIR ) && CreateDir( PACKAGE_LIBRARY_INSTALL_DIR, false ) != 0 )
+		return false;
+
+	if( ARCH == MAC && !LocExists( PACKAGE_FRAMEWORKS_INSTALL_DIR ) && CreateDir( PACKAGE_FRAMEWORKS_INSTALL_DIR, false ) != 0 )
+		return false;
 
 	return true;
-}
-
-void PackageConfig::FetchDefaultIncLibDir( Package & pkg )
-{
-	SetVarForArchitecture( pkg.incdir, { "/usr/include", "/usr/local/include", "" } );
-	SetVarForArchitecture( pkg.libdir, { "/usr/lib", "/usr/local/lib", "" } );
 }

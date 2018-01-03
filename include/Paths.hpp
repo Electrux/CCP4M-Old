@@ -9,10 +9,17 @@
 // List -> Directory in which the package configurations are stored ( fetched and updated from repository ).
 // Installed_Pkgs -> File which contains a list of packages currently installed.
 // Tmp -> Directory in which the downloaded and extracted package files are stored.
-extern std::string PACKAGE_BASE_DIR;
-extern std::string PACKAGE_LIST_DIR;
-extern std::string INSTALLED_PKGS;
-extern std::string PACKAGE_TMP;
+extern const std::string PACKAGE_BASE_DIR;
+extern const std::string PACKAGE_LIST_DIR;
+extern const std::string INSTALLED_PKGS;
+extern const std::string PACKAGE_TMP;
+
+// Directories where libraries are installed.
+// This is done to remove the need for sudo.
+extern const std::string PACKAGE_INSTALL_DIR;
+extern const std::string PACKAGE_INCLUDE_INSTALL_DIR;
+extern const std::string PACKAGE_LIBRARY_INSTALL_DIR;
+extern const std::string PACKAGE_FRAMEWORKS_INSTALL_DIR;
 
 // Extension of package configuration files.
 const std::string PACKAGE_EXT = ".pkgi";
