@@ -29,12 +29,17 @@ bool FetchPackage( const Package & pkg )
 
 	std::FILE * file;
 
+	if( pkg.file.empty() ) {
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( "Error: No package file exists for the current architecture!", CROSS, RED, RED, true );
+		return false;
+	}
+
 	std::string archive = PACKAGE_TMP + pkg.file;
-	std::cout << archive << std::endl;
 
 	if( LocExists( archive ) && DispExecuteNoErr( "touch " + archive, false ) != 0 ) {
 		DispColoredData( CROSS, RED, true );
-		DispColoredData( "Error: You do not have correct permissions!", RED, true );
+		DispColoredData( "Error: You do not have correct permissions!", CROSS, RED, RED, true );
 		return false;
 	}
 
