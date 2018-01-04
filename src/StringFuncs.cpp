@@ -103,7 +103,7 @@ void TrimString( std::string & str )
 		if( * it == '\t' || * it == ' ' ) {
 			* it = ' ';
 			++it;
-			while( *it == ' ' || * it == '\t' ) {
+			while( * it == ' ' || * it == '\t' ) {
 				it = str.erase( it );
 			}
 		}
