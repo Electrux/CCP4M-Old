@@ -110,6 +110,23 @@ int PackageManager::InstallMultiplePackages( std::vector< std::string > & packag
 	return retval;
 }
 
+int PackageManager::UninstallMultiplePackages()
+{
+	int retval = 0;
+
+	for( int i = 3; i < args.size(); ++i ) {
+		retval = UninstallPackage( args[ i ] );
+
+		if( retval != 0 )
+			break;
+
+		if( i != args.size() - 1 )
+			DispColoredData( "", FIRST_COL, true );
+	}
+
+	return retval;
+}
+
 int PackageManager::InstallPackage( std::string package, bool forceinstall )
 {
 	Package pkg;
