@@ -113,7 +113,7 @@ bool UninstallUsingInstallManifest( const Package & pkg )
 	if( pkg.cleanupdirs.empty() )
 		return true;
 
-	DispColoredData( "Cleaning directories up ... ", FIRST_COL, false );
+	DispColoredData( " =>", "Cleaning directories up ... ", SECOND_COL, FIRST_COL, false );
 	auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
 
 	for( auto cleanupdir : cleanupdirs ) {
