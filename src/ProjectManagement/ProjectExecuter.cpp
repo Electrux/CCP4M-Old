@@ -35,6 +35,8 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	std::string command = execenv + "./build/" + projectname;
 
+	std::cout << command << std::endl;
+
 	if( args.size() > 3 ){
 
 		command += " ";
