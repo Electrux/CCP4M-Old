@@ -3,8 +3,11 @@
 #include <vector>
 #include <string>
 
+#include "../../include/Paths.hpp"
 #include "../../include/ColorDefs.hpp"
 #include "../../include/DisplayFuncs.hpp"
+#include "../../include/StringFuncs.hpp"
+#include "../../include/DisplayExecute.hpp"
 
 #include "../../include/ProjectManagement/ProjectBuilder.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -23,7 +26,14 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	std::string projectname = conf.GetDataString( "Core", "Name" );
 
-	std::string command = "./build/" + projectname;
+	std::string execenv = conf.GetDataString( "Core", "ExecEnv" );
+
+	if( !execenv.empty() ) {
+		ReplaceInString( execenv, LIB_DIR_REPLACEMENT, PACKAGE_LIBRARY_INSTALL_DIR );
+		execenv += " ";
+	}
+
+	std::string command = execenv + "./build/" + projectname;
 
 	if( args.size() > 3 ){
 
@@ -39,5 +49,5 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	DispColoredData( "\nExecuting Project...\n", BOLD_MAGENTA, true );
 
-	return std::system( command.c_str() );
+	return DispExecuteNoErr( command, true );
 }
