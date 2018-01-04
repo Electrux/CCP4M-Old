@@ -58,44 +58,12 @@ std::string GetStringBetweenQuotes( std::string & str )
 
 std::string GetStringTillLastSlash( const std::string & str )
 {
-	std::string temp;
-
-	bool gotslash = false;
-
-	for( auto ch = str.rbegin(); ch != str.rend(); ++ch ) {
-
-		if( * ch == '/' )
-			gotslash = true;
-
-		if( gotslash )
-			temp += * ch;
-	}
-
-	if( !temp.empty() )
-		std::reverse( temp.begin(), temp.end() );
-
-	return temp;
+	return str.substr( 0, str.rfind( '/' ) + 1 );
 }
 
 std::string GetStringAfterLastSlash( const std::string & str )
 {
-	std::string temp;
-
-	bool gotslash = false;
-
-	for( auto ch = str.rbegin(); ch != str.rend(); ++ch ) {
-
-		if( * ch == '/' )
-			gotslash = true;
-
-		if( !gotslash )
-			temp += * ch;
-	}
-
-	if( !temp.empty() )
-		std::reverse( temp.begin(), temp.end() );
-
-	return temp;
+	return str.substr( str.rfind( '/' ) + 1 );
 }
 
 void ReplaceInString( std::string & str, const char from, const char to )
