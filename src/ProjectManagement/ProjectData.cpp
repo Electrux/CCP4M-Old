@@ -34,13 +34,11 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 			}
 
 			if( arg->find( "dir" ) != std::string::npos && !founddir ) {
-
 				++arg;
 				data.dir = * arg;
 				founddir = true;
 			}
 			else if( arg->find( "deps" ) != std::string::npos && !founddeps ) {
-
 				++arg;
 				data.deps = DelimStringToVector( * arg, ',' );
 
@@ -88,9 +86,9 @@ ProjectData GetProjectData( std::vector< std::string > & args )
 
 	if( invalidformat ) {
 
-		if( data.name.empty() ) {
+		if( data.name.empty() )
 			DispColoredData( "Error: Cannot have unnamed project!", RED, true );
-		}
+
 		data.name.clear();
 		data.deps.clear();
 		data.dir.clear();

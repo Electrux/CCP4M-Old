@@ -41,7 +41,6 @@ int PackageManager::HandleCommand()
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-
 		return InstallMultiplePackages();
 	}
 
@@ -76,14 +75,11 @@ int PackageManager::InstallMultiplePackages()
 
 	bool forceinstall = false;
 
-	int loc = -1;
-
 	std::vector< std::string > packages;
 
 	for( int i = 3; i < ( int )args.size(); ++i ) {
 		if( args[ i ].find( "--force" ) != std::string::npos ) {
 			forceinstall = true;
-			loc = i;
 			continue;
 		}
 
@@ -100,11 +96,11 @@ int PackageManager::InstallMultiplePackages( std::vector< std::string > & packag
 	for( int i = 0; i < ( int )packages.size(); ++i ) {
 		retval = InstallPackage( packages[ i ], forceinstall );
 
-		if( retval != 0 )
-			break;
-
 		if( i != packages.size() - 1 )
 			DispColoredData( "", FIRST_COL, true );
+
+		if( retval != 0 )
+			break;
 	}
 
 	return retval;
@@ -117,11 +113,11 @@ int PackageManager::UninstallMultiplePackages()
 	for( int i = 3; i < args.size(); ++i ) {
 		retval = UninstallPackage( args[ i ] );
 
-		if( retval != 0 )
-			break;
-
 		if( i != args.size() - 1 )
 			DispColoredData( "", FIRST_COL, true );
+
+		if( retval != 0 )
+			break;
 	}
 
 	return retval;
@@ -192,7 +188,6 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 	}
 
 	DispColoredData( "Installation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
-
 	return 0;
 }
 
@@ -233,7 +228,7 @@ int PackageManager::UninstallPackage( std::string package )
 	RemoveTempFiles( pkg, true );
 
 	DispColoredData( "Removing installation entry ... " );
-	return ( int )!RemoveInstalledEntry( pkg );
+	return ( int )!RemoveInstallEntry( pkg );
 }
 
 int PackageManager::Update()
@@ -257,8 +252,6 @@ int PackageManager::Update()
 bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 {
 	std::string rmcmd;
-
-	std::string toremdir;
 
 	// Remove all files if package is binary since their installation information
 	// has already been stored in the saved file.
@@ -300,6 +293,7 @@ bool PackageManager::InstallEntryExists( const Package & pkg )
 		DispColoredData( "Error: Installed package list does not exist!", RED, true );
 		return false;
 	}
+
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::in );
 
@@ -324,13 +318,14 @@ bool PackageManager::InstallEntryExists( const Package & pkg )
 	return false;
 }
 
-bool PackageManager::RemoveInstalledEntry( const Package & pkg )
+bool PackageManager::RemoveInstallEntry( const Package & pkg )
 {
 	if( !LocExists( INSTALLED_PKGS ) ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Installed package list does not exist!", RED, true );
 		return false;
 	}
+
 	std::fstream file;
 	file.open( INSTALLED_PKGS, std::ios::in );
 

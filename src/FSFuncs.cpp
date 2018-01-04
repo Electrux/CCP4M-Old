@@ -28,8 +28,7 @@ void SetFolderPaths( std::string & directory,
 		     std::string & buildfolder )
 {
 	// Incase the dirname given by user does not contain '/' at the end...
-	directory = ( *(directory.end() - 1) == '/' ) ? directory : directory + "/";
-
+	directory = ( * (directory.end() - 1) == '/' ) ? directory : directory + "/";
 
 	projfolder      = directory + projectname;
 
@@ -42,10 +41,8 @@ bool LocExists( const std::string & location )
 {
 	struct stat info;
 
-	if( stat( location.c_str(), & info ) == 0 )
-		return true;
-	
-	if( lstat( location.c_str(), & info ) == 0)
+	// Either hard file/directory, or even symlinks work.
+	if( stat( location.c_str(), & info ) == 0 || lstat( location.c_str(), & info ) == 0 )
 		return true;
 
 	return false;
@@ -137,13 +134,8 @@ bool IsLatestBuild( std::string filename )
 	std::string line;
 
 	while( std::getline( file, line ) ) {
-
-		if( line.find( "#include \"" ) != std::string::npos ) {
-
-			//std::cout << "includes: " << line << "\n";
-
+		if( line.find( "#include \"" ) != std::string::npos )
 			includes.push_back( GetStringBetweenQuotes( line ) );
-		}
 	}
 
 	file.close();
@@ -185,7 +177,7 @@ int GetFilesInDirNonSrc( std::string dir, std::vector< std::string > & temp, boo
 	if( !LocExists( dir ) )
 		return 1;
 
-	DIR* dirp = opendir( dir.c_str() );
+	DIR * dirp = opendir( dir.c_str() );
 	struct dirent * p;
 
 	std::string tempdir;
@@ -319,21 +311,16 @@ bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )
 			continue;
 		}
 
-		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 ) {
+		if( DispExecuteNoErr( "rm -rf " + ( * it ), true ) != 0 )
 			return false;
-		}
 
 		it = data.erase( it );
 	}
 
 	std::string cpdatafile = PACKAGE_BASE_DIR + "." + pkg.name;
 
-	if( LocExists( cpdatafile ) ) {
-
-		if( DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 ) {
-			return false;
-		}
-	}
+	if( LocExists( cpdatafile ) && DispExecuteNoErr( "rm -rf " + cpdatafile, false ) != 0 )
+		return false;
 
 	return true;
 }
@@ -342,13 +329,12 @@ bool SaveCopiedData( const Package & pkg, const std::vector< std::string > & cop
 {
 	std::fstream installedfiles;
 	installedfiles.open( PACKAGE_BASE_DIR + "." + pkg.name, std::ios::out );
-	if( !installedfiles ) {
-		return false;
-	}
 
-	for( auto file : copiedfiles ) {
+	if( !installedfiles )
+		return false;
+
+	for( auto file : copiedfiles )
 		installedfiles << file << std::endl;
-	}
 
 	installedfiles.close();
 
@@ -362,16 +348,14 @@ std::vector< std::string > GetCopiedData( const Package & pkg )
 	std::fstream file;
 	file.open( PACKAGE_BASE_DIR + "." + pkg.name, std::ios::in );
 
-	if( !file ) {
+	if( !file )
 		return data;
-	}
 
 	std::string line;
 
 	while( std::getline( file, line ) ) {
 		if( !line.empty() && line != "\n" ) {
 			TrimString( line );
-
 			data.push_back( line );
 		}
 	}

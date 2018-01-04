@@ -72,7 +72,7 @@ public:
 
 	// Removes the installed entry of a package from INSTALLED_PKGS file.
 	// Returns true on success, false if not.
-	bool RemoveInstalledEntry( const Package & pkg );
+	bool RemoveInstallEntry( const Package & pkg );
 
 	// Checks if package exists in package list.
 	// Returns true on success, along with package information

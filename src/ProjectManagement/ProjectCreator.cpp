@@ -33,9 +33,8 @@ int CreateProject( std::vector< std::string > & args )
 
 	ProjectData data = GetProjectData( args );
 
-	if( data.name.empty() ) {
+	if( data.name.empty() )
 		return 1;
-	}
 
 	return GenerateProjectFiles( data );
 }

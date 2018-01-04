@@ -117,8 +117,8 @@ int progress_func( void* ptr, double totdl, double cdl, double totup, double cup
 		// the size to work with is:
 		// term_width -> total size to work with
 		// - current_disp_len -> already used by previous displayed line
-		// - teststr.size() -> to account for the additional brackets put by DisplayOneLinerString()
-		// - 4 -> to account for adding 3 dots and a space to describe left out output.
+		// - brackets.size() -> to account for the additional brackets put by DisplayOneLinerString()
+		// - continuation.size() -> to account for adding 3 dots and a space to describe left out output.
 		if( term_width - current_disp_len - ( int )brackets.size() - ( int )continuation.size() < 0 )
 			return 0;
 

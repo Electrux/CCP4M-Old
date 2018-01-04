@@ -259,22 +259,18 @@ int GetWildCardSources( std::vector< std::string > & __othersrc,
 	for( auto it = __othersrc.begin(); it != __othersrc.end(); ++it ) {
 
 		if( * ( it->end() - 1 ) == '*' ) {
-
 			// Remove * and /
 			it->erase( it->end() - 1 );
 			it->erase( it->end() - 1 );
 
-			std::string loc;
-
-			loc += ( *it == "src" ) ? "src" : "src/" + *it;
+			std::string loc = ( ( * it ) == "src" ) ? "src" : "src/" + ( * it );
 
 			if( GetFilesInDirNonSrc( loc, othersrc ) != 0 )
 				return 1;
 		}
 
-		if( * ( it->end() - 1 ) != '/' ) {
+		if( * ( it->end() - 1 ) != '/' )
 			othersrc.push_back( * it );
-		}
 	}
 
 	return 0;

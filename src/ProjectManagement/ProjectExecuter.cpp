@@ -27,18 +27,17 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	std::string execenv = conf.GetDataString( "Core", "ExecEnv" );
 
-	// Replace , with space, and double space with single space.
-	ReplaceInString( execenv, ',', ' ' );
-	ReplaceInString( execenv, "  ", " " );
-
 	if( !execenv.empty() ) {
+		// Replace , with space, and double space with single space.
+		ReplaceInString( execenv, ',', ' ' );
+		ReplaceInString( execenv, "  ", " " );
 		ReplaceInString( execenv, LIB_DIR_REPLACEMENT, PACKAGE_LIBRARY_INSTALL_DIR );
 		execenv += " ";
 	}
 
 	std::string command = execenv + "./build/" + projectname;
 
-	if( args.size() > 3 ){
+	if( args.size() > 3 ) {
 
 		command += " ";
 
@@ -51,6 +50,5 @@ int ExecuteProject( std::vector< std::string > & args )
 	}
 
 	DispColoredData( "\nExecuting Project...\n", BOLD_MAGENTA, true );
-
 	return std::system( command.c_str() );
 }

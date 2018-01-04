@@ -14,9 +14,9 @@ static int last_disp_len = 0;
 
 void MoveOutputCursorBack( int & len )
 {
-	for( int i = 0; i < len; ++i ) {
+	for( int i = 0; i < len; ++i )
 		std::cout << "\b \b";
-	}
+
 	std::cout.flush();
 
 	len = 0;

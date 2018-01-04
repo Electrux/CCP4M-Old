@@ -19,20 +19,10 @@ Architecture ARCH =
 
 void SetVarForArchitecture( std::string & var, std::vector< std::string > options )
 {
-	if( options.size() <= ARCH ) {
-		var = "";
-		return;
-	}
-
-	var = options[ ARCH ];
+	var = options.size() <= ARCH ? "" : options[ ARCH ];
 }
 
 void SetVarForArchitecture( int & var, std::vector< int > options )
 {
-	if( options.size() <= ARCH ) {
-		var = INT_MIN;
-		return;
-	}
-
-	var = options[ ARCH ];
+	var = options.size() <= ARCH ? INT_MIN : options[ ARCH ];
 }

@@ -24,9 +24,8 @@ bool ExtractArchive( const Package & pkg )
 
 	std::string archivedir = GetPackageVersionDir( pkg );
 
-	if( LocExists( archivedir ) ) {
+	if( LocExists( archivedir ) )
 		DispExecuteNoErr( "rm -rf " + archivedir, false );
-	}
 
 	if( !CreatePackageDir( pkg ) ) {
 		DispColoredData( CROSS, RED, true );
@@ -42,21 +41,11 @@ bool ExtractArchive( const Package & pkg )
 	}
 
 	DispColoredData( TICK, GREEN, true );
-
 	return true;
 }
 
 std::string GetTarOptions( const Package & pkg )
 {
-	if( pkg.file.find( ".tar.gz" ) != std::string::npos )
-		return "-xzf";
-
-	if( pkg.file.find( ".tar.bz2" ) != std::string::npos )
-		return "-xjf";
-
-	if( pkg.file.find( ".tar" ) != std::string::npos )
-		return "-xf";
-
 	std::string file = pkg.url + pkg.file;
 
 	if( file.find( "tar.gz" ) != std::string::npos )

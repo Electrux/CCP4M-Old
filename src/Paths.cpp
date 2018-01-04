@@ -24,7 +24,7 @@ std::string GetHomeDir()
 	std::string homedir;
 
 	if( getuid() == 0) {
-		SetVarForArchitecture( homedir, { "/home/", "/Users/", "" } );
+		SetVarForArchitecture( homedir, { "/home/", "/Users/", "/home/", "" } );
 		homedir += GetEnvVar( "SUDO_USER" );
 	}
 	else {
@@ -38,11 +38,8 @@ std::string GetEnvVar( std::string key )
 {
 	char * val;
 	val = std::getenv( key.c_str() );
-	std::string retval = "";
-	if (val != NULL) {
-		retval = val;
-	}
-	return retval;
+
+	return val != NULL ? val : "";
 }
 
 bool ChangeWorkingDir( std::string dir )
@@ -54,9 +51,8 @@ std::string GetWorkingDir()
 {
 	char cwd[ 1024 ];
 
-	if( getcwd( cwd, sizeof( cwd ) ) != NULL ) {
+	if( getcwd( cwd, sizeof( cwd ) ) != NULL )
 		return cwd;
-	}
 
 	return "";
 }
@@ -67,9 +63,8 @@ std::vector< std::string > GetEnvPath()
 
 	auto path_vec = DelimStringToVector( path, ':' );
 
-	for( auto p = path_vec.begin(); p != path_vec.end(); ++p ) {
+	for( auto p = path_vec.begin(); p != path_vec.end(); ++p )
 		* p = ( * p ) + "/";
-	}
 
 	return path_vec;
 }

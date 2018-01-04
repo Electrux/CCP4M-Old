@@ -22,9 +22,8 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 
 	for( auto ch : str ) {
 
-		if( ch == delim ) {
-			if( !temp.empty() )
-				val.push_back( temp );
+		if( ch == delim && !temp.empty() ) {
+			val.push_back( temp );
 			temp.clear();
 			continue;
 		}
@@ -159,6 +158,9 @@ bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
 
 		if( strit == str.end() && wcardit == wildcard.end() )
 			part1 = true;
+
+		if( part1 )
+			return true;
 	}
 
 	{
@@ -187,16 +189,18 @@ bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
 
 		if( strit == str.rend() && wcardit == wildcard.rend() )
 			part2 = true;
+
+		if( part2 )
+			return true;
 	}
 
-	return part1 || part2;
+	return false;
 }
 
 void TrimWildCards( std::vector< std::string > & wildcards )
 {
-	for( auto wildcard = wildcards.begin(); wildcard != wildcards.end(); ++wildcard ) {
+	for( auto wildcard = wildcards.begin(); wildcard != wildcards.end(); ++wildcard )
 		TrimWildCard( * wildcard );
-	}
 }
 
 void TrimWildCard( std::string & wildcard )

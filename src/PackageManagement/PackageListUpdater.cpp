@@ -73,6 +73,5 @@ int UpdatePackageList()
 	}
 
 	ChangeWorkingDir( cwd );
-
 	return 0;
 }

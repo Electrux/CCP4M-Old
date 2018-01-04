@@ -64,8 +64,10 @@ bool UninstallArchive( const Package & pkg )
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Unable to uninstall using make uninstall!", CROSS, FIRST_COL, RED, true );
 		DispColoredData( "Attempting to uninstall using install_manifest.txt ...", TICK, FIRST_COL, GREEN, true );
-		if( !UninstallUsingInstallManifest( pkg ) )
+		if( !UninstallUsingInstallManifest( pkg ) ) {
+			ChangeWorkingDir( cwd );
 			return false;
+		}
 		ChangeWorkingDir( cwd );
 		return true;
 	}
@@ -110,9 +112,8 @@ bool UninstallUsingInstallManifest( const Package & pkg )
 		return false;
 	}
 
-	while( std::getline( file, line ) ) {
+	while( std::getline( file, line ) )
 		data.push_back( line );
-	}
 
 	DispColoredData( " =>", "Removing installed files ... ", SECOND_COL, FIRST_COL, false );
 
