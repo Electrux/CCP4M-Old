@@ -333,6 +333,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 			continue;
 		}
 		output.push_back( line );
+		std::cout << line << std::endl;
 	}
 
 	file.close();
