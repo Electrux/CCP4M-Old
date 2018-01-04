@@ -91,6 +91,8 @@ bool UninstallArchive( const Package & pkg )
 	}
 
 	ChangeWorkingDir( cwd );
+
+	DispColoredData( TICK, GREEN, true );
 	return true;
 }
 
@@ -126,7 +128,5 @@ bool UninstallUsingInstallManifest( const Package & pkg )
 	}
 
 	file.close();
-
-	DispColoredData( TICK, GREEN, true );
 	return true;
 }
