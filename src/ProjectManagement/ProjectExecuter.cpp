@@ -27,6 +27,10 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	std::string execenv = conf.GetDataString( "Core", "ExecEnv" );
 
+	// Replace , with space, and double space with single space.
+	ReplaceInString( execenv, ',', ' ' );
+	ReplaceInString( execenv, "  ", " " );
+
 	if( !execenv.empty() ) {
 		ReplaceInString( execenv, LIB_DIR_REPLACEMENT, PACKAGE_LIBRARY_INSTALL_DIR );
 		execenv += " ";
