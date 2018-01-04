@@ -51,7 +51,7 @@ int PackageManager::HandleCommand()
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-		return UninstallPackage( args[ 3 ] );
+		return UninstallMultiplePackages();
 	}
 
 	if( args[ 2 ] == "update" ) {
@@ -104,6 +104,23 @@ int PackageManager::InstallMultiplePackages( std::vector< std::string > & packag
 			break;
 
 		if( i != packages.size() - 1 )
+			DispColoredData( "", FIRST_COL, true );
+	}
+
+	return retval;
+}
+
+int PackageManager::UninstallMultiplePackages()
+{
+	int retval = 0;
+
+	for( int i = 3; i < args.size(); ++i ) {
+		retval = UninstallPackage( args[ i ] );
+
+		if( retval != 0 )
+			break;
+
+		if( i != args.size() - 1 )
 			DispColoredData( "", FIRST_COL, true );
 	}
 
@@ -206,7 +223,7 @@ int PackageManager::UninstallPackage( std::string package )
 		return 1;
 	}
 
-	if( !UninstallArchive( pkg, args ) ) {
+	if( !UninstallArchive( pkg ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
@@ -329,7 +346,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 	while( std::getline( file, line ) ) {
 		TrimString( line );
-		if( line != pkg.name || line.empty() || line == "\n" ) {
+		if( line == pkg.name || line.empty() || line == "\n" ) {
 			continue;
 		}
 		output.push_back( line );
@@ -346,7 +363,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 	}
 
 	for( auto op : output ) {
-		file << line << std::endl;
+		file << op << std::endl;
 	}
 
 	file.close();

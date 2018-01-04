@@ -52,6 +52,8 @@ int ConfigMgr::CreateDefaultConfig( std::string project_dir )
 	parser.SetDataString( "Core", "MainSrc", "main." + data.lang );
 	parser.SetDataString( "Core", "OtherSrc", "" );
 
+	parser.SetDataString( "Core", "ExecEnv", "LD_LIBRARY_PATH=" + LIB_DIR_REPLACEMENT );
+
 	for( auto lib : data.deps ) {
 		if( !IsCompatible( data.lang, GetLibraryLang( lib ) ) )
 			continue;

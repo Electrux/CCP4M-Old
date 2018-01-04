@@ -92,13 +92,6 @@ std::string GetPackageDir( const Package & pkg );
 //	PACKAGE_TMP/<package name>/<version string>
 std::string GetPackageVersionDir( const Package & pkg );
 
-// Fetches extra directories which are created when copying installation
-// files. These directories are then used to remove the directories at the
-// the time of uninstallation.
-void FetchExtraDirs( const Package & pkg,
-		const std::map< std::string, std::vector< DirFile > > & copyfiles,
-		std::vector< std::string > & fileanddir );
-
 // Removes the files and directories which are copied when package is installed.
 // The file/directory in data is erased when it's removed.
 // Returns true on success, false if not.

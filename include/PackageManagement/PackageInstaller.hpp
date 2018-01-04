@@ -28,6 +28,13 @@ bool CopyFiles( const Package & pkg,
 // and vectors of files which are copied.
 std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg, bool & use_framework );
 
+// Fetches extra directories which are created when copying installation
+// files. These directories are then used to remove the directories at the
+// the time of uninstallation.
+void FetchExtraDirs( const Package & pkg,
+		const std::map< std::string, std::vector< DirFile > > & copyfiles,
+		std::vector< std::string > & fileanddir );
+
 // This function is called when Installation fails and something has been altered ( copied ).
 // It will remove all the copied files therefore, system is left as it was before.
 void RevertInstallation( const Package & pkg, std::vector< std::string > & data );

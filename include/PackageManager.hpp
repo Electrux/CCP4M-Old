@@ -27,6 +27,12 @@ public:
 	// Returns 0 if installed correctly, anything else if not.
 	int InstallMultiplePackages( std::vector< std::string > & packages, bool forceinstall = false );
 
+	// Uninstalls multiple packages by calling UninstallPackage on each.
+	// If any package failes to uninstall, it will stop the process, neglecting the subsequent
+	// packages.
+	// Returns 0 if uninstalled correctly, anthing else if not.
+	int UninstallMultiplePackages();
+
 	// Installs a single package in the following manner:
 	//	check if package exists -> check already installed ->
 	//	fetch ( download ) package -> extract package ->

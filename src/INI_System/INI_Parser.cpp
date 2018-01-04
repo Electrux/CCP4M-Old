@@ -59,7 +59,7 @@ namespace Electrux
 				}
 			}
 
-			if( ch == '=' )
+			if( ch == '=' && !found_equals )
 				found_equals = true;
 			else
 				(found_equals) ? val += ch : key += ch;
