@@ -24,7 +24,7 @@ Result ExecuteCommand( const std::string & command, std::string ctr )
 void DisplayBuildResults( CCData & commands, const std::string & langstr, int res, const std::string & err, int percent )
 {
 	DispColoredData( "[" + std::to_string( percent ) + "%]\t", RESET, false );
-	DispColoredData( "Building and Linking " + langstr + " object:", "build/buildfiles/" + commands.othersource, "... ",
+	DispColoredData( "Building and Linking " + langstr + " object:", "build/buildfiles/" + commands.othersource + ".o", "... ",
 			FIRST_COL, SECOND_COL, RESET, false );
 
 	if( res == 0 ) {
