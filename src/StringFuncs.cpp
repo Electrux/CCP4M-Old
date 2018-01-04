@@ -193,7 +193,7 @@ bool IsWildCardCompatible( const std::string & str, std::string & wildcard )
 			wcardit++;
 
 		if( strit == str.end() && wcardit == wildcard.end() )
-		part1 = true;
+			part1 = true;
 	}
 
 	{
