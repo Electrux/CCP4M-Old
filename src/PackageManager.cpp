@@ -51,7 +51,7 @@ int PackageManager::HandleCommand()
 				FIRST_COL, SECOND_COL, true );
 			return 1;
 		}
-		return UninstallPackage( args[ 3 ] );
+		return UninstallMultiplePackages();
 	}
 
 	if( args[ 2 ] == "update" ) {
