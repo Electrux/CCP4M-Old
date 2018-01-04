@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "../../include/ColorDefs.hpp"
 #include "../../include/UTFChars.hpp"
@@ -12,7 +13,9 @@
 
 #include "../../include/PackageManagement/PackageData.hpp"
 
-bool UninstallArchive( const Package & pkg, const std::vector< std::string > & args )
+#include "../../include/PackageManagement/PackageUninstaller.hpp"
+
+bool UninstallArchive( const Package & pkg )
 {
 	bool usecustomuninstaller = false;
 
@@ -60,10 +63,9 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	if( res != 0 ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Unable to uninstall using make uninstall!", CROSS, FIRST_COL, RED, true );
-		if( !errors.empty() ) {
-			DispColoredData( "Errors:", RED, true );
-			DispColoredData( errors, CYAN, true );
-		}
+		DispColoredData( "Attempting to uninstall using install_manifest.txt ... ", TICK, FIRST_COL, GREEN, false );
+		if( !UninstallUsingInstallManifest( pkg ) )
+			return false;
 		ChangeWorkingDir( cwd );
 		return false;
 	}
@@ -72,5 +74,54 @@ bool UninstallArchive( const Package & pkg, const std::vector< std::string > & a
 	}
 
 	ChangeWorkingDir( cwd );
+	return true;
+}
+
+bool UninstallUsingInstallManifest( const Package & pkg )
+{
+	std::vector< std::string > data;
+	std::string line;
+
+	std::fstream file;
+	file.open( "install_manifest.txt", std::ios::in );
+
+	if( !file ) {
+		DispColoredData( "Error: Unable to uninstall using install_manifest.txt! You are on your own!",
+				CROSS, RED, RED, true );
+		return false;
+	}
+
+	while( std::getline( file, line ) ) {
+		data.push_back( line );
+	}
+
+	bool res = RemoveCopiedData( pkg, data );
+
+	if( res ) {
+		DispColoredData( "Removed installed files!", TICK, FIRST_COL, GREEN, true );
+	}
+	else {
+		DispColoredData( "Error: Unable to remove installed files!", CROSS, RED, RED, true );
+		return false;
+	}
+
+	file.close();
+
+	if( !pkg.cleanupdirs.empty() ) {
+		DispColoredData( "Attempting to clean directories up ... ", TICK, FIRST_COL, GREEN, true );
+		auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
+
+		for( auto cleanupdir : cleanupdirs ) {
+			DispColoredData( "=> Removing directory:", cleanupdir, FIRST_COL, SECOND_COL, true );
+			if( DispExecuteNoErr( "rm -rf " + PACKAGE_INSTALL_DIR + cleanupdir, false ) != 0 ) {
+				DispColoredData( "=> Unable to remove directory:",
+						PACKAGE_INSTALL_DIR + cleanupdir, "!", RED, CYAN, RED, false );
+				DispColoredData( CROSS, RED, true );
+				return false;
+			}
+		}
+	}
+
+	DispColoredData( "Successfully cleaned all directories!", TICK, FIRST_COL, GREEN, true );
 	return true;
 }

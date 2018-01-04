@@ -150,6 +150,39 @@ std::map< std::string, std::vector< DirFile > > GetCopyList( const Package & pkg
 	return list;
 }
 
+void FetchExtraDirs( const Package & pkg,
+		const std::map< std::string, std::vector< DirFile > > & copyfiles,
+		std::vector< std::string > & fileanddir )
+{
+	for( auto type : copyfiles ) {
+		std::string prefix;
+		if( type.first == "inc" ) {
+			prefix = PACKAGE_INCLUDE_INSTALL_DIR;
+		}
+		if( type.first == "lib" ) {
+			prefix = PACKAGE_LIBRARY_INSTALL_DIR;
+		}
+		if( type.first == "fw" ) {
+			prefix = PACKAGE_FRAMEWORKS_INSTALL_DIR;
+		}
+		for( auto data : type.second ) {
+			std::string dir = prefix + data.dir;
+			if( dir.empty() )
+				continue;
+
+			if( std::find( fileanddir.begin(), fileanddir.end(), dir ) != fileanddir.end() )
+				continue;
+
+			if( dir == PACKAGE_INCLUDE_INSTALL_DIR ||
+				dir == PACKAGE_LIBRARY_INSTALL_DIR ||
+				dir == PACKAGE_FRAMEWORKS_INSTALL_DIR )
+				continue;
+
+			fileanddir.push_back( dir );
+		}
+	}
+}
+
 void RevertInstallation( const Package & pkg, std::vector< std::string > & data )
 {
 	if( !RemoveCopiedData( pkg, data ) ) {

@@ -24,6 +24,7 @@ struct Package
 	std::string file;
 
 	std::string buildmode;
+	std::string cleanupdirs;
 };
 
 // Also, DirFile is used in FSFuncs to fetch the directory and file which resides

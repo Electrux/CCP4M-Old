@@ -8,6 +8,7 @@
 #include "../../include/StringFuncs.hpp"
 #include "../../include/DisplayFuncs.hpp"
 #include "../../include/FSFuncs.hpp"
+#include "../../include/DisplayExecute.hpp"
 #include "../../include/PackageManagement/PackageData.hpp"
 #include "../../include/INI_System/INI_Parser.hpp"
 
@@ -53,6 +54,7 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	if( pkg.type == "Source" ) {
 		parser.GetDataString( pkg.type, "File", pkg.file );
 		parser.GetDataString( pkg.type, "BuildMode", pkg.buildmode );
+		parser.GetDataString( pkg.type, "CleanupDirectories", pkg.cleanupdirs );
 	}
 	else if( pkg.type == "Binary" ) {
 		parser.GetDataString( pkg.type, prefix + "File", pkg.file );
@@ -82,6 +84,10 @@ bool PackageConfig::HandlePkgDirs()
 		return false;
 
 	if( ARCH == MAC && !LocExists( PACKAGE_FRAMEWORKS_INSTALL_DIR ) && CreateDir( PACKAGE_FRAMEWORKS_INSTALL_DIR, false ) != 0 )
+		return false;
+	
+	if( !LocExists( PACKAGE_INSTALL_DIR + "lib64" ) &&
+		DispExecuteNoErr( "ln -s " + PACKAGE_LIBRARY_INSTALL_DIR + " " + PACKAGE_INSTALL_DIR + "lib64", false ) != 0 )
 		return false;
 
 	return true;

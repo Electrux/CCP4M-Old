@@ -206,7 +206,7 @@ int PackageManager::UninstallPackage( std::string package )
 		return 1;
 	}
 
-	if( !UninstallArchive( pkg, args ) ) {
+	if( !UninstallArchive( pkg ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
 	}
