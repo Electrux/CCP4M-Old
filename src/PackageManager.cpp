@@ -329,7 +329,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 
 	while( std::getline( file, line ) ) {
 		TrimString( line );
-		if( line != pkg.name || line.empty() || line == "\n" ) {
+		if( line == pkg.name || line.empty() || line == "\n" ) {
 			continue;
 		}
 		output.push_back( line );
