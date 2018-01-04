@@ -100,13 +100,10 @@ void TrimString( std::string & str )
 		str.erase( str.begin() );
 
 	for( auto it = str.begin(); it != str.end(); ) {
-		if( * it == '\t' ) {
-			*it = ' ';
+		if( * it == '\t' || * it == ' ' ) {
+			* it = ' ';
 			++it;
-		}
-		else if( * it == ' ' ) {
-			++it;
-			while( *it == ' ' ) {
+			while( *it == ' ' || * it == '\t' ) {
 				it = str.erase( it );
 			}
 		}
