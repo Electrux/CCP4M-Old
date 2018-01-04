@@ -72,6 +72,23 @@ bool UninstallArchive( const Package & pkg )
 	else {
 		DispColoredData( TICK, GREEN, true );
 	}
+	
+	if( pkg.cleanupdirs.empty() )
+		return true;
+
+	DispColoredData( " =>", "Cleaning directories up ... ", SECOND_COL, FIRST_COL, false );
+	auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
+
+	for( auto cleanupdir : cleanupdirs ) {
+		if( DispExecuteNoErr( "rm -rf " + PACKAGE_INSTALL_DIR + cleanupdir ) != 0 ) {
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( " =>", "Unable to remove directory:",
+					PACKAGE_INSTALL_DIR + cleanupdir, RED, RED, CYAN, false );
+			DispColoredData( " !", CROSS, RED, RED, true );
+			ChangeWorkingDir( cwd );
+			return false;
+		}
+	}
 
 	ChangeWorkingDir( cwd );
 	return true;
@@ -109,22 +126,6 @@ bool UninstallUsingInstallManifest( const Package & pkg )
 	}
 
 	file.close();
-
-	if( pkg.cleanupdirs.empty() )
-		return true;
-
-	DispColoredData( " =>", "Cleaning directories up ... ", SECOND_COL, FIRST_COL, false );
-	auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
-
-	for( auto cleanupdir : cleanupdirs ) {
-		if( DispExecuteNoErr( "rm -rf " + PACKAGE_INSTALL_DIR + cleanupdir ) != 0 ) {
-			DispColoredData( CROSS, RED, true );
-			DispColoredData( " =>", "Unable to remove directory:",
-					PACKAGE_INSTALL_DIR + cleanupdir, RED, RED, CYAN, false );
-			DispColoredData( " !", CROSS, RED, RED, true );
-			return false;
-		}
-	}
 
 	DispColoredData( TICK, GREEN, true );
 	return true;
