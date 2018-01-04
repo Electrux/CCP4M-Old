@@ -7,7 +7,6 @@
 #include "../../include/ColorDefs.hpp"
 #include "../../include/DisplayFuncs.hpp"
 #include "../../include/StringFuncs.hpp"
-#include "../../include/DisplayExecute.hpp"
 
 #include "../../include/ProjectManagement/ProjectBuilder.hpp"
 #include "../../include/ProjectManagement/ConfigMgr.hpp"
@@ -49,5 +48,5 @@ int ExecuteProject( std::vector< std::string > & args )
 
 	DispColoredData( "\nExecuting Project...\n", BOLD_MAGENTA, true );
 
-	return DispExecuteNoErr( command, true );
+	return std::system( command.c_str() );
 }
