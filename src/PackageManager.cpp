@@ -333,7 +333,6 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 			continue;
 		}
 		output.push_back( line );
-		std::cout << line << std::endl;
 	}
 
 	file.close();
@@ -347,7 +346,7 @@ bool PackageManager::RemoveInstalledEntry( const Package & pkg )
 	}
 
 	for( auto op : output ) {
-		file << line << std::endl;
+		file << op << std::endl;
 	}
 
 	file.close();
