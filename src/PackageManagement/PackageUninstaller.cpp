@@ -63,11 +63,11 @@ bool UninstallArchive( const Package & pkg )
 	if( res != 0 ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Unable to uninstall using make uninstall!", CROSS, FIRST_COL, RED, true );
-		DispColoredData( "Attempting to uninstall using install_manifest.txt ... ", TICK, FIRST_COL, GREEN, false );
+		DispColoredData( "Attempting to uninstall using install_manifest.txt ...", TICK, FIRST_COL, GREEN, true );
 		if( !UninstallUsingInstallManifest( pkg ) )
 			return false;
 		ChangeWorkingDir( cwd );
-		return false;
+		return true;
 	}
 	else {
 		DispColoredData( TICK, GREEN, true );
@@ -95,33 +95,37 @@ bool UninstallUsingInstallManifest( const Package & pkg )
 		data.push_back( line );
 	}
 
+	DispColoredData( " =>", "Removing installed files ... ", SECOND_COL, FIRST_COL, false );
+
 	bool res = RemoveCopiedData( pkg, data );
 
 	if( res ) {
-		DispColoredData( "Removed installed files!", TICK, FIRST_COL, GREEN, true );
+		DispColoredData( TICK, GREEN, true );
 	}
 	else {
-		DispColoredData( "Error: Unable to remove installed files!", CROSS, RED, RED, true );
+		DispColoredData( CROSS, RED, true );
+		DispColoredData( " =>", "Error: Unable to remove installed files!", CROSS, RED, RED, RED, true );
 		return false;
 	}
 
 	file.close();
 
-	if( !pkg.cleanupdirs.empty() ) {
-		DispColoredData( "Attempting to clean directories up ... ", TICK, FIRST_COL, GREEN, true );
-		auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
+	if( pkg.cleanupdirs.empty() )
+		return true;
 
-		for( auto cleanupdir : cleanupdirs ) {
-			DispColoredData( "=> Removing directory:", cleanupdir, FIRST_COL, SECOND_COL, true );
-			if( DispExecuteNoErr( "rm -rf " + PACKAGE_INSTALL_DIR + cleanupdir, false ) != 0 ) {
-				DispColoredData( "=> Unable to remove directory:",
-						PACKAGE_INSTALL_DIR + cleanupdir, "!", RED, CYAN, RED, false );
-				DispColoredData( CROSS, RED, true );
-				return false;
-			}
+	DispColoredData( "Cleaning directories up ... ", FIRST_COL, false );
+	auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
+
+	for( auto cleanupdir : cleanupdirs ) {
+		if( DispExecuteNoErr( "rm -rf " + PACKAGE_INSTALL_DIR + cleanupdir ) != 0 ) {
+			DispColoredData( CROSS, RED, true );
+			DispColoredData( " =>", "Unable to remove directory:",
+					PACKAGE_INSTALL_DIR + cleanupdir, RED, RED, CYAN, false );
+			DispColoredData( " !", CROSS, RED, RED, true );
+			return false;
 		}
 	}
 
-	DispColoredData( "Successfully cleaned all directories!", TICK, FIRST_COL, GREEN, true );
+	DispColoredData( TICK, GREEN, true );
 	return true;
 }
