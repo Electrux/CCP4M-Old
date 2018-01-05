@@ -176,7 +176,6 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 		DispColoredData( "\n<========================New packages========================>\n",
 				MAGENTA, true );
 		DispColoredDataLaterally( newpackages, BOLD_CYAN );
-		DispColoredData( "", FIRST_COL, true );
 	}
 
 	if( !newtimes.empty() ) {
@@ -199,7 +198,6 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 
 			HighlightInstalledPackages( updated );
 			DispColoredDataLaterally( updated, CYAN );
-			DispColoredData( "", FIRST_COL, true );
 		}
 	}
 }
