@@ -239,8 +239,6 @@ int PackageManager::Update()
 
 	if( res != 0 )
 		DispColoredData( "Updating package list failed! ", CROSS, FIRST_COL, RED, true );
-	else
-		DispColoredData( "Updating package list successful!", TICK, FIRST_COL, GREEN, true );
 
 	return res;
 }

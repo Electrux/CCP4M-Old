@@ -79,13 +79,14 @@ int UpdatePackageList()
 			DispColoredData( TICK, GREEN, true );
 		}
 	}
+	ChangeWorkingDir( cwd );
+
+	DispColoredData( "Updating package list successful!", TICK, FIRST_COL, GREEN, true );
 
 	newpkgs = ReCreatePackageUpdateTimesFile( prevupdatetimes );
 	newupdatetimes = GetPackageUpdateTimes();
 
 	DisplayUpdatedPackages( prevupdatetimes, newupdatetimes, newpkgs );
-
-	ChangeWorkingDir( cwd );
 	return 0;
 }
 
@@ -173,8 +174,9 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 {
 	if( !newpackages.empty() ) {
 		DispColoredData( "\n<========================New packages========================>\n",
-				FIRST_COL, true );
+				MAGENTA, true );
 		DispColoredDataLaterally( newpackages, BOLD_CYAN );
+		DispColoredData( "", FIRST_COL, true );
 	}
 
 	if( !newtimes.empty() ) {
@@ -193,10 +195,11 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 
 		if( !updated.empty() ) {
 			DispColoredData( "\n<======================Updated packages======================>\n",
-					FIRST_COL, true );
+					MAGENTA, true );
 
 			HighlightInstalledPackages( updated );
 			DispColoredDataLaterally( updated, CYAN );
+			DispColoredData( "", FIRST_COL, true );
 		}
 	}
 }
