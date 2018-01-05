@@ -177,8 +177,6 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 		DispColoredDataLaterally( newpackages, BOLD_CYAN );
 	}
 
-	std::cout << "Here1\n";
-
 	if( !newtimes.empty() ) {
 		std::vector< std::string > updated;
 

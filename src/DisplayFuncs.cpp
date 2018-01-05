@@ -116,6 +116,9 @@ void DispColoredDataLaterally( const std::vector< std::string > & data, const st
 	for( auto it = data.begin(); it != data.end(); ) {
 		for( int i = 0; i < wpl; ++i ) {
 
+			if( it == data.end() )
+				break;
+
 			if( i == wpl - 1 || it == data.end() - 1 )
 				DispColoredData( * it, col, true );
 			else
