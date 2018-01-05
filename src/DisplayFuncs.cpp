@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "../include/ColorDefs.hpp"
 
@@ -11,6 +14,27 @@ const std::string THIRD_COL = YELLOW;
 const std::string EXTRA_COL = MAGENTA;
 
 static int last_disp_len = 0;
+
+int GetWordsPerLine( const std::vector< std::string > & wordlist )
+{
+	int totalletters = 0;
+	for( auto word : wordlist )
+		totalletters += word.size();
+
+	// + 1 to be on safe side.
+	int avgwordlen = wordlist.empty() ? APPROX_WORD_LEN : ( ( totalletters / wordlist.size() ) + 1 );
+
+	return GetTermWidth() / ( avgwordlen + GAP_PER_WORD.size() );
+}
+
+int GetTermWidth()
+{
+	winsize w;
+
+	ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
+	// To accomodate \n, max column usable is ws_col - 1
+	return w.ws_col - 1;
+}
 
 void MoveOutputCursorBack( int & len )
 {
@@ -83,4 +107,21 @@ void DispColoredData( const std::string data, const std::string data2, const std
 	}
 
 	std::cout.flush();
+}
+
+void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string col )
+{
+	int wpl = GetWordsPerLine( data );
+
+	for( auto it = data.begin(); it != data.end(); ) {
+		for( int i = 0; i < wpl; ++i ) {
+
+			if( i == wpl - 1 || it == data.end() - 1 )
+				DispColoredData( * it, col, true );
+			else
+				DispColoredData( * it + GAP_PER_WORD, col, false );
+
+			++it;
+		}
+	}
 }

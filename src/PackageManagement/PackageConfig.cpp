@@ -63,6 +63,22 @@ bool PackageConfig::GetPackage( const std::string & packagename, Package & pkg )
 	return true;
 }
 
+std::string PackageConfig::GetPackageNameFromFile( const std::string & file )
+{
+	Electrux::INI_Parser parser;
+
+	auto res = parser.LoadFromFile( PACKAGE_LIST_DIR + file );
+
+	if( res != Electrux::SUCCESS )
+		return "";
+
+	std::string pkgname;
+
+	parser.GetDataString( "Core", "Name", pkgname );
+
+	return pkgname;
+}
+
 bool PackageConfig::HandlePkgDirs()
 {
 	if( !LocExists( PACKAGE_BASE_DIR ) && CreateDir( PACKAGE_BASE_DIR, false ) != 0 )
@@ -71,7 +87,7 @@ bool PackageConfig::HandlePkgDirs()
 	if( !LocExists( PACKAGE_LIST_DIR ) && CreateDir( PACKAGE_LIST_DIR, false ) != 0 )
 		return false;
 
-	if( !LocExists( PACKAGE_TMP ) && CreateDir( PACKAGE_TMP, false ) != 0 )
+	if( !LocExists( PACKAGE_TMP_DIR ) && CreateDir( PACKAGE_TMP_DIR, false ) != 0 )
 		return false;
 	
 	if( !LocExists( PACKAGE_INSTALL_DIR ) && CreateDir( PACKAGE_INSTALL_DIR, false ) != 0 )

@@ -8,8 +8,10 @@
 
 const std::string PACKAGE_BASE_DIR = GetHomeDir() + "/.ccp4mpkgs/";
 const std::string PACKAGE_LIST_DIR = PACKAGE_BASE_DIR + "pkgs/";
-const std::string INSTALLED_PKGS = PACKAGE_BASE_DIR + "installed_pkgs.dat";
-const std::string PACKAGE_TMP = PACKAGE_BASE_DIR + "tmp/";
+const std::string INSTALLED_PKGS_FILE = PACKAGE_BASE_DIR + "installed_pkgs.dat";
+const std::string PACKAGE_TMP_DIR = PACKAGE_BASE_DIR + "tmp/";
+
+const std::string PACKAGE_UPDATE_TIME_FILE = PACKAGE_BASE_DIR + "pkg_list.dat";
 
 const std::string PACKAGE_INSTALL_DIR = PACKAGE_BASE_DIR + "installed/";
 const std::string PACKAGE_INCLUDE_INSTALL_DIR = PACKAGE_INSTALL_DIR + "include/";

@@ -3,12 +3,23 @@
 
 #include <string>
 
+static const int APPROX_WORD_LEN = 10;
+static const std::string GAP_PER_WORD = "   ";
+
 // These constants are default colors to be used when something
 // is displayed on screen using DispColoredData().
 extern const std::string FIRST_COL;
 extern const std::string SECOND_COL;
 extern const std::string THIRD_COL;
 extern const std::string EXTRA_COL;
+
+// Fetches the maximum number of words on a line of terminal.
+// Uses average word count from wordlist.
+int GetWordsPerLine( const std::vector< std::string > & wordlist );
+
+// Fetches the current terminal width - 1.
+// -1 to accomodate newline character.
+int GetTermWidth();
 
 // This function moves back the cursor of output terminal by "len" amount.
 // It will clear all the data till the amount as well.
@@ -37,5 +48,8 @@ void DispColoredData( const std::string data, const std::string data2,
 void DispColoredData( const std::string data, const std::string data2, const std::string data3,
 		const std::string col1 = FIRST_COL, const std::string col2 = SECOND_COL, const std::string col3 = THIRD_COL,
 		bool endl = false );
+
+// Displays data in a horizontal manner depending on how big is terminal screen ( laterally ).
+void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string col = FIRST_COL );
 
 #endif // DISPLAYFUNCS_HPP

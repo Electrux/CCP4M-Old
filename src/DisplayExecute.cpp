@@ -6,8 +6,6 @@
 #include <array>
 #include <memory>
 #include <cstdio>
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 #include "../include/Paths.hpp"
 #include "../include/StringFuncs.hpp"
@@ -37,7 +35,6 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 	std::string brackets = "[  ]";
 	std::string continuation = " ...";
 
-	winsize w;
 	int term_width;
 
 	while( !feof( pipe ) ) {
@@ -47,9 +44,8 @@ int DispExecute( std::string cmd, std::string & err, bool show_output, bool crea
 
 			TrimString( opline );
 
-			ioctl( STDOUT_FILENO, TIOCGWINSZ, & w );
-			// To accomodate \n, max column usable is ws_col - 1
-			term_width = w.ws_col - 1;
+			// Fetches term width - 1 to accomodate for newline char.
+			term_width = GetTermWidth();
 
 			if( current_disp_len + brackets.size() + opline.size() >= term_width ) {
 				// the size to work with is:

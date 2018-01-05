@@ -11,8 +11,12 @@
 // Tmp -> Directory in which the downloaded and extracted package files are stored.
 extern const std::string PACKAGE_BASE_DIR;
 extern const std::string PACKAGE_LIST_DIR;
-extern const std::string INSTALLED_PKGS;
-extern const std::string PACKAGE_TMP;
+extern const std::string INSTALLED_PKGS_FILE;
+extern const std::string PACKAGE_TMP_DIR;
+
+// This file stores the list of packages and their last updated times,
+// to show which packages have been updated when pkg update is called.
+extern const std::string PACKAGE_UPDATE_TIME_FILE;
 
 // These constants are generic replacements for Includes and Libraries
 // in project configurations.

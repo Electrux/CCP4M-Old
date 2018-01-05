@@ -294,12 +294,12 @@ bool CreatePackageDir( const Package & pkg, bool verbose )
 
 std::string GetPackageDir( const Package & pkg )
 {
-	return PACKAGE_TMP + pkg.name;
+	return PACKAGE_TMP_DIR + pkg.name;
 }
 
 std::string GetPackageVersionDir( const Package & pkg )
 {
-	return PACKAGE_TMP + pkg.name + "/" + pkg.version;
+	return PACKAGE_TMP_DIR + pkg.name + "/" + pkg.version;
 }
 
 bool RemoveCopiedData( const Package & pkg, std::vector< std::string > & data )

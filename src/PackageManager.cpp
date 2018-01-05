@@ -180,7 +180,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	if( !InstallEntryExists( pkg ) ) {
 		std::fstream file;
-		file.open( INSTALLED_PKGS, std::ios::app );
+		file.open( INSTALLED_PKGS_FILE, std::ios::app );
 
 		file << package << std::endl;
 
@@ -256,10 +256,10 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 	// Remove all files if package is binary since their installation information
 	// has already been stored in the saved file.
 	if( pkg.type == "Binary" || allfiles ) {
-		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file + " " + GetPackageVersionDir( pkg );
+		rmcmd = "rm -rf " + PACKAGE_TMP_DIR + pkg.file + " " + GetPackageVersionDir( pkg );
 	}
 	else {
-		rmcmd = "rm -rf " + PACKAGE_TMP + pkg.file;
+		rmcmd = "rm -rf " + PACKAGE_TMP_DIR + pkg.file;
 	}
 
 	if( DispExecuteNoErr( rmcmd, false ) != 0 ) {
@@ -269,7 +269,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 	}
 	else {
 		std::vector< DirFile > temp;
-		if( GetWildCardFilesInDir( PACKAGE_TMP + pkg.name, temp, "*" ) <= 0 ) {
+		if( GetWildCardFilesInDir( PACKAGE_TMP_DIR + pkg.name, temp, "*" ) <= 0 ) {
 
 			DispColoredData( TICK, GREEN, true );
 			DispColoredData( "Removing parent directory ... " );
@@ -288,14 +288,14 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 
 bool PackageManager::InstallEntryExists( const Package & pkg )
 {
-	if( !LocExists( INSTALLED_PKGS ) ) {
+	if( !LocExists( INSTALLED_PKGS_FILE ) ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Installed package list does not exist!", RED, true );
 		return false;
 	}
 
 	std::fstream file;
-	file.open( INSTALLED_PKGS, std::ios::in );
+	file.open( INSTALLED_PKGS_FILE, std::ios::in );
 
 	if( !file ) {
 		DispColoredData( CROSS, RED, true );
@@ -320,14 +320,14 @@ bool PackageManager::InstallEntryExists( const Package & pkg )
 
 bool PackageManager::RemoveInstallEntry( const Package & pkg )
 {
-	if( !LocExists( INSTALLED_PKGS ) ) {
+	if( !LocExists( INSTALLED_PKGS_FILE ) ) {
 		DispColoredData( CROSS, RED, true );
 		DispColoredData( "Error: Installed package list does not exist!", RED, true );
 		return false;
 	}
 
 	std::fstream file;
-	file.open( INSTALLED_PKGS, std::ios::in );
+	file.open( INSTALLED_PKGS_FILE, std::ios::in );
 
 	if( !file ) {
 		DispColoredData( CROSS, RED, true );
@@ -349,7 +349,7 @@ bool PackageManager::RemoveInstallEntry( const Package & pkg )
 
 	file.close();
 
-	file.open( INSTALLED_PKGS, std::ios::out );
+	file.open( INSTALLED_PKGS_FILE, std::ios::out );
 
 	if( !file ) {
 		DispColoredData( CROSS, RED, true );
@@ -392,9 +392,9 @@ int PackageManager::IsInstalled( std::string package )
 		return 1;
 	}
 
-	if( !LocExists( INSTALLED_PKGS ) ) {
+	if( !LocExists( INSTALLED_PKGS_FILE ) ) {
 		std::fstream file;
-		file.open( INSTALLED_PKGS, std::ios::out );
+		file.open( INSTALLED_PKGS_FILE, std::ios::out );
 		if( !file ) {
 			DispColoredData( CROSS, RED, true );
 			DispColoredData( "Error: Unable to create installed packages list!", RED, true );
@@ -406,7 +406,7 @@ int PackageManager::IsInstalled( std::string package )
 	}
 
 	std::fstream file;
-	file.open( INSTALLED_PKGS, std::ios::in );
+	file.open( INSTALLED_PKGS_FILE, std::ios::in );
 
 	if( !file ) {
 		DispColoredData( CROSS, RED, true );

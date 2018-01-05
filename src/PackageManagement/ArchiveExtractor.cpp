@@ -13,7 +13,7 @@
 
 bool ExtractArchive( const Package & pkg )
 {
-	std::string archive = PACKAGE_TMP + pkg.file;
+	std::string archive = PACKAGE_TMP_DIR + pkg.file;
 
 	std::string taroptions = GetTarOptions( pkg );
 	if( taroptions.empty() ) {

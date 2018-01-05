@@ -23,6 +23,10 @@ public:
 	// the information of that package.
 	static bool GetPackage( const std::string & packagename, Package & pkg );
 
+	// Fetches the name of package from the file of it.
+	// Used primarily in PackageListUpdater.
+	static std::string GetPackageNameFromFile( const std::string & file );
+
 	// Creates relevant directories for the package manager, in $HOME.
 	static bool HandlePkgDirs();
 };
