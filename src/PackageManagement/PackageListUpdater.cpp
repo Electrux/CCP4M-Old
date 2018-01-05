@@ -148,7 +148,7 @@ std::vector< std::string > ReCreatePackageUpdateTimesFile( const std::map< std::
 	}
 
 	for( auto pkgifile : pkgifiles ) {
-		long long lastmodtime = GetLastModifiedTime( pkgifile.file );
+		long long lastmodtime = GetLastModifiedTime( PACKAGE_LIST_DIR + pkgifile.file );
 		std::string pkgname = PackageConfig::GetPackageNameFromFile( pkgifile.file );
 
 		newpkgs.push_back( pkgname );
