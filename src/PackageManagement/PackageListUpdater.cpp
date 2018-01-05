@@ -47,7 +47,7 @@ int UpdatePackageList()
 
 	std::map< std::string, long long > prevupdatetimes = GetPackageUpdateTimes();
 	std::map< std::string, long long > newupdatetimes;
-	std::vector< std::string > newpkgs;
+	std::vector< std::string > newpkgs, removedpkgs;
 
 	if( IsDirEmpty( PACKAGE_LIST_DIR ) ) {
 		DispColoredData( "Cloning list repository to:", PACKAGE_LIST_DIR, "... ",
@@ -83,10 +83,11 @@ int UpdatePackageList()
 
 	DispColoredData( "Updating package list successful!", TICK, FIRST_COL, GREEN, true );
 
+	removedpkgs = GetRemovedPackages( prevupdatetimes );
 	newpkgs = ReCreatePackageUpdateTimesFile( prevupdatetimes );
 	newupdatetimes = GetPackageUpdateTimes();
 
-	DisplayUpdatedPackages( prevupdatetimes, newupdatetimes, newpkgs );
+	DisplayUpdatedPackages( prevupdatetimes, newupdatetimes, newpkgs, removedpkgs );
 	return 0;
 }
 
@@ -120,7 +121,7 @@ std::map< std::string, long long > GetPackageUpdateTimes()
 	return times;
 }
 
-std::vector< std::string > ReCreatePackageUpdateTimesFile( std::map< std::string, long long > & prevupdatetimes )
+std::vector< std::string > ReCreatePackageUpdateTimesFile( const std::map< std::string, long long > & prevupdatetimes )
 {
 	std::vector< std::string > newpkgs;
 
@@ -168,9 +169,23 @@ std::vector< std::string > ReCreatePackageUpdateTimesFile( std::map< std::string
 	return newpkgs;
 }
 
+std::vector< std::string > GetRemovedPackages( const std::map< std::string, long long > & prevupdatetimes )
+{
+	std::vector< std::string > removed;
+	for( auto file : prevupdatetimes ) {
+		Package pkg;
+
+		if( !PackageConfig::GetPackage( file.first, pkg ) )
+			removed.push_back( file.first );
+	}
+
+	return removed;
+}
+
 void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtimes,
 			const std::map< std::string, long long > & newtimes,
-			const std::vector< std::string > & newpackages )
+			const std::vector< std::string > & newpackages,
+			const std::vector< std::string > & removedpkgs )
 {
 	if( !newpackages.empty() ) {
 		DispColoredData( "\n<========================New packages========================>\n",
@@ -199,6 +214,12 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 			HighlightInstalledPackages( updated );
 			DispColoredDataLaterally( updated, CYAN );
 		}
+	}
+
+	if( !removedpkgs.empty() ) {
+		DispColoredData( "\n<=========================Removed packages=========================>\n",
+				MAGENTA, true );
+		DispColoredDataLaterally( removedpkgs, CYAN );
 	}
 }
 

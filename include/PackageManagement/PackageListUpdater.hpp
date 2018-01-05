@@ -22,12 +22,16 @@ std::map< std::string, long long > GetPackageUpdateTimes();
 // Will overwrite previous one if one exists.
 // prevupdatetimes defines packages already existing ( in this context ).
 // So, those packages won't be included.
-std::vector< std::string > ReCreatePackageUpdateTimesFile( std::map< std::string, long long > & prevupdatetimes );
+std::vector< std::string > ReCreatePackageUpdateTimesFile( const std::map< std::string, long long > & prevupdatetimes );
 
-// Display all the packages that are updated or new.
+// Get packages which have been removed in last update.
+std::vector< std::string > GetRemovedPackages( const std::map< std::string, long long > & prevupdatetimes );
+
+// Display all the packages that are updated, new, or removed.
 void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtimes,
 			const std::map< std::string, long long > & newtimes,
-			const std::vector< std::string > & newpackages );
+			const std::vector< std::string > & newpackages,
+			const std::vector< std::string > & removedpkgs );
 
 // Mark the installed packages from allpkgs with a different color and tick.
 void HighlightInstalledPackages( std::vector< std::string > & allpkgs );
