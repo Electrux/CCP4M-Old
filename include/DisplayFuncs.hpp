@@ -2,6 +2,7 @@
 #define DISPLAYFUNCS_HPP
 
 #include <string>
+#include <vector>
 
 static const int APPROX_WORD_LEN = 10;
 static const std::string GAP_PER_WORD = "   ";
