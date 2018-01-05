@@ -97,10 +97,8 @@ std::map< std::string, long long > GetPackageUpdateTimes()
 
 	file.open( PACKAGE_UPDATE_TIME_FILE, std::ios::in );
 
-	if( !file ) {
-		DispColoredData( "Error: Unable to open package update time file for reading!", CROSS, RED, RED, true );
+	if( !file )
 		return times;
-	}
 	
 	std::string line;
 
@@ -174,9 +172,8 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 			const std::vector< std::string > & newpackages )
 {
 	if( !newpackages.empty() ) {
-		DispColoredData( "\n<========================New packages========================>",
+		DispColoredData( "\n<========================New packages========================>\n",
 				FIRST_COL, true );
-
 		DispColoredDataLaterally( newpackages, BOLD_CYAN );
 	}
 
@@ -195,7 +192,7 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 		}
 
 		if( !updated.empty() ) {
-			DispColoredData( "\n<======================Updated packages======================>",
+			DispColoredData( "\n<======================Updated packages======================>\n",
 					FIRST_COL, true );
 
 			HighlightInstalledPackages( updated );
