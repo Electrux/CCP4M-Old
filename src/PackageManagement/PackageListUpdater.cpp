@@ -190,7 +190,7 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 	if( !newpackages.empty() ) {
 		DispColoredData( "\n<========================New packages========================>\n",
 				MAGENTA, true );
-		DispColoredDataLaterally( newpackages, BOLD_CYAN );
+		DispColoredDataLaterally( newpackages, BOLD_GREEN );
 	}
 
 	if( !newtimes.empty() ) {
@@ -212,14 +212,14 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 					MAGENTA, true );
 
 			HighlightInstalledPackages( updated );
-			DispColoredDataLaterally( updated, CYAN );
+			DispColoredDataLaterally( updated, BOLD_CYAN );
 		}
 	}
 
 	if( !removedpkgs.empty() ) {
 		DispColoredData( "\n<=========================Removed packages=========================>\n",
 				MAGENTA, true );
-		DispColoredDataLaterally( removedpkgs, CYAN );
+		DispColoredDataLaterally( removedpkgs, BOLD_CYAN );
 	}
 }
 
@@ -245,7 +245,7 @@ void HighlightInstalledPackages( std::vector< std::string > & allpkgs )
 		if( loc == allpkgs.end() )
 			continue;
 		
-		* loc = BOLD_CYAN + * loc + " " + GREEN + TICK;
+		* loc = BOLD_GREEN + * loc + " " + GREEN + TICK;
 	}
 
 	file.close();
