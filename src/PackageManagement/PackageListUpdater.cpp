@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <algorithm>
 
 #include "../../include/CoreData.hpp"
 #include "../../include/ColorDefs.hpp"
