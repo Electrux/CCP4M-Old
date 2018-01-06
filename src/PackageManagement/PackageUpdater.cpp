@@ -213,8 +213,9 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 			DispColoredData( "\n<======================Updated packages======================>\n",
 					MAGENTA, true );
 
-			HighlightInstalledPackages( updated );
-			DispColoredDataLaterally( updated, BOLD_CYAN );
+			std::vector< std::string > update_modded = updated;
+			HighlightInstalledPackages( update_modded );
+			DispColoredDataLaterally( update_modded, BOLD_CYAN );
 		}
 	}
 

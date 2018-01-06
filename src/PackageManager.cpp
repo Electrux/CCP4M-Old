@@ -236,7 +236,7 @@ int PackageManager::UninstallPackage( std::string package )
 
 int PackageManager::Update()
 {
-	DispColoredData( "Starting update of packages ... ", TICK, FIRST_COL, GREEN, true );
+	DispColoredData( "Starting update of packages ...", TICK, FIRST_COL, GREEN, true );
 
 	int res = UpdatePackageList( * this );
 
