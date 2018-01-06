@@ -222,6 +222,9 @@ int PackageManager::UninstallPackage( std::string package )
 		DispColoredData( TICK, GREEN, true );
 	}
 
+	auto installed = GetInstalledPackages();
+	pkg.version = installed[ pkg.name ];
+
 	if( !UninstallArchive( pkg ) ) {
 		DispColoredData( "Uninstallation failed!", CROSS, FIRST_COL, RED, true );
 		return 1;
