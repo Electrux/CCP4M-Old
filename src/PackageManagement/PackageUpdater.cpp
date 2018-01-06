@@ -225,24 +225,25 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 	}
 
 	if( !updated.empty() ) {
-		DispColoredData( "\nRemoving old packages ...", FIRST_COL, true );
+		DispColoredData( "\nRemoving old packages ...\n", FIRST_COL, true );
 
 		int res = 0;
+		std::vector< std::string > toinstall;
 
 		for( auto upd : updated ) {
 			if( mgr.IsInstalled( upd ) == 0 ) {
 				res = mgr.UninstallPackage( upd );
 				if( res != 0 )
 					break;
+				toinstall.push_back( upd );
 			}
 		}
-		if( res != 0 ) {
-			DispColoredData( "Unable to uninstall packages. Not upgrading!", CROSS, RED, RED, true );
-		}
+		if( res != 0 )
+			DispColoredData( "Unable to uninstall old packages! Continuing ...", TICK, RED, RED, true );
 
-		DispColoredData( "\nInstalling new packages ...", FIRST_COL, true );
+		DispColoredData( "\nInstalling new packages ...\n", FIRST_COL, true );
 
-		mgr.InstallMultiplePackages( updated );
+		mgr.InstallMultiplePackages( toinstall );
 	}
 
 	if( !removedpkgs.empty() ) {
@@ -277,8 +278,8 @@ void HighlightInstalledPackages( std::vector< std::string > & allpkgs )
 
 	while( std::getline( file, line ) ) {
 		TrimString( line );
-
-		auto loc = std::find( allpkgs.begin(), allpkgs.end(), line );
+		auto vec = DelimStringToVector( line );
+		auto loc = std::find( allpkgs.begin(), allpkgs.end(), vec[ 0 ] );
 
 		if( loc == allpkgs.end() )
 			continue;

@@ -137,6 +137,9 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	DispColoredData( "Checking already installed ... " );
 	int res = IsInstalled( package );
+	if( res == 0 )
+		DispColoredData( TICK, GREEN, true );
+
 	if( forceinstall ) {
 		DispColoredData( "Forcing installation! This may produce unintended results!", TICK, RED, RED, true );
 	}
@@ -214,6 +217,9 @@ int PackageManager::UninstallPackage( std::string package )
 	if( res == 1 ) {
 		DispColoredData( "Package not installed!\nNothing to remove!", CROSS, FIRST_COL, RED, true );
 		return 1;
+	}
+	else {
+		DispColoredData( TICK, GREEN, true );
 	}
 
 	if( !UninstallArchive( pkg ) ) {
@@ -435,8 +441,6 @@ int PackageManager::IsInstalled( std::string package )
 	}
 
 	file.close();
-
-	DispColoredData( TICK, GREEN, true );
 
 	return !found;
 }
