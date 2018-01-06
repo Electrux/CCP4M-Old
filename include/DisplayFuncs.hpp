@@ -40,17 +40,17 @@ int GetLastDispLen();
 // displen variable. displen variable is incremented by the size of data.
 // But if endl is true, displen is reset to 0.
 // The overloads provide multiple strings and respective colors support.
-void DispColoredData( const std::string data, const std::string col = FIRST_COL, bool endl = false );
+void DispColoredData( const std::string & data, const std::string & col = FIRST_COL, bool endl = false );
 
-void DispColoredData( const std::string data, const std::string data2,
-		const std::string col1 = FIRST_COL, const std::string col2 = SECOND_COL,
+void DispColoredData( const std::string & data, const std::string & data2,
+		const std::string & col1 = FIRST_COL, const std::string & col2 = SECOND_COL,
 		bool endl = false );
 
-void DispColoredData( const std::string data, const std::string data2, const std::string data3,
-		const std::string col1 = FIRST_COL, const std::string col2 = SECOND_COL, const std::string col3 = THIRD_COL,
+void DispColoredData( const std::string & data, const std::string & data2, const std::string & data3,
+		const std::string & col1 = FIRST_COL, const std::string & col2 = SECOND_COL, const std::string & col3 = THIRD_COL,
 		bool endl = false );
 
 // Displays data in a horizontal manner depending on how big is terminal screen ( laterally ).
-void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string col = FIRST_COL );
+void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string & col = FIRST_COL );
 
 #endif // DISPLAYFUNCS_HPP

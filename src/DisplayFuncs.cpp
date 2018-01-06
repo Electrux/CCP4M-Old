@@ -64,7 +64,7 @@ int GetLastDispLen()
 	return last_disp_len;
 }
 
-void DispColoredData( const std::string data, const std::string col, bool endl )
+void DispColoredData( const std::string & data, const std::string & col, bool endl )
 {
 	last_disp_len += data.size();
 
@@ -78,7 +78,8 @@ void DispColoredData( const std::string data, const std::string col, bool endl )
 	std::cout.flush();
 }
 
-void DispColoredData( const std::string data, const std::string data2, const std::string col1, const std::string col2, bool endl )
+void DispColoredData( const std::string & data, const std::string & data2,
+		const std::string & col1, const std::string & col2, bool endl )
 {
 	// + 1 because of space
 	last_disp_len += data.size() + data2.size() + 1;
@@ -93,8 +94,8 @@ void DispColoredData( const std::string data, const std::string data2, const std
 	std::cout.flush();
 }
 
-void DispColoredData( const std::string data, const std::string data2, const std::string data3,
-		const std::string col1, const std::string col2, const std::string col3, bool endl )
+void DispColoredData( const std::string & data, const std::string & data2, const std::string & data3,
+		const std::string & col1, const std::string & col2, const std::string & col3, bool endl )
 {
 	// + 2 because of spaces
 	last_disp_len += data.size() + data2.size() + data3.size() + 2;
@@ -109,7 +110,7 @@ void DispColoredData( const std::string data, const std::string data2, const std
 	std::cout.flush();
 }
 
-void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string col )
+void DispColoredDataLaterally( const std::vector< std::string > & data, const std::string & col )
 {
 	int wpl = GetWordsPerLine( data );
 
