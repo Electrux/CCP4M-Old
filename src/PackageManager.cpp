@@ -21,7 +21,7 @@
 #include "../include/PackageManagement/PackageBuilder.hpp"
 #include "../include/PackageManagement/PackageInstaller.hpp"
 #include "../include/PackageManagement/PackageUninstaller.hpp"
-#include "../include/PackageManagement/PackageListUpdater.hpp"
+#include "../include/PackageManagement/PackageUpdater.hpp"
 
 #include "../include/PackageManager.hpp"
 
@@ -178,14 +178,15 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	RemoveTempFiles( pkg );
 
-	if( !InstallEntryExists( pkg ) ) {
-		std::fstream file;
-		file.open( INSTALLED_PKGS_FILE, std::ios::app );
+	if( InstallEntryExists( pkg ) )
+		RemoveInstallEntry( pkg );
 
-		file << package << std::endl;
+	std::fstream file;
+	file.open( INSTALLED_PKGS_FILE, std::ios::app );
 
-		file.close();
-	}
+	file << package << "," << pkg.version << std::endl;
+
+	file.close();
 
 	DispColoredData( "Installation successful!", TICK, BOLD_YELLOW, BOLD_GREEN, true );
 	return 0;
@@ -233,12 +234,12 @@ int PackageManager::UninstallPackage( std::string package )
 
 int PackageManager::Update()
 {
-	DispColoredData( "Starting update of package lists ... ", TICK, FIRST_COL, SECOND_COL, true );
+	DispColoredData( "Starting update of packages ... ", TICK, FIRST_COL, GREEN, true );
 
-	int res = UpdatePackageList();
+	int res = UpdatePackageList( * this );
 
 	if( res != 0 )
-		DispColoredData( "Updating package list failed! ", CROSS, FIRST_COL, RED, true );
+		DispColoredData( "Updating packages failed! ", CROSS, FIRST_COL, RED, true );
 
 	return res;
 }
@@ -304,8 +305,12 @@ bool PackageManager::InstallEntryExists( const Package & pkg )
 	std::string line;
 
 	while( std::getline( file, line ) ) {
+		if( line.empty() || line == "\n" )
+			continue;
+
 		TrimString( line );
-		if( line == pkg.name ) {
+		auto vec = DelimStringToVector( line );
+		if( vec[ 0 ] == pkg.name ) {
 			file.close();
 			return true;
 		}
@@ -338,8 +343,12 @@ bool PackageManager::RemoveInstallEntry( const Package & pkg )
 	std::vector< std::string > output;
 
 	while( std::getline( file, line ) ) {
+		if( line.empty() || line == "\n" )
+			continue;
+
 		TrimString( line );
-		if( line == pkg.name || line.empty() || line == "\n" ) {
+		auto vec = DelimStringToVector( line );
+		if( vec[ 0 ] == pkg.name ) {
 			continue;
 		}
 		output.push_back( line );
@@ -417,7 +426,11 @@ int PackageManager::IsInstalled( std::string package )
 	bool found = false;
 
 	while( std::getline( file, line ) ) {
-		if( !line.empty() && line.find( package ) != std::string::npos ) {
+		if( line.empty() || line == "\n" )
+			continue;
+
+		auto vec = DelimStringToVector( line );
+		if( vec[ 0 ] == package ) {
 			found = true;
 			break;
 		}
@@ -428,6 +441,45 @@ int PackageManager::IsInstalled( std::string package )
 	DispColoredData( TICK, GREEN, true );
 
 	return !found;
+}
+
+std::map< std::string, std::string > PackageManager::GetInstalledPackages()
+{
+	std::map< std::string, std::string > list;
+
+	if( !LocExists( INSTALLED_PKGS_FILE ) ) {
+		std::fstream file;
+		file.open( INSTALLED_PKGS_FILE, std::ios::out );
+		if( !file ) {
+			DispColoredData( "Error: Unable to create installed packages list!", RED, true );
+			return list;
+		}
+		file.close();
+
+		return list;
+	}
+
+	std::fstream file;
+	file.open( INSTALLED_PKGS_FILE, std::ios::in );
+
+	if( !file ) {
+		DispColoredData( "Error: Unable to open package list to read!", RED, true );
+		return list;
+	}
+
+	std::string line;
+
+	while( std::getline( file, line ) ) {
+		if( line.empty() || line == "\n" )
+			continue;
+
+		auto vec = DelimStringToVector( line );
+		list[ vec[ 0 ] ] = vec[ 1 ];
+	}
+
+	file.close();
+
+	return list;
 }
 
 int PackageManager::GetInfo( std::string package )

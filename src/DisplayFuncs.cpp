@@ -72,7 +72,7 @@ void DispColoredData( const std::string & data, const std::string & col, bool en
 
 	if( endl ) {
 		last_disp_len = 0;
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
 
 	std::cout.flush();
@@ -88,7 +88,7 @@ void DispColoredData( const std::string & data, const std::string & data2,
 
 	if( endl ) {
 		last_disp_len = 0;
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
 
 	std::cout.flush();
@@ -104,7 +104,7 @@ void DispColoredData( const std::string & data, const std::string & data2, const
 
 	if( endl ) {
 		last_disp_len = 0;
-		std::cout << std::endl;
+		std::cout << "\n";
 	}
 
 	std::cout.flush();

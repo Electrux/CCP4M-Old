@@ -1,4 +1,8 @@
+#ifndef PACKAGEMANAGER_HPP
+#define PACKAGEMANAGER_HPP
+
 #include <string>
+#include <map>
 
 #include "PackageManagement/PackageData.hpp"
 
@@ -49,7 +53,8 @@ public:
 	// Returns 0 on success, anything else if not.
 	int UninstallPackage( std::string package );
 
-	// Updates the package list by calling UpdatePackageList().
+	// Updates the package list by calling UpdatePackageList()
+	// and upgrades/removes packages accordingly.
 	// Returns 0 on success, anything else if not.
 	int Update();
 
@@ -86,7 +91,13 @@ public:
 	//	-1 - Unmanageable -> package is installed from somewhere else.
 	int IsInstalled( std::string packge );
 
+	// Gets name and version of packages installed.
+	// Empty if any error occurs.
+	std::map< std::string, std::string > GetInstalledPackages();
+
 	// Displays the information of a package.
 	// Returns 0 on success, anything else if not.
 	int GetInfo( std::string package );
 };
+
+#endif // PACKAGEMANAGER_HPP

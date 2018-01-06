@@ -13,10 +13,12 @@
 #include "../../include/DisplayFuncs.hpp"
 #include "../../include/DisplayExecute.hpp"
 
-#include "../../include/PackageManagement/PackageConfig.hpp"
-#include "../../include/PackageManagement/PackageListUpdater.hpp"
+#include "../../include/PackageManager.hpp"
 
-int UpdatePackageList()
+#include "../../include/PackageManagement/PackageConfig.hpp"
+#include "../../include/PackageManagement/PackageUpdater.hpp"
+
+int UpdatePackageList( PackageManager & mgr )
 {
 	if( !PackageConfig::HandlePkgDirs() ) {
 		DispColoredData( "Unable to create/manipulate the configuration directories! Check permissions!",
@@ -87,7 +89,7 @@ int UpdatePackageList()
 	newpkgs = ReCreatePackageUpdateTimesFile( prevupdatetimes );
 	newupdatetimes = GetPackageUpdateTimes();
 
-	DisplayUpdatedPackages( prevupdatetimes, newupdatetimes, newpkgs, removedpkgs );
+	UpdatePackages( mgr, prevupdatetimes, newupdatetimes, newpkgs, removedpkgs );
 	return 0;
 }
 
@@ -182,7 +184,7 @@ std::vector< std::string > GetRemovedPackages( const std::map< std::string, long
 	return removed;
 }
 
-void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtimes,
+void UpdatePackages( PackageManager & mgr, const std::map< std::string, long long > & prevtimes,
 			const std::map< std::string, long long > & newtimes,
 			const std::vector< std::string > & newpackages,
 			const std::vector< std::string > & removedpkgs )
@@ -193,9 +195,9 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 		DispColoredDataLaterally( newpackages, BOLD_GREEN );
 	}
 
-	if( !newtimes.empty() ) {
-		std::vector< std::string > updated;
+	std::vector< std::string > updated;
 
+	if( !newtimes.empty() ) {
 		for( auto newtime : newtimes ) {
 			auto loc = prevtimes.find( newtime.first );
 
@@ -220,6 +222,44 @@ void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtime
 		DispColoredData( "\n<=========================Removed packages=========================>\n",
 				MAGENTA, true );
 		DispColoredDataLaterally( removedpkgs, BOLD_CYAN );
+	}
+
+	DispColoredData( "Applying changes to installed packages ...", FIRST_COL, true );
+
+	if( !updated.empty() ) {
+		DispColoredData( "\nRemoving old packages ...", FIRST_COL, true );
+
+		int res = 0;
+
+		for( auto upd : updated ) {
+			if( mgr.IsInstalled( upd ) ) {
+				res = mgr.UninstallPackage( upd );
+				if( res != 0 )
+					break;
+			}
+		}
+		if( res != 0 ) {
+			DispColoredData( "Unable to uninstall packages. Not upgrading!", CROSS, RED, RED, true );
+		}
+
+		DispColoredData( "\nInstalling new packages ...", FIRST_COL, true );
+
+		mgr.InstallMultiplePackages( updated );
+	}
+
+	if( !removedpkgs.empty() ) {
+		DispColoredData( "\nRemoving deprecated packages ...", FIRST_COL, true );
+		int res = 0;
+		for( auto rem : removedpkgs ) {
+			if( mgr.IsInstalled( rem ) ) {
+				res = mgr.UninstallPackage( rem );
+				if( res != 0 )
+					break;
+			}
+		}
+		if( res != 0 ) {
+			DispColoredData( "Unable to remove deprecated packages!", CROSS, RED, RED, true );
+		}
 	}
 }
 

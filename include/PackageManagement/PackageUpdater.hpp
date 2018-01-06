@@ -1,6 +1,12 @@
 #ifndef PACKAGELISTUPDATER_HPP
 #define PACKAGELISTUPDATER_HPP
 
+#include <string>
+#include <vector>
+#include <map>
+
+#include "../PackageManager.hpp"
+
 // This function is used when
 //	ccp4m pkg update
 // command is used.
@@ -12,7 +18,7 @@
 // It will clone the original repository if there exists no repository locally,
 // or it will pull the latest changes the the already existing local repository.
 // Returns 0 on success, anything else on failure.
-int UpdatePackageList();
+int UpdatePackageList( PackageManager & mgr );
 
 // This function fetches last updated time of all packages,
 // in terms of UNIX Epoch time.
@@ -28,7 +34,8 @@ std::vector< std::string > ReCreatePackageUpdateTimesFile( const std::map< std::
 std::vector< std::string > GetRemovedPackages( const std::map< std::string, long long > & prevupdatetimes );
 
 // Display all the packages that are updated, new, or removed.
-void DisplayUpdatedPackages( const std::map< std::string, long long > & prevtimes,
+// and upgrade/remove them accordingly.
+void UpdatePackages( PackageManager & mgr, const std::map< std::string, long long > & prevtimes,
 			const std::map< std::string, long long > & newtimes,
 			const std::vector< std::string > & newpackages,
 			const std::vector< std::string > & removedpkgs );

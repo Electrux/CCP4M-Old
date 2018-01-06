@@ -89,7 +89,7 @@ bool CopyFiles( const Package & pkg,
 	int prevsize = 0;
 
 	if( !copyfiles[ key ].empty() ) {
-		DispColoredData( "Copying " + dispval + " files ... " );
+		DispColoredData( " =>", "Copying " + dispval + " files ... ", SECOND_COL, FIRST_COL, false );
 	
 		std::string cpinput, cpoutput;
 
