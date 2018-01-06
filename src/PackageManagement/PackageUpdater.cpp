@@ -224,8 +224,6 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 		DispColoredDataLaterally( removedpkgs, BOLD_CYAN );
 	}
 
-	DispColoredData( "Applying changes to installed packages ...", FIRST_COL, true );
-
 	if( !updated.empty() ) {
 		DispColoredData( "\nRemoving old packages ...", FIRST_COL, true );
 

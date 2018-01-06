@@ -58,7 +58,14 @@ bool UninstallArchive( const Package & pkg )
 	int res;
 	std::string errors;
 
-	res = DispExecute( "make uninstall", errors );
+	std::string make;
+
+	if( pkg.buildmode.find( "cmake" ) != std::string::npos )
+		make = "make -C ./build/ uninstall";
+	else
+		make = "make uninstall";
+
+	res = DispExecute( make, errors );
 
 	if( res != 0 ) {
 		DispColoredData( CROSS, RED, true );
