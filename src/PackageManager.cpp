@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
 
 #include "../include/CoreData.hpp"
 #include "../include/ColorDefs.hpp"
@@ -225,7 +222,6 @@ int PackageManager::UninstallPackage( std::string package )
 	}
 
 	DispColoredData( "Removing all temporary files ... " );
-
 	RemoveTempFiles( pkg, true );
 
 	DispColoredData( "Removing installation entry ... " );
@@ -267,19 +263,21 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 		return false;
 	}
 	else {
+		DispColoredData( TICK, GREEN, true );
+
 		std::vector< DirFile > temp;
 		if( GetWildCardFilesInDir( PACKAGE_TMP_DIR + pkg.name, temp, "*" ) <= 0 ) {
+			DispColoredData( "Removing parent directory ... ", FIRST_COL, false );
 
-			DispColoredData( TICK, GREEN, true );
-			DispColoredData( "Removing parent directory ...", GetPackageDir( pkg ), FIRST_COL, SECOND_COL, false );
-
-			if( LocExists( GetPackageDir( pkg ) ) && DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
+			if( DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
 				DispColoredData( CROSS, RED, true );
 				DispColoredData( "Removing parent directory: " + GetPackageDir( pkg ) + " failed...",
 						"Continuing... ", FIRST_COL, FIRST_COL, true );
 			}
+			else {
+				DispColoredData( TICK, GREEN, true );
+			}
 		}
-		DispColoredData( TICK, GREEN, true );
 	}
 
 	return true;

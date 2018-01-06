@@ -75,15 +75,15 @@ bool UninstallArchive( const Package & pkg )
 			ChangeWorkingDir( cwd );
 			return false;
 		}
-		ChangeWorkingDir( cwd );
-		return true;
 	}
 	else {
 		DispColoredData( TICK, GREEN, true );
 	}
-	
-	if( pkg.cleanupdirs.empty() )
+
+	if( pkg.cleanupdirs.empty() ) {
+		ChangeWorkingDir( cwd );
 		return true;
+	}
 
 	DispColoredData( " =>", "Cleaning directories up ... ", SECOND_COL, FIRST_COL, false );
 	auto cleanupdirs = DelimStringToVector( pkg.cleanupdirs );
