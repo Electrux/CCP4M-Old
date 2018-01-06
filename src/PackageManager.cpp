@@ -273,7 +273,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 			DispColoredData( TICK, GREEN, true );
 			DispColoredData( "Removing parent directory ... " );
 
-			if( DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
+			if( LocExists( GetPackageDir( pkg ) ) && DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
 				DispColoredData( CROSS, RED, true );
 				DispColoredData( "Removing parent directory: " + GetPackageDir( pkg ) + " failed...",
 						"Continuing... ", FIRST_COL, FIRST_COL, true );
