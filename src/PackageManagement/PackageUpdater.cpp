@@ -231,8 +231,16 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 		int res = 0;
 		std::vector< std::string > toinstall;
 
+		auto installed = mgr.GetInstalledPackages();
+
 		for( auto upd : updated ) {
-			if( mgr.IsInstalled( upd ) == 0 ) {
+			if( installed.find( upd ) != installed.end() ) {
+				Package pkg;
+				PackageConfig::GetPackage( upd, pkg );
+
+				if( IsVersionNewer( installed[ upd ], pkg.version ) )
+					continue;
+
 				res = mgr.UninstallPackage( upd );
 				if( res != 0 )
 					break;
@@ -289,4 +297,13 @@ void HighlightInstalledPackages( std::vector< std::string > & allpkgs )
 	}
 
 	file.close();
+}
+
+bool IsVersionNewer( const std::string & first, const std::string & second )
+{
+	std::string one = first, two = second;
+	ReplaceInString( one, ".", "" );
+	ReplaceInString( two, ".", "" );
+
+	return std::stoll( one ) > std::stoll( two );
 }

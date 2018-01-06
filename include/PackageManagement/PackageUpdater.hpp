@@ -43,4 +43,8 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 // Mark the installed packages from allpkgs with a different color and tick.
 void HighlightInstalledPackages( std::vector< std::string > & allpkgs );
 
+// Checks if the version in first is greater than version in second.
+// Returns true if version in first is greater.
+bool IsVersionNewer( const std::string & first, const std::string & second );
+
 #endif // PACKAGELISTUPDATER_HPP
