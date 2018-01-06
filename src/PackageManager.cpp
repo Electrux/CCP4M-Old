@@ -137,7 +137,7 @@ int PackageManager::InstallPackage( std::string package, bool forceinstall )
 
 	DispColoredData( "Checking already installed ... " );
 	int res = IsInstalled( package );
-	if( res == 0 )
+	if( res != 0 )
 		DispColoredData( TICK, GREEN, true );
 
 	if( forceinstall ) {
