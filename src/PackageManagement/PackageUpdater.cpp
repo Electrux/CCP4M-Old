@@ -226,7 +226,7 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 	}
 
 	if( !updated.empty() ) {
-		DispColoredData( "\nRemoving old packages ...\n", FIRST_COL, true );
+		DispColoredData( "\nRemoving old packages ...\n", BOLD_BLUE, true );
 
 		int res = 0;
 		std::vector< std::string > toinstall;
@@ -244,19 +244,20 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 				res = mgr.UninstallPackage( upd );
 				if( res != 0 )
 					break;
+				DispColoredData( "", FIRST_COL, true );
 				toinstall.push_back( upd );
 			}
 		}
 		if( res != 0 )
 			DispColoredData( "Unable to uninstall old packages! Continuing ...", TICK, RED, RED, true );
 
-		DispColoredData( "\nInstalling new packages ...\n", FIRST_COL, true );
+		DispColoredData( "\nInstalling new packages ...\n", BOLD_BLUE, true );
 
 		mgr.InstallMultiplePackages( toinstall );
 	}
 
 	if( !removedpkgs.empty() ) {
-		DispColoredData( "\nRemoving deprecated packages ...", FIRST_COL, true );
+		DispColoredData( "\nRemoving deprecated packages ...", BOLD_BLUE, true );
 		int res = 0;
 		for( auto rem : removedpkgs ) {
 			if( mgr.IsInstalled( rem ) ) {
