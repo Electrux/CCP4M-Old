@@ -230,8 +230,7 @@ void UpdatePackages( PackageManager & mgr, const std::map< std::string, long lon
 		int res = 0;
 
 		for( auto upd : updated ) {
-			std::cout << "Checking updates for " << upd << std::endl;
-			if( mgr.IsInstalled( upd ) ) {
+			if( mgr.IsInstalled( upd ) == 0 ) {
 				res = mgr.UninstallPackage( upd );
 				if( res != 0 )
 					break;
