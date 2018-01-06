@@ -271,7 +271,7 @@ bool PackageManager::RemoveTempFiles( const Package & pkg, bool allfiles )
 		if( GetWildCardFilesInDir( PACKAGE_TMP_DIR + pkg.name, temp, "*" ) <= 0 ) {
 
 			DispColoredData( TICK, GREEN, true );
-			DispColoredData( "Removing parent directory ... " );
+			DispColoredData( "Removing parent directory ...", GetPackageDir( pkg ), FIRST_COL, SECOND_COL, false );
 
 			if( LocExists( GetPackageDir( pkg ) ) && DispExecuteNoErr( "rm -rf " + GetPackageDir( pkg ), false ) != 0 ) {
 				DispColoredData( CROSS, RED, true );
