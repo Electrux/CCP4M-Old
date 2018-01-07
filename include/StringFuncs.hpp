@@ -11,7 +11,10 @@ std::vector< std::string > ArgToVector( int argc, char ** argv );
 // Returns vector of delimited strings.
 // If delim character is not found, original string
 // is returned as the element in vector.
-std::vector< std::string > DelimStringToVector( std::string str, char delim = ',' );
+std::vector< std::string > DelimStringToVector( const std::string & str, char delim = ',' );
+
+// Opposite of DelimStringToVector.
+std::string VectorToString( const std::vector< std::string > & vec, char delim = ',' );
 
 // Fetches string between " " or ' '
 std::string GetStringBetweenQuotes( std::string & str );

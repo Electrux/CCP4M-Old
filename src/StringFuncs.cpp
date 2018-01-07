@@ -15,7 +15,7 @@ std::vector< std::string > ArgToVector( int argc, char ** argv )
 	return temp;
 }
 
-std::vector< std::string > DelimStringToVector( std::string str, char delim )
+std::vector< std::string > DelimStringToVector( const std::string & str, char delim )
 {
 	std::string temp;
 	std::vector< std::string > val;
@@ -35,6 +35,21 @@ std::vector< std::string > DelimStringToVector( std::string str, char delim )
 		val.push_back( temp );
 
 	return val;
+}
+
+std::string VectorToString( const std::vector< std::string > & vec, char delim )
+{
+	std::string ret;
+
+	for( auto elem : vec ) {
+		ret += elem + delim;
+	}
+
+	if( !ret.empty() ) {
+		ret.erase( ret.end() - 1 );
+	}
+
+	return ret;
 }
 
 std::string GetStringBetweenQuotes( std::string & str )

@@ -104,9 +104,10 @@ int CreateDir( const std::string & dir, bool verbose )
 }
 
 void CreateFileWithContents( const std::string & filename,
-			     const std::string & contents )
+			     const std::string & contents, bool verbose )
 {
-	DispColoredData( "Creating file:", filename, BLUE, MAGENTA, true );
+	if( verbose )
+		DispColoredData( "Creating file:", filename, BLUE, MAGENTA, true );
 
 	std::fstream file;
 

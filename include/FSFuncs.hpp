@@ -38,7 +38,7 @@ int CreateDir( const std::string & dir, bool verbose = true );
 // If contents is empty, an empty file is created.
 // filename contains the entire path of file.
 void CreateFileWithContents( const std::string & filename,
-			     const std::string & contents = std::string() );
+			     const std::string & contents = std::string(), bool verbose = true );
 
 // Checks if the source file ( filename ) has no changes
 // after the last time it was built.
